@@ -18,12 +18,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'web', 'mail'],
+    'depends': ['base', 'web', 'mail', 'website', 'portal'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
+        'security/ir.model.access.csv',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

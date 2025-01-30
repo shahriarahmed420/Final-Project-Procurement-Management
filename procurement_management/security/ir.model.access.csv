@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_procurement_management_procurement_management,procurement_management.procurement_management,model_procurement_management_procurement_management,base.group_user,1,1,1,1
+access_supplier_otp,supplier.otp,model_supplier_otp,base.group_portal,1,1,1,0
+access_supplier_blacklist_admin,supplier.blacklist.admin,model_supplier_blacklist,base.group_system,1,1,1,1
+access_supplier_blacklist_user,supplier.blacklist.user,model_supplier_blacklist,base.group_user,1,0,0,0

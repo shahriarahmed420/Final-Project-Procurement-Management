@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from . import models, otp_model
+from . import blacklist_model, otp_model, registration_form_model

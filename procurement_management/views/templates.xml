@@ -1,24 +1,414 @@
 <odoo>
     <data>
-<!--
-        <template id="listing">
-          <ul>
-            <li t-foreach="objects" t-as="object">
-              <a t-attf-href="#{ root }/objects/#{ object.id }">
-                <t t-esc="object.display_name"/>
-              </a>
-            </li>
-          </ul>
+        <template id="portal_my_home_otp" inherit_id="portal.portal_my_home">
+            <xpath expr="//div[@id='portal_vendor_category']" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sale/static/src/img/quotation.svg'"/>
+                    <t t-set="title">Supplier Registration</t>
+                    <t t-set="text">Register as Supplier after verifying your Email with OTP</t>
+                    <t t-set="url" t-value="'/my/supplier'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </xpath>
         </template>
-        <template id="object">
-          <h1><t t-esc="object.display_name"/></h1>
-          <dl>
-            <t t-foreach="object._fields" t-as="field">
-              <dt><t t-esc="field"/></dt>
-              <dd><t t-esc="object[field]"/></dd>
+
+        <template id="supplier_page_template">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-5">
+                    <h1 class="text-center mb-4 text-uppercase text-primary">Supplier Registration</h1>
+                    <div class="card shadow-sm rounded bg-white p-4">
+                        <form method="POST" action="/my/supplier/check">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="mb-3 text-center">
+                                <label class="form-label fw-bold fs-4 text-primary">Do you Sign in or Sign up?</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Next</button>
+                        </form>
+                    </div>
+                </div>
             </t>
-          </dl>
         </template>
--->
+
+        <template id="supplier_mail_template">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-5">
+                    <h1 class="text-center mb-4 text-uppercase text-primary">Supplier Mail Check</h1>
+
+                    <!-- Display Error Message -->
+                    <t t-if="error">
+                        <div class="alert alert-danger text-center" role="alert">
+                            <t t-esc="error" />
+                        </div>
+                    </t>
+
+                    <!-- Email Input Form -->
+                    <div class="card shadow-sm rounded bg-white p-4">
+                        <form method="POST" action="/my/supplier/check">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="mb-3 text-center">
+                                <label class="form-label fw-bold fs-4 text-primary">Enter Your Email</label>
+                                <input type="email" name="email" class="form-control mt-3" placeholder="Enter your email"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Next</button>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="otp_verification_template">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-5">
+                    <h1 class="text-center mb-4 text-uppercase text-primary">OTP Verification</h1>
+
+                    <t t-if="error">
+                        <div class="alert alert-danger" role="alert">
+                            <t t-esc="error" />
+                        </div>
+                    </t>
+                    <t t-if="success">
+                        <div class="alert alert-success" role="alert">
+                            <t t-esc="success" />
+                        </div>
+                    </t>
+
+                    <div class="card shadow-sm rounded bg-white p-4">
+                        <!-- Form to Submit Email -->
+                        <form method="POST" action="/my/otp/send">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" placeholder="Enter your email"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Send OTP</button>
+                        </form>
+
+                        <!-- OTP Verification Section -->
+                        <t t-if="show_otp_section">
+                            <form method="POST" action="/my/otp/verify" class="mt-4">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="email" t-att-value="email"/>
+                                <div class="mb-3">
+                                    <label class="form-label">Enter OTP</label>
+                                    <input type="text" name="otp" class="form-control" placeholder="Enter OTP"/>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100 mt-2">Verify OTP</button>
+                            </form>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="supplier_registration_form_template">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-5">
+                    <h1 class="text-center mb-4 text-uppercase text-primary">Supplier Registration</h1>
+                    <div class="card shadow-sm rounded bg-white p-4">
+                        <form method="POST" action="/my/supplier/submit_registration">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="email" t-att-value="email"/>
+
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" name="name" class="form-control" placeholder="Enter your name"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" name="company_name" class="form-control" placeholder="Enter your company name"/>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Complete Registration</button>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="supplier_registration_form_template">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-5">
+                    <h1 class="text-center mb-4 text-uppercase text-primary">Supplier Registration Form</h1>
+                    <form method="POST" action="/my/supplier/form/submit">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                        <!-- Section 1: Company Information -->
+                        <h3 class="text-secondary">Section 1: Company Information</h3>
+
+                        <!-- Card 1: General Information -->
+                        <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                            <h4 class="text-primary mb-4">General Information</h4>
+                            <div class="mb-3">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" name="company_name" class="form-control" placeholder="Enter Company Name" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company Address</label>
+                                <input type="text" name="company_address" class="form-control" placeholder="Enter Company Address" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company Type</label>
+                                <select name="company_type" class="form-select">
+                                    <option value="">Select your company type</option>
+                                    <option value="sole_proprietorship">Sole Proprietorship</option>
+                                    <option value="partnership">Partnership</option>
+                                    <option value="llc">Limited Liability Company (LLC)</option>
+                                    <option value="corporation">Corporation</option>
+                                    <option value="s_corporation">S Corporation</option>
+                                    <option value="cooperative">Cooperative</option>
+                                    <option value="non_profit">Non-Profit Organization</option>
+                                    <option value="government_agency">Government Agency</option>
+                                    <option value="joint_venture">Joint Venture</option>
+                                    <option value="holding_company">Holding Company</option>
+                                    <option value="private_limited">Private Limited Company</option>
+                                    <option value="public_limited">Public Limited Company</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company Logo</label>
+                                <input type="file" name="company_logo" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Additional Details -->
+                        <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                            <h4 class="text-primary mb-4">Additional Details</h4>
+                            <div class="mb-3">
+                                <label class="form-label">Trade License Number</label>
+                                <input type="text" name="trade_license_no" class="form-control" placeholder="Enter Trade License Number" />
+                                <small class="form-text text-muted">Range: 8-20 characters</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Commencement Date</label>
+                                <input type="date" name="commencement_date" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="date" name="expiry_date" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tax Identification Number (TIN)</label>
+                                <input type="text" name="tax_id_num" maxlength="16" class="form-control" placeholder="Enter 16-digit TIN" />
+                            </div>
+                        </div>
+
+
+                        <!-- Contact Information -->
+                        <h4 class="text-secondary mb-4">Contact Information</h4>
+
+                        <!-- Primary Contact -->
+                        <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                            <h5 class="text-primary mb-3">Primary Contact</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" name="primary_contact_name" class="form-control" placeholder="Enter Name"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="primary_contact_email" class="form-control" placeholder="Enter Email"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="primary_contact_phone" class="form-control" placeholder="Enter Phone Number"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea name="primary_contact_address" class="form-control" rows="3" placeholder="Enter Address"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Finance Contact -->
+                        <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                            <h5 class="text-primary mb-3">Finance Contact</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" name="finance_contact_name" class="form-control" placeholder="Enter Name"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="finance_contact_email" class="form-control" placeholder="Enter Email"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="finance_contact_phone" class="form-control" placeholder="Enter Phone Number"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea name="finance_contact_address" class="form-control" rows="3" placeholder="Enter Address"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Authorized Contact -->
+                        <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                            <h5 class="text-primary mb-3">Authorized Contact</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" name="authorized_contact_name" class="form-control" placeholder="Enter Name"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="authorized_contact_email" class="form-control" placeholder="Enter Email"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="authorized_contact_phone" class="form-control" placeholder="Enter Phone Number"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea name="authorized_contact_address" class="form-control" rows="3" placeholder="Enter Address"></textarea>
+                            </div>
+                        </div>
+
+
+                        <!-- Section 2: Bank Information -->
+                        <div class="card shadow-sm p-4 mb-5 bg-white rounded">
+                            <h3 class="text-secondary mb-4">Section 2: Bank Information</h3>
+                            <div class="mb-3">
+                                <label class="form-label">Bank Name</label>
+                                <input type="text" name="bank_name" class="form-control" placeholder="Enter Bank Name"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Bank Address</label>
+                                <input type="text" name="bank_address" class="form-control" placeholder="Enter Bank Address"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">SWIFT Code</label>
+                                <input type="text" name="bank_swift_code" class="form-control" placeholder="Enter SWIFT Code"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Account Name</label>
+                                <input type="text" name="account_name" class="form-control" placeholder="Enter Account Name"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Account Number</label>
+                                <input type="text" name="account_number" class="form-control" placeholder="Enter Account Number"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">IBAN</label>
+                                <input type="text" name="iban" class="form-control" placeholder="Enter IBAN"/>
+                            </div>
+                        </div>
+
+
+                        <!-- Section - 3 Views -->
+                        <div class="container mt-5">
+                            <h3 class="text-secondary">Section 3: Previous Client References</h3>
+                            <div id="client-references" class="row">
+                                <!-- Client 1 -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="card shadow-sm p-3">
+                                        <label class="form-label">Client 1 Name</label>
+                                        <input type="text" name="client_name_1" class="form-control" placeholder="Enter Client 1 Name"/>
+                                        <label class="form-label mt-2">Client 1 Email</label>
+                                        <input type="email" name="client_email_1" class="form-control" placeholder="Enter Client 1 Email"/>
+                                        <label class="form-label mt-2">Client 1 Phone</label>
+                                        <input type="text" name="client_phone_1" class="form-control" placeholder="Enter Client 1 Phone"/>
+                                        <label class="form-label mt-2">Client 1 Address</label>
+                                        <textarea name="client_address_1" class="form-control" placeholder="Enter Client 1 Address"></textarea>
+                                    </div>
+                                </div>
+                                <!-- Client 2 -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="card shadow-sm p-3">
+                                        <label class="form-label">Client 2 Name</label>
+                                        <input type="text" name="client_name_2" class="form-control" placeholder="Enter Client 2 Name"/>
+                                        <label class="form-label mt-2">Client 2 Email</label>
+                                        <input type="email" name="client_email_2" class="form-control" placeholder="Enter Client 2 Email"/>
+                                        <label class="form-label mt-2">Client 2 Phone</label>
+                                        <input type="text" name="client_phone_2" class="form-control" placeholder="Enter Client 2 Phone"/>
+                                        <label class="form-label mt-2">Client 2 Address</label>
+                                        <textarea name="client_address_2" class="form-control" placeholder="Enter Client 2 Address"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Client 3 -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="card shadow-sm p-3">
+                                        <label class="form-label">Client 3 Name</label>
+                                        <input type="text" name="client_name_3" class="form-control" placeholder="Enter Client 3 Name"/>
+                                        <label class="form-label mt-2">Client 3 Email</label>
+                                        <input type="email" name="client_email_3" class="form-control" placeholder="Enter Client 3 Email"/>
+                                        <label class="form-label mt-2">Client 3 Phone</label>
+                                        <input type="text" name="client_phone_3" class="form-control" placeholder="Enter Client 3 Phone"/>
+                                        <label class="form-label mt-2">Client 3 Address</label>
+                                        <textarea name="client_address_3" class="form-control" placeholder="Enter Client 3 Address"></textarea>
+                                    </div>
+                                </div>
+                                <!-- Client 4 -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="card shadow-sm p-3">
+                                        <label class="form-label">Client 4 Name</label>
+                                        <input type="text" name="client_name_4" class="form-control" placeholder="Enter Client 4 Name"/>
+                                        <label class="form-label mt-2">Client 4 Email</label>
+                                        <input type="email" name="client_email_4" class="form-control" placeholder="Enter Client 4 Email"/>
+                                        <label class="form-label mt-2">Client 4 Phone</label>
+                                        <input type="text" name="client_phone_4" class="form-control" placeholder="Enter Client 4 Phone"/>
+                                        <label class="form-label mt-2">Client 4 Address</label>
+                                        <textarea name="client_address_4" class="form-control" placeholder="Enter Client 4 Address"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Client 5 -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="card shadow-sm p-3">
+                                        <label class="form-label">Client 5 Name</label>
+                                        <input type="text" name="client_name_5" class="form-control" placeholder="Enter Client 5 Name"/>
+                                        <label class="form-label mt-2">Client 5 Email</label>
+                                        <input type="email" name="client_email_5" class="form-control" placeholder="Enter Client 5 Email"/>
+                                        <label class="form-label mt-2">Client 5 Phone</label>
+                                        <input type="text" name="client_phone_5" class="form-control" placeholder="Enter Client 5 Phone"/>
+                                        <label class="form-label mt-2">Client 5 Address</label>
+                                        <textarea name="client_address_5" class="form-control" placeholder="Enter Client 5 Address"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Certifications Section -->
+                        <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                            <h3 class="text-secondary mb-3">Section 4: Certification</h3>
+
+                            <div class="mb-3">
+                                <label class="form-label">Certification Name</label>
+                                <input type="text" name="certification_name" class="form-control" placeholder="Enter Certification Name" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Certificate Number</label>
+                                <input type="text" name="certificate_number" class="form-control" placeholder="Enter Certificate Number" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Certifying Body</label>
+                                <input type="text" name="certifying_body" class="form-control" placeholder="Enter Certifying Body"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Award Date</label>
+                                    <input type="date" name="award_date" class="form-control"/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" name="expiry_date" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100">Submit Form</button>
+                    </form>
+                </div>
+            </t>
+        </template>
+
+        <template id="supplier_registration_success_template">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-5">
+                    <h1 class="text-center text-success">Registration Successful!</h1>
+                    <p class="text-center">Thank you for registering. We will review your application and get back to you shortly.</p>
+                </div>
+            </t>
+        </template>
     </data>
 </odoo>
