@@ -1,51 +1,11 @@
 from odoo import models, fields, api
 
 
-class RegistrationFormContact(models.Model):
-    _name = 'registration.form.contact'
-    _description = "Registration Form Contact"
-
-    name = fields.Char("Name", required=True)
-    email = fields.Char("Email", required=True)
-    phone = fields.Char("Phone", required=True)
-    address = fields.Text("Address")
-
-
-class RegistrationFormClientReference(models.Model):
-    _name = 'registration.form.client.reference'
-    _description = "Registration Form Client Reference"
-
-    form_id = fields.Many2one('registration.form', string="Registration Form", ondelete='cascade')
-    name = fields.Char("Client Name", required=True)
-    email = fields.Char("Email")
-    phone = fields.Char("Phone")
-    address = fields.Text("Address")
-
-
-class RegistrationFormCertification(models.Model):
-    _name = 'registration.form.certification'
-    _description = "Registration Form Certification"
-
-    form_id = fields.Many2one('registration.form', string="Registration Form", ondelete='cascade')
-    name = fields.Char("Certification Name", required=True)
-    certificate_number = fields.Char("Certificate Number", required=True)
-    certifying_body = fields.Char("Certifying Body")
-    award_date = fields.Date("Award Date")
-    expiry_date = fields.Date("Expiry Date")
-
-
-# class RegistrationFormDocument(models.Model):
-#     _name = 'registration.form.document'
-#     _description = "Registration Form Document"
-#
-#     form_id = fields.Many2one('registration.form', string="Registration Form", ondelete='cascade')
-#     document_name = fields.Char("Document Name")
-#     attachment = fields.Binary("Attachment")
-
-
 class RegistrationForm(models.Model):
     _name = 'registration.form'
     _description = 'A model to view and track for supplier form'
+
+    email = fields.Char("Supplier Email", required=True, index=True)
 
     # Section-1
 
@@ -66,9 +26,22 @@ class RegistrationForm(models.Model):
         ('public_limited', 'Public Limited Company'),
     ], string="Company Type", required=True)
     company_logo = fields.Binary("Company logo")
-    primary_contact_id = fields.Many2one('registration.form.contact', string='Primary Contact', required=True)
-    finance_contact_id = fields.Many2one('registration.form.contact', string='Finance Contact')
-    authorized_contact_id = fields.Many2one('registration.form.contact', string='Authorized Contact')
+
+    primary_contact_name = fields.Char("Name", required=True)
+    primary_contact_email = fields.Char("Email", required=True)
+    primary_contact_phone = fields.Char("Phone", required=True)
+    primary_contact_address = fields.Text("Address")
+
+    finance_contact_name = fields.Char("Name", required=True)
+    finance_contact_email = fields.Char("Email", required=True)
+    finance_contact_phone = fields.Char("Phone", required=True)
+    finance_contact_address = fields.Text("Address")
+
+    authorized_contact_name = fields.Char("Name", required=True)
+    authorized_contact_email = fields.Char("Name", required=True)
+    authorized_contact_phone = fields.Char("Name", required=True)
+    authorized_contact_address = fields.Char("Name")
+
     trade_license_no = fields.Char("Trade License Number", help="Range - 8-20 characters")
     commencement_date = fields.Date("Commencement Date")
     expiry_date = fields.Date("Expiry Date")
@@ -85,21 +58,17 @@ class RegistrationForm(models.Model):
 
     # Section - 3
 
-    client_reference_ids = fields.One2many('registration.form.client.reference', 'form_id', string="Client References")
+    client_name = fields.Char("Client Name", required=True)
+    client_email = fields.Char("Email")
+    client_phone = fields.Char("Phone")
+    client_address = fields.Text("Address")
 
     # Section - 4
 
-    certification_ids = fields.One2many('registration.form.certification', 'form_id', string="Certifications")
+    certification_name = fields.Char("Certification Name", required=True)
+    certificate_number = fields.Char("Certificate Number", required=True)
+    certifying_body = fields.Char("Certifying Body")
+    award_date = fields.Date("Award Date")
+    certificate_expiry_date = fields.Date("Expiry Date")
 
-    # Section - 5
-
-    # document_ids = fields.One2many('registration.form.document', 'form_id', string="Uploaded Documents")
-
-    # Status Tracking
-
-    # state = fields.Selection([
-    #     ('draft', 'Draft'),
-    #     ('submitted', 'Submitted'),
-    #     ('approved', 'Approved'),
-    #     ('rejected', 'Rejected'),
-    # ], string="Status", default='draft')
+    documents = fields.Binary()
