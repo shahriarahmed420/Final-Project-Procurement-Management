@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class RegistrationForm(models.Model):
@@ -38,9 +39,9 @@ class RegistrationForm(models.Model):
     finance_contact_address = fields.Text("Address")
 
     authorized_contact_name = fields.Char("Name", required=True)
-    authorized_contact_email = fields.Char("Name", required=True)
-    authorized_contact_phone = fields.Char("Name", required=True)
-    authorized_contact_address = fields.Char("Name")
+    authorized_contact_email = fields.Char("Email", required=True)
+    authorized_contact_phone = fields.Char("Phone", required=True)
+    authorized_contact_address = fields.Char("Address")
 
     trade_license_no = fields.Char("Trade License Number", help="Range - 8-20 characters")
     commencement_date = fields.Date("Commencement Date")
@@ -71,4 +72,44 @@ class RegistrationForm(models.Model):
     award_date = fields.Date("Award Date")
     certificate_expiry_date = fields.Date("Expiry Date")
 
-    documents = fields.Binary()
+    # Section - 5
+
+    trade_license_business_registration = fields.Binary(string='Trade License/Business Registration')
+    certificate_of_incorporation = fields.Binary(string='Certificate of Incorporation')
+    certificate_of_good_standing = fields.Binary(string='Certificate of Good Standing')
+    establishment_card = fields.Binary(string='Establishment Card')
+    vat_tax_certificate = fields.Binary(string='VAT/TAX Certificate')
+    memorandum_of_association = fields.Binary(string='Memorandum of Association')
+    identification_document_for_authorized_person = fields.Binary(string='Identification Document for Authorized Person')
+    bank_letter_indicating_bank_account = fields.Binary(string='Bank Letter indicating Bank Account')
+    past_2_years_audited_financial_statements = fields.Binary(string='Past 2 Years Audited Financial Statements')
+    other_certifications = fields.Binary(string='Other Certifications')
+
+    name_of_signatory = fields.Char(string="Name of Signatory", required=True)
+    authorized_signatory = fields.Char(string="Authorized Signatory Role", required=True)
+    company_stamp = fields.Binary(string="Company Stamp", required=True)
+    submission_date = fields.Date(string="Submission Date", required=True, default=fields.Date.context_today)\
+
+    state = fields.Selection(
+        [('submitted', 'Submitted'), ('approved', 'Approved'), ('rejected', 'Rejected')],
+        string='State', default='submitted')
+
+    @api.constrains('certificate_expiry_date')
+    def _check_certificate_expiry(self):
+        for record in self:
+            if record.certificate_expiry_date and record.certificate_expiry_date <= fields.Date.today():
+                raise ValidationError("Certificate expiry date must be in the future.")
+
+    @api.constrains('trade_license_business_registration', 'certificate_of_incorporation')
+    def _check_file_size(self):
+        for record in self:
+            max_size = 5 * 1024 * 1024  # 5 MB
+            if record.trade_license_business_registration and len(
+                    record.trade_license_business_registration) > max_size:
+                raise ValidationError("Trade License file size must not exceed 5MB.")
+
+    def action_approve(self):
+        self.write({'state': 'approved'})
+
+    def action_reject(self):
+        self.write({'state': 'rejected'})

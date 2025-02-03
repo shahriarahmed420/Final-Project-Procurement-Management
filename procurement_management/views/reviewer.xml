@@ -1,0 +1,9 @@
+<odoo>
+<!--    <record id="reviewer_view_application" model="ir.actions.act_window">-->
+<!--        <field name="name">Reviewer</field>-->
+<!--        <field name="res_model">registration.form</field>-->
+<!--        <field name="view_mode">tree</field>-->
+<!--        <field name="view_id" ref="school_management_student_simple_form"/>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+</odoo>

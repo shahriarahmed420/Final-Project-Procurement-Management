@@ -3,3 +3,5 @@ access_supplier_otp,supplier.otp,model_supplier_otp,base.group_portal,1,1,1,0
 access_supplier_blacklist_admin,supplier.blacklist.admin,model_supplier_blacklist,base.group_system,1,1,1,1
 access_supplier_blacklist_user,supplier.blacklist.user,model_supplier_blacklist,base.group_user,1,0,0,0
 access_registration_form,access.registration.form,model_registration_form,,1,1,1,1
+access_supplier_reviewer,access_supplier_reviewer,model_registration_form,procurement_management.group_supplier_reviewer,1,0,0,0
+access_supplier_approver,access_supplier_approver,model_registration_form,procurement_management.group_supplier_approver,1,1,0,0

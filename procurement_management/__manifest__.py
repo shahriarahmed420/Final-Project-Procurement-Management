@@ -22,7 +22,9 @@
 
     # always loaded
     'data': [
+        'security/procurement_security.xml',
         'security/ir.model.access.csv',
+        'views/menus.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode
