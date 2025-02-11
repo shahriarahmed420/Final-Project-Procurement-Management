@@ -1,34 +1,20 @@
 <odoo>
 
-<!--    <record id="group_supplier_reviewer" model="res.groups">-->
-<!--        <field name="name">Supplier Reviewer</field>-->
-<!--        <field name="category_id" ref="base.module_category_hidden"/>-->
-<!--    </record>-->
-<!--    -->
-<!--    <record id="group_supplier_approver" model="res.groups">-->
-<!--        <field name="name">Supplier Approver</field>-->
-<!--        <field name="category_id" ref="base.module_category_hidden"/>-->
-<!--    </record>-->
-
-        <!-- ✅ Module Category: Supplier Management -->
         <record model="ir.module.category" id="module_category_procurement_management">
             <field name="name">Procurement Management</field>
             <field name="description">Manage Supplier Reviews and Approvals</field>
         </record>
 
-        <!-- ✅ Supplier Reviewer Group -->
         <record id="group_supplier_reviewer" model="res.groups">
             <field name="name">Supplier Reviewer</field>
             <field name="comment">Users in this group can review supplier applications.</field>
             <field name="category_id" ref="module_category_procurement_management"/>
         </record>
 
-        <!-- ✅ Supplier Approver Group -->
         <record id="group_supplier_approver" model="res.groups">
             <field name="name">Supplier Approver</field>
             <field name="comment">Users in this group can approve or reject supplier applications.</field>
             <field name="category_id" ref="module_category_procurement_management"/>
-            <field name="implied_ids" eval="[(4, ref('group_supplier_reviewer'))]"/>
         </record>
 
 </odoo>

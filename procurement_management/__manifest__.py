@@ -24,6 +24,10 @@
     'data': [
         'security/procurement_security.xml',
         'security/ir.model.access.csv',
+        'views/all_email_templates.xml',
+        'views/email_template_supplier_rejection.xml',
+        'views/approver.xml',
+        'views/reviewer.xml',
         'views/menus.xml',
         'views/templates.xml',
     ],

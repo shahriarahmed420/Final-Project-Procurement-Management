@@ -1,9 +1,201 @@
 <odoo>
-<!--    <record id="approver_view_application" model="ir.actions.act_window">-->
-<!--        <field name="name">Approver</field>-->
-<!--        <field name="res_model">registration.form</field>-->
-<!--        <field name="view_mode">tree</field>-->
-<!--        <field name="view_id" ref="school_management_student_simple_form"/>-->
-<!--        <field name="target">new</field>-->
-<!--    </record>-->
+    <record id="view_registration_form_approver_tree" model="ir.ui.view">
+        <field name="name">registration.form.approver.tree</field>
+        <field name="model">registration.form</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_name"/>
+                <field name="email"/>
+                <field name="status"/>
+                <field name="reviewer_id"/>
+                <field name="approver_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_registration_form_approver_form" model="ir.ui.view">
+        <field name="name">registration.form.approver.form</field>
+        <field name="model">registration.form</field>
+        <field name="arch" type="xml">
+            <form string="Supplier Approval Form">
+                <header>
+                    <!-- Status Bar -->
+                    <field name="status" widget="statusbar" clickable="1"/>
+
+                    <!-- Action Buttons -->
+                    <button name="action_final_approve" string="Approve &amp; Notify Supplier" type="object" class="oe_highlight"
+                            invisible="status != 'under_review'"/>
+                    <button name="action_reject" string="Reject" type="object" class="oe_highlight"
+                            invisible="status != 'under_review'"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <field name="company_name"/>
+                        <field name="company_address"/>
+                        <field name="company_type"/>
+                        <field name="company_logo"/>
+                        <field name="approver_id"/>
+                    </group>
+                    <notebook>
+                        <!-- Section 1: Company Information -->
+                        <page string="Contact Information">
+                            <group>
+                                <field name="primary_contact_name"/>
+                                <field name="primary_contact_email"/>
+                                <field name="primary_contact_phone"/>
+                                <field name="primary_contact_address"/>
+                            </group>
+                            <group>
+                                <field name="finance_contact_name"/>
+                                <field name="finance_contact_email"/>
+                                <field name="finance_contact_phone"/>
+                                <field name="finance_contact_address"/>
+                            </group>
+                            <group>
+                                <field name="authorized_contact_name"/>
+                                <field name="authorized_contact_email"/>
+                                <field name="authorized_contact_phone"/>
+                                <field name="authorized_contact_address"/>
+                            </group>
+                        </page>
+
+                        <!-- Section 2: Financial Information -->
+                        <page string="Financial Information">
+                            <group>
+                                <field name="bank_name"/>
+                                <field name="bank_address"/>
+                                <field name="bank_swift_code"/>
+                                <field name="account_name"/>
+                                <field name="account_number"/>
+                                <field name="iban"/>
+                            </group>
+                        </page>
+
+                        <!-- Section 3: Previous Client References -->
+                        <page string="Client References">
+                            <group>
+                                <field name="client_name"/>
+                                <field name="client_email"/>
+                                <field name="client_phone"/>
+                                <field name="client_address"/>
+                            </group>
+                        </page>
+
+                        <!-- Section 4: Certifications -->
+                        <page string="Certifications">
+                            <group>
+                                <field name="certification_name"/>
+                                <field name="certificate_number"/>
+                                <field name="certifying_body"/>
+                                <field name="award_date"/>
+                                <field name="certificate_expiry_date"/>
+                            </group>
+                        </page>
+
+                        <!-- Section 5: Document Submission -->
+                        <page string="Document Submission">
+                            <group>
+                                <field name="trade_license_business_registration"/>
+                                <field name="certificate_of_incorporation"/>
+                                <field name="certificate_of_good_standing"/>
+                                <field name="establishment_card"/>
+                                <field name="vat_tax_certificate"/>
+                                <field name="memorandum_of_association"/>
+                                <field name="identification_document_for_authorized_person"/>
+                                <field name="bank_letter_indicating_bank_account"/>
+                                <field name="past_2_years_audited_financial_statements"/>
+                                <field name="other_certifications"/>
+                            </group>
+                        </page>
+
+                        <!-- Section 6: Declaration -->
+                        <page string="Declaration">
+                            <group>
+                                <field name="name_of_signatory"/>
+                                <field name="authorized_signatory"/>
+                                <field name="company_stamp"/>
+                                <field name="submission_date"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_registration_form_approver_kanban" model="ir.ui.view">
+        <field name="name">registration.form.approver.kanban</field>
+        <field name="model">registration.form</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status">
+                <field name="company_name"/>
+                <field name="email"/>
+                <field name="reviewer_id"/>
+                <field name="approver_id"/>
+                <field name="status"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <!-- Header with Company Name -->
+                                <div class="o_kanban_header">
+                                    <strong class="text-primary"><t t-esc="record.company_name.value"/></strong>
+                                </div>
+
+                                <!-- Status Badge -->
+                                <div class="o_kanban_status">
+                                    <span t-if="record.status.value == 'under_review'" class="badge badge-warning">Under Review</span>
+                                    <span t-if="record.status.value == 'approved'" class="badge badge-success">Approved</span>
+                                    <span t-if="record.status.value == 'rejected'" class="badge badge-danger">Rejected</span>
+                                    <span t-if="record.status.value == 'blacklisted'" class="badge badge-dark">Blacklisted</span>
+                                </div>
+
+                                <!-- Contact Info -->
+                                <div class="o_kanban_body">
+                                    <p>Email: <t t-esc="record.email.value"/></p>
+                                    <p>Reviewer: <t t-esc="record.reviewer_id.value or 'Not Assigned'"/></p>
+                                    <p>Approver: <t t-esc="record.approver_id.value or 'Not Assigned'"/></p>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="o_kanban_footer">
+                                    <span class="text-muted">Click to open</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_registration_form_search" model="ir.ui.view">
+        <field name="name">registration.form.search</field>
+        <field name="model">registration.form</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="company_name"/>
+                <field name="email"/>
+                <field name="reviewer_id"/>
+                <field name="approver_id"/>
+                <field name="status"/>
+
+                <filter string="Submitted" name="status_submitted" domain="[('status', '=', 'submitted')]"/>
+                <filter string="Under Review" name="status_under_review" domain="[('status', '=', 'under_review')]"/>
+                <filter string="Approved" name="status_approved" domain="[('status', '=', 'approved')]"/>
+                <filter string="Rejected" name="status_rejected" domain="[('status', '=', 'rejected')]"/>
+                <filter string="Blacklisted" name="status_blacklisted" domain="[('status', '=', 'blacklisted')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_supplier_approver" model="ir.actions.act_window">
+        <field name="name">Approver</field>
+        <field name="res_model">registration.form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="procurement_management.view_registration_form_search"/>
+        <field name="domain">[('status', 'in', ['under_review', 'approved'])]</field>
+    </record>
 </odoo>

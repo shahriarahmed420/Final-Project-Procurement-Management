@@ -1,10 +1,11 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
 class RegistrationForm(models.Model):
     _name = 'registration.form'
     _description = 'A model to view and track for supplier form'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     email = fields.Char("Supplier Email", required=True, index=True)
 
@@ -88,11 +89,109 @@ class RegistrationForm(models.Model):
     name_of_signatory = fields.Char(string="Name of Signatory", required=True)
     authorized_signatory = fields.Char(string="Authorized Signatory Role", required=True)
     company_stamp = fields.Binary(string="Company Stamp", required=True)
-    submission_date = fields.Date(string="Submission Date", required=True, default=fields.Date.context_today)\
+    submission_date = fields.Date(string="Submission Date", required=True, default=fields.Date.context_today)
 
-    state = fields.Selection(
-        [('submitted', 'Submitted'), ('approved', 'Approved'), ('rejected', 'Rejected')],
-        string='State', default='submitted')
+    # extra necessary fields after 5 sections
+
+    status = fields.Selection([
+        ('submitted', 'Submitted'),
+        ('under_review', 'Under Review'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('blacklisted', 'Blacklisted')
+    ], default='submitted', tracking=True)
+
+    reviewer_id = fields.Many2one(
+        'res.users',
+        string="Reviewer",
+        domain=lambda self: [('groups_id', 'in', self.env.ref('procurement_management.group_supplier_reviewer').ids)],
+        tracking=True
+    )
+
+    approver_id = fields.Many2one(
+        'res.users',
+        string="Approver",
+        domain=lambda self: [('groups_id', 'in', self.env.ref('procurement_management.group_supplier_approver').ids)],
+        tracking=True
+    )
+
+    rejection_reason = fields.Text(string="Rejection Reason")
+    blacklist_reason = fields.Text(string="Blacklist Reason")
+    review_comments = fields.Text(string="Reviewer Comments")
+    approval_comments = fields.Text(string="Approver Comments")
+
+    def action_review_approve(self):
+        """First Review Approval"""
+        if not self.reviewer_id:
+            raise ValidationError(_("A reviewer must be assigned before approval."))
+        self.write({'status': 'under_review'})
+        self.message_post(body=_("Application has been forwarded to the approver."))
+
+    def action_final_approve(self):
+        """Final Approval - Create Vendor & Supplier User"""
+        if not self.approver_id:
+            raise ValidationError(_("An approver must be assigned before final approval."))
+
+        self.write({'status': 'approved'})
+        self.create_vendor_record()
+        self.create_supplier_user()
+        self.send_supplier_approval_email()
+        self.message_post(
+            body=_("Supplier application has been approved, vendor record created, and user account generated."))
+
+    def action_reject(self):
+        """Reject Application"""
+        if not self.rejection_reason:
+            raise ValidationError(_("Please provide a reason for rejection."))
+        self.write({'status': 'rejected'})
+        self.send_rejection_email()
+        self.message_post(body=_("Application rejected: %s" % self.rejection_reason))
+
+    def action_blacklist(self):
+        """Blacklist Supplier"""
+        if not self.blacklist_reason:
+            raise ValidationError(_("Please provide a reason for blacklisting."))
+        self.write({'status': 'blacklisted'})
+        self.send_rejection_email()
+        self.message_post(body=_("Supplier blacklisted: %s" % self.blacklist_reason))
+
+    def create_vendor_record(self):
+        """Move Approved Supplier to res.partner"""
+        vendor = self.env['res.partner'].create({
+            'name': self.company_name,
+            'email': self.email,
+            'phone': self.primary_contact_phone,
+            'is_company': True,
+            'company_type': 'company',
+        })
+        self.message_post(body=_("Vendor Record Created: %s" % vendor.name))
+
+    def create_supplier_user(self):
+        """Create User Account for Approved Supplier"""
+        supplier_group = self.env.ref('base.group_user')  # Change this to your supplier group
+        user = self.env['res.users'].sudo().create({
+            'name': self.company_name,
+            'login': self.email,
+            'email': self.email,
+            'password': self.email,
+            'groups_id': [(4, supplier_group.id)]
+        })
+        self.message_post(body=_("User account created for supplier: %s" % user.login))
+
+    def send_supplier_approval_email(self):
+        """Send Email Notification Upon Approval"""
+        template = self.env.ref('procurement_management.email_template_supplier_approval')
+        if template:
+            self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
+
+    def send_rejection_email(self):
+        """Send Email Notification for Rejection or Blacklist"""
+        template = self.env.ref('procurement_management.email_template_supplier_rejection')
+        if template:
+            self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
+
+
+    # functions for constrains behaviors
 
     @api.constrains('certificate_expiry_date')
     def _check_certificate_expiry(self):
@@ -107,9 +206,3 @@ class RegistrationForm(models.Model):
             if record.trade_license_business_registration and len(
                     record.trade_license_business_registration) > max_size:
                 raise ValidationError("Trade License file size must not exceed 5MB.")
-
-    def action_approve(self):
-        self.write({'state': 'approved'})
-
-    def action_reject(self):
-        self.write({'state': 'rejected'})

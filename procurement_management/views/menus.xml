@@ -1,27 +1,9 @@
 <odoo>
     <menuitem id="menu_procurement_management_root" name="Procurement Management" sequence="10"/>
 
-    <menuitem id="menu_supplier_reviewer" name="Supplier Reviews" parent="menu_procurement_management_root" groups="procurement_management.group_supplier_reviewer"
-              action="action_supplier_review" sequence="20"/>
+    <menuitem id="menu_supplier_reviewer" name="Reviews" parent="menu_procurement_management_root" groups="procurement_management.group_supplier_reviewer"
+              action="action_supplier_reviewer" sequence="20"/>
 
-        <record id="action_supplier_review" model="ir.actions.act_window">
-            <field name="name">Supplier Reviews</field>
-            <field name="res_model">registration.form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state', '=', 'submitted')]</field>
-            <field name="groups_id" eval="[(4, ref('procurement_management.group_supplier_reviewer'))]"/>
-        </record>
-
-    <!-- Supplier Approver Menu -->
-    <menuitem id="menu_supplier_approver" name="Supplier Approvals" parent="menu_procurement_management_root" groups="procurement_management.group_supplier_approver"
-              action="action_supplier_approval" sequence="30"/>
-
-        <record id="action_supplier_approval" model="ir.actions.act_window">
-            <field name="name">Supplier Approvals</field>
-            <field name="res_model">registration.form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state', '=', 'approved')]</field>
-            <field name="groups_id" eval="[(4, ref('procurement_management.group_supplier_approver'))]"/>
-        </record>
-
+    <menuitem id="menu_supplier_approver" name="Approvals" parent="menu_procurement_management_root" groups="procurement_management.group_supplier_approver"
+              action="action_supplier_approver" sequence="30"/>
 </odoo>

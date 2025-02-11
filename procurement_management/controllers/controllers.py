@@ -5,12 +5,14 @@ from datetime import date
 import base64
 from odoo.exceptions import ValidationError
 
+
 class OTPCustomerPortal(CustomerPortal):
     @http.route(['/my/supplier'], type='http', auth='public', website=True)
     def my_supplier_page(self):
         return request.render('procurement_management.supplier_page_template', {
             'page_name': 'my_supplier',
         })
+
 
     @http.route(['/my/supplier/check'], type='http', auth='public', methods=['POST'], csrf=True, website=True)
     def my_supplier_check(self, **kwargs):
@@ -22,30 +24,38 @@ class OTPCustomerPortal(CustomerPortal):
                 'error': 'Email is required, Must!'
             })
 
+        # ✅ Check if an Odoo User exists with this email
         existing_user = request.env['res.users'].sudo().search([('login', '=', email)], limit=1)
         if existing_user:
             return request.render('procurement_management.supplier_mail_template', {
                 'page_name': 'my_supplier',
-                'error': 'An account with this email is already exists!'
+                'error': 'An account with this email already exists!'
             })
 
-        existing_partner = request.env['res.partner'].sudo().search([('email', '=', email), ('supplier_rank', '>', 0)], limit=1)
-        if existing_partner:
+        # ✅ Check if a Supplier exists (Alternative to `supplier_rank`)
+        existing_supplier = request.env['res.partner'].sudo().search([
+            ('email', '=', email),
+            ('is_company', '=', True),  # ✅ Ensure it's a company
+        ], limit=1)
+
+        if existing_supplier:
             return request.render('procurement_management.supplier_mail_template', {
                 'page_name': 'my_supplier',
-                'error': 'A supplier with this email is already exists!'
+                'error': 'A supplier with this email already exists!'
             })
 
+        # ✅ Check if the email is blacklisted
         blacklisted = request.env['supplier.blacklist'].sudo().search([('email', '=', email)], limit=1)
         if blacklisted:
             return request.render('procurement_management.supplier_mail_template', {
                 'page_name': 'my_supplier',
-                'error': 'This email is blacklisted, you can not go further!'
+                'error': 'This email is blacklisted, you cannot go further!'
             })
 
         return request.render('procurement_management.otp_verification_template', {
             'page_name': 'my_otp',
         })
+
 
     @http.route(['/my/otp'], type='http', auth='public', website=True)
     def my_otp_verification(self):
@@ -53,9 +63,11 @@ class OTPCustomerPortal(CustomerPortal):
             'page_name': 'my_otp',
         })
 
+
     @http.route(['/my/otp/send'], type='http', auth='public', methods=['POST'], csrf=True, website=True)
     def send_otp(self, **kwargs):
         email = kwargs.get('email')
+
         if not email:
             return request.render('procurement_management.otp_verification_template', {
                 'error': 'Email is required',
@@ -67,23 +79,40 @@ class OTPCustomerPortal(CustomerPortal):
                 'error': 'Email is already registered',
             })
 
+        # ✅ DEBUG: Check if OTP is being generated
         otp_record = request.env['supplier.otp'].sudo().generate_otp(email)
         if not otp_record:
+            print("❌ OTP Generation Failed for:", email)
             return request.render('procurement_management.otp_verification_template', {
                 'error': 'Failed to generate OTP',
             })
 
-        request.env['mail.mail'].sudo().create({
+        print(f"✅ OTP Generated: {otp_record.otp} for {email}")
+
+        # ✅ Send OTP Email
+        email_values = {
             'email_from': 'shahriar.ahmed@bjitacademy.com',
             'email_to': email,
             'subject': 'Your OTP Code',
             'body_html': f'<p>Your OTP code is: <strong>{otp_record.otp}</strong>. It is valid for 5 minutes.</p>'
-        }).send()
+        }
+
+        try:
+            mail = request.env['mail.mail'].sudo().create(email_values)
+            print(f"✅ Email Created: ID {mail.id} for {email}")
+            mail.sudo().send()
+            print(f"✅ Email Sent to {email}")
+        except Exception as e:
+            print(f"❌ Email Sending Failed: {e}")
+            return request.render('procurement_management.otp_verification_template', {
+                'error': 'Failed to send OTP email. Please try again.',
+            })
 
         return request.render('procurement_management.otp_verification_template', {
             'email': email,
             'show_otp_section': True,
         })
+
 
     @http.route(['/my/otp/verify'], type='http', auth='public', methods=['POST'], csrf=True, website=True)
     def verify_otp(self, **kwargs):
@@ -107,6 +136,7 @@ class OTPCustomerPortal(CustomerPortal):
                 'show_otp_section': True
             })
 
+
     @http.route(['/my/supplier/form'], type='http', auth='public', website=True, csrf=True)
     def supplier_form(self, **kwargs):
         if not request.session.get('supplier_email'):
@@ -121,6 +151,7 @@ class OTPCustomerPortal(CustomerPortal):
             'supplier_email': supplier_email,
             'current_date': fields.Date.today(),
         })
+
 
     @http.route(['/my/supplier/form/submit'], type='http', auth='public', methods=['POST'], csrf=True, website=True)
     def submit_supplier_form(self, **kwargs):
@@ -207,6 +238,7 @@ class OTPCustomerPortal(CustomerPortal):
 
         print("SUCCESS: Redirecting to success page.")
         return request.redirect('/my/supplier/form/success')
+
 
     @http.route(['/my/supplier/form/success'], type='http', auth='public', website=True, csrf=False)
     def supplier_form_success(self):

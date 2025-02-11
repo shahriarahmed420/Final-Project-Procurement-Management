@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <record id="email_template_supplier_rejection" model="mail.template">
+            <field name="name">Supplier Rejection Notification</field>
+            <field name="model_id" ref="procurement_management.model_registration_form"/>
+            <field name="email_from">${(object.company_id.email or 'admin@bjitacademy.com')|safe}</field>
+            <field name="email_to">${object.email or 'admin@bjitacademy.com'}</field>
+            <field name="subject">Your Supplier Registration Status</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html">
+                <![CDATA[
+                <p>Hello <strong>${object.company_name}</strong>,</p>
+                <p>Unfortunately, your supplier registration has been <strong>${object.status}</strong>.</p>
+                <p><strong>Reason:</strong> ${object.rejection_reason or object.blacklist_reason}</p>
+                <p>If you have any questions, please contact us.</p>
+                <p>Best Regards,<br/>Procurement Team</p>
+                ]]>
+            </field>
+        </record>
+    </data>
+</odoo>
