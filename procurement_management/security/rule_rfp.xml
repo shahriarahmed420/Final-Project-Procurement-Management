@@ -1,0 +1,13 @@
+<odoo>
+    <record id="rfp_supplier_access" model="ir.rule">
+        <field name="name">Supplier RFP Access</field>
+        <field name="model_id" ref="model_procurement_management_rfp"/>
+        <field name="global" eval="False"/>
+        <field name="domain_force">[('status', '=', 'approved')]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,102 @@
+<odoo>
+    <record id="view_rfp_list" model="ir.ui.view">
+        <field name="name">rfp.list</field>
+        <field name="model">procurement_management.rfp</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="status"/>
+                <field name="required_date"/>
+                <field name="reviewer_id"/>
+                <field name="approver_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_rfp_form" model="ir.ui.view">
+        <field name="name">rfp.form</field>
+        <field name="model">procurement_management.rfp</field>
+        <field name="arch" type="xml">
+            <form string="Request for Purchase">
+                <header>
+                    <field name="status" widget="statusbar" clickable="1"/>
+
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                        modifiers="{'invisible': [('show_submit_button', '=', False)]}"
+                        groups="procurement_management.group_supplier_reviewer"/>
+                    <button name="action_recommend" type="object" string="Recommend" class="btn-secondary"
+                        modifiers="{'invisible': [('show_recommend_button', '=', False)]}"
+                        groups="procurement_management.group_supplier_reviewer"/>
+                    <button name="action_return_draft" type="object" string="Return to Draft" class="btn-warning"
+                        modifiers="{'invisible': [('show_return_draft_button', '=', False)]}"
+                        groups="procurement_management.group_supplier_reviewer"/>
+
+                    <button name="action_approve" type="object" string="Approve" class="btn-success"
+                        modifiers="{'invisible': [('show_approve_button', '=', False)]}"
+                        groups="procurement_management.group_supplier_approver"/>
+                    <button name="action_reject" type="object" string="Reject" class="btn-danger"
+                        modifiers="{'invisible': [('show_reject_button', '=', False)]}"
+                        groups="procurement_management.group_supplier_approver"/>
+                    <button name="action_close" type="object" string="Close" class="btn-dark"
+                        modifiers="{'invisible': [('show_close_button', '=', False)]}"
+                        groups="procurement_management.group_supplier_approver"/>
+                    <button name="action_accept" type="object" string="Accept" class="btn-primary"
+                        modifiers="{'invisible': [('show_accept_button', '=', False)]}"
+                        groups="procurement_management.group_supplier_approver"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="status"/>
+                            <field name="required_date"/>
+                            <field name="currency_id" readonly="1"/>
+                            <field name="company_id" column_invsible="True"/> <!-- ✅ Fix: Added company_id to avoid domain errors -->
+                        </group>
+                        <group>
+                            <field name="reviewer_id" readonly="1"/>
+                            <field name="approver_id"/>
+                            <field name="approved_supplier_id" domain="[('id', 'in', recommended_supplier_ids)]"/>
+                            <field name="recommended_supplier_ids" column_invsible="True"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Product Lines">
+                            <field name="product_line_ids">
+                                <tree>
+                                    <field name="product_id"/>
+                                    <field name="description"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="RFQ Lines">
+                            <field name="rfq_line_ids">
+                                <tree>
+                                    <field name="partner_id" domain="[('company_id', '=', company_id)]"/> <!-- ✅ Fix: Ensuring domain works correctly -->
+                                    <field name="company_id" column_invsible="True"/>
+                                    <field name="expected_delivery_date"/>
+                                    <field name="terms_conditions"/>
+                                    <field name="warranty_period"/>
+                                    <field name="score"/>
+                                    <field name="recommended"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_rfp_list" model="ir.actions.act_window">
+        <field name="name">RFPs</field>
+        <field name="res_model">procurement_management.rfp</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -18,17 +18,21 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'web', 'mail', 'website', 'portal'],
+    'depends': ['base', 'purchase', 'web', 'mail', 'website', 'portal', 'account', 'contacts'],
 
     # always loaded
     'data': [
+        'data/ir_sequence_data.xml',
         'security/procurement_security.xml',
+        'security/rule_rfp.xml',
         'security/ir.model.access.csv',
         'views/all_email_templates.xml',
         'views/email_template_supplier_rejection.xml',
         'views/approver.xml',
         'views/reviewer.xml',
+        'views/rfp_views.xml',
         'views/menus.xml',
+        'views/portal_rfp_views.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

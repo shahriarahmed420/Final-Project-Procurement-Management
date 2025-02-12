@@ -6,4 +6,6 @@
 
     <menuitem id="menu_supplier_approver" name="Approvals" parent="menu_procurement_management_root" groups="procurement_management.group_supplier_approver"
               action="action_supplier_approver" sequence="30"/>
+
+    <menuitem id="menu_rfp" name="Requests for Purchase" parent="menu_procurement_management_root" action="action_rfp_list" sequence="40"/>
 </odoo>
