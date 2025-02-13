@@ -55,45 +55,41 @@ class RFPPortal(CustomerPortal):
 
     @http.route(['/my/rfp/<int:rfp_id>/submit_rfq'], type='http', auth='user', website=True)
     def portal_submit_rfq(self, rfp_id, **kw):
-        """ Handles RFQ submission for an RFP. """
+        """ Handles RFQ submission for an RFP. Allows multiple RFQs per vendor and ensures proper Buyer & Vendor names. """
+
         rfp = request.env['procurement_management.rfp'].sudo().browse(rfp_id)
+        if not rfp:
+            return request.redirect('/my/rfps')
 
-        error_list = []
-        success_list = []
+        # ✅ Ensure the Partner ID is properly linked (Vendor)
+        partner = request.env.user.partner_id
+        if not partner:
+            return request.redirect('/my/rfps')
 
-        if not kw.get('expected_delivery_date'):
-            error_list.append("Expected delivery date is required.")
+        # ✅ Assign Buyer (Procurement Responsible User - The one who created the RFP)
+        buyer = rfp.create_uid  # The user who created the RFP
 
-        if not kw.get('warranty_period'):
-            error_list.append("Warranty period is required.")
-
-        if error_list:
-            return request.render('procurement_management.rfq_submit_view_template', {
-                'error_list': error_list
-            })
-
-        # ✅ Create RFQ
+        # ✅ Allow Multiple RFQs from the Same Vendor (DO NOT CHECK EXISTING RFQ)
         rfq_values = {
             'rfp_id': rfp.id,
-            'partner_id': request.env.user.partner_id.id,
+            'partner_id': partner.id,  # ✅ Vendor (Supplier submitting RFQ)
+            'user_id': buyer.id,  # ✅ Buyer (Procurement User who created the RFP)
             'expected_delivery_date': kw.get('expected_delivery_date'),
             'terms_conditions': kw.get('terms_conditions'),
             'warranty_period': kw.get('warranty_period'),
+            'state': 'draft',  # ✅ Ensure RFQ is created in Draft state
         }
         rfq = request.env['purchase.order'].sudo().create(rfq_values)
-        success_list.append("RFQ created successfully!")
 
-        # ✅ Add Product Lines
+        # ✅ Add RFQ Lines
         for line in rfp.product_line_ids:
-            rfq_line = {
+            rfq_line_values = {
                 'order_id': rfq.id,
                 'product_id': line.product_id.id,
                 'product_qty': line.quantity,
-                'price_unit': kw.get(f'price_unit_{line.id}'),
-                'delivery_charge': kw.get(f'delivery_charge_{line.id}'),
+                'price_unit': float(kw.get(f'price_unit_{line.id}', 0.0)),
+                'delivery_charge': float(kw.get(f'delivery_charge_{line.id}', 0.0)),
             }
-            request.env['purchase.order.line'].sudo().create(rfq_line)
+            request.env['purchase.order.line'].sudo().create(rfq_line_values)
 
-        return request.render('procurement_management.rfq_submit_view_template', {
-            'success_list': success_list
-        })
+        return request.redirect(f'/my/rfp/{rfp.id}')

@@ -130,12 +130,16 @@ class RegistrationForm(models.Model):
         if not self.approver_id:
             raise ValidationError(_("An approver must be assigned before final approval."))
 
-        self.write({'status': 'approved'})
+        existing_user = self.env['res.users'].sudo().search([('login', '=', self.email)], limit=1)
+        if existing_user:
+            self.message_post(body=_("User account already exists for supplier: %s" % self.email))
+        else:
+            self.create_supplier_user()
+
         self.create_vendor_record()
-        self.create_supplier_user()
         self.send_supplier_approval_email()
-        self.message_post(
-            body=_("Supplier application has been approved, vendor record created, and user account generated."))
+        self.write({'status': 'approved'})
+        self.message_post(body=_("Supplier application approved, vendor created, and user assigned."))
 
     def action_reject(self):
         if not self.rejection_reason:
@@ -152,25 +156,69 @@ class RegistrationForm(models.Model):
         self.message_post(body=_("Supplier blacklisted: %s" % self.blacklist_reason))
 
     def create_vendor_record(self):
+        default_reviewer = self.env.ref("procurement_management.group_supplier_reviewer").users[:1]
+
+        user = self.env['res.users'].sudo().search([('login', '=', self.email)], limit=1)
+
         vendor = self.env['res.partner'].create({
             'name': self.company_name,
             'email': self.email,
             'phone': self.primary_contact_phone,
             'is_company': True,
             'company_type': 'company',
+            'supplier_rank': 1,
+            'user_ids': [(4, user.id)] if user else [],
         })
-        self.message_post(body=_("Vendor Record Created: %s" % vendor.name))
+
+        existing_bank = self.env['res.bank'].sudo().search([
+            ('name', '=', self.bank_name),
+            ('bic', '=', self.bank_swift_code)
+        ], limit=1)
+
+        if not existing_bank and self.bank_name:
+            existing_bank = self.env['res.bank'].create({
+                'name': self.bank_name,
+                'street': self.bank_address,
+                'bic': self.bank_swift_code,
+            })
+
+        existing_bank_entry = self.env['res.partner.bank'].sudo().search_count([
+            ('partner_id', '=', vendor.id),
+            ('bank_id', '=', existing_bank.id if existing_bank else False),
+            ('acc_number', '=', self.account_number),
+        ])
+
+        if not existing_bank_entry:
+            self.env['res.partner.bank'].create({
+                'partner_id': vendor.id,
+                'bank_id': existing_bank.id,
+                'acc_number': self.account_number,
+                'acc_holder_name': self.account_name,
+            })
+
+        self.write({
+            'status': 'submitted',
+            'reviewer_id': default_reviewer.id if default_reviewer else False
+        })
+
+        self.message_post(body=_("Vendor Record Created: %s with Bank Details" % vendor.name))
 
     def create_supplier_user(self):
-        supplier_group = self.env.ref('base.group_user')  # Change this to your supplier group
+        portal_group = self.env.ref('base.group_portal')
+        existing_user = self.env['res.users'].sudo().search([('login', '=', self.email)], limit=1)
+
+        if existing_user:
+            self.message_post(body=_("User already exists for supplier: %s" % self.email))
+            return
+
         user = self.env['res.users'].sudo().create({
             'name': self.company_name,
             'login': self.email,
             'email': self.email,
             'password': self.email,
-            'groups_id': [(4, supplier_group.id)]
+            'groups_id': [(6, 0, [portal_group.id])]
         })
-        self.message_post(body=_("User account created for supplier: %s" % user.login))
+        self.message_post(body=_("Portal user account created for supplier: %s" % user.login))
 
     def send_supplier_approval_email(self):
         template = self.env.ref('procurement_management.email_template_supplier_approval')
@@ -182,19 +230,21 @@ class RegistrationForm(models.Model):
         if template:
             self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
 
-
-    # functions for constrains behaviors
-
     @api.constrains('certificate_expiry_date')
     def _check_certificate_expiry(self):
         for record in self:
             if record.certificate_expiry_date and record.certificate_expiry_date <= fields.Date.today():
                 raise ValidationError("Certificate expiry date must be in the future.")
 
-    @api.constrains('trade_license_business_registration', 'certificate_of_incorporation')
+    @api.constrains(
+        'trade_license_business_registration', 'certificate_of_incorporation',
+        'certificate_of_good_standing', 'establishment_card', 'vat_tax_certificate',
+        'memorandum_of_association', 'identification_document_for_authorized_person',
+        'bank_letter_indicating_bank_account', 'past_2_years_audited_financial_statements',
+        'other_certifications'
+    )
     def _check_file_size(self):
-        for record in self:
-            max_size = 5 * 1024 * 1024  # 5 MB
-            if record.trade_license_business_registration and len(
-                    record.trade_license_business_registration) > max_size:
-                raise ValidationError("Trade License file size must not exceed 5MB.")
+        max_size = 5 * 1024 * 1024  # 5 MB
+        for field in self._fields:
+            if self[field] and isinstance(self[field], bytes) and len(self[field]) > max_size:
+                raise ValidationError(f"The file size for {self._fields[field].string} must not exceed 5MB.")

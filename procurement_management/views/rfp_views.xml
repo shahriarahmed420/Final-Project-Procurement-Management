@@ -72,7 +72,7 @@
                         </page>
                         <page string="RFQ Lines">
                             <field name="rfq_line_ids">
-                                <tree>
+                                <tree editable="bottom">
                                     <field name="partner_id" domain="[('company_id', '=', company_id)]"/> <!-- ✅ Fix: Ensuring domain works correctly -->
                                     <field name="company_id" column_invsible="True"/>
                                     <field name="expected_delivery_date"/>
@@ -80,6 +80,8 @@
                                     <field name="warranty_period"/>
                                     <field name="score"/>
                                     <field name="recommended"/>
+
+                                    <button name="open_form_view" type="object" icon="fa-external-link"/>
                                 </tree>
                             </field>
                         </page>

@@ -94,10 +94,15 @@ class RFP(models.Model):
             )
 
     def action_recommend(self):
-        recommended_rfq = self.env['purchase.order'].search([('rfp_id', '=', self.id), ('recommended', '=', True)])
+        recommended_rfq = self.env['purchase.order'].search([
+            ('rfp_id', '=', self.id),
+            ('recommended', '=', True)
+        ])
 
         if not recommended_rfq:
             raise ValidationError(_("You must have at least one recommended RFQ before proceeding."))
+
+        recommended_rfq.write({'state': 'sent'})
 
         self.write({'status': 'recommendation'})
 
@@ -120,7 +125,6 @@ class RFP(models.Model):
         )
 
     def action_approve(self):
-        """ Approves the RFP, Notifies the Reviewer & Suppliers """
         self.write({'status': 'approved'})
 
         # Notify Reviewer
@@ -130,7 +134,6 @@ class RFP(models.Model):
                 partner_ids=[self.reviewer_id.partner_id.id]
             )
 
-        # Notify Suppliers about New RFP
         supplier_group = self.env.ref("base.group_portal")
         for supplier in supplier_group.users:
             self.message_post(
@@ -139,10 +142,8 @@ class RFP(models.Model):
             )
 
     def action_reject(self):
-        """ Rejects the RFP and notifies the Reviewer """
         self.write({'status': 'rejected'})
 
-        # Notify Reviewer
         if self.reviewer_id:
             self.message_post(
                 body=_("RFP <b>%s</b> has been Rejected.") % self.name,
@@ -150,33 +151,33 @@ class RFP(models.Model):
             )
 
     def action_close(self):
-        """ Closes the RFP and removes it from the portal """
         self.write({'status': 'closed'})
         self.message_post(body=_("RFP <b>%s</b> has been Closed.") % self.name)
 
     def action_accept(self):
-        """ Accepts the recommended RFQ and converts it into a PO """
-        recommended_rfq = self.env['purchase.order'].search([('rfp_id', '=', self.id), ('recommended', '=', True)],
-                                                            limit=1)
+        recommended_rfq = self.env['purchase.order'].search([
+            ('rfp_id', '=', self.id),
+            ('recommended', '=', True),
+            ('state', '=', 'sent')  # ✅ Ensures only RFQs in 'RFQ Sent' state can be accepted
+        ], limit=1)
 
         if not recommended_rfq:
-            raise ValidationError(_("There must be a recommended RFQ before accepting the RFP."))
+            raise ValidationError(_("There must be a recommended RFQ in 'RFQ Sent' state before accepting the RFP."))
+
+        recommended_rfq.write({'state': 'purchase'})
+
+        other_rfqs = self.env['purchase.order'].search([
+            ('rfp_id', '=', self.id),
+            ('id', '!=', recommended_rfq.id),
+            ('state', '=', 'sent')
+        ])
+        other_rfqs.write({'state': 'cancel'})
+
+        for rfq in other_rfqs:
+            rfq.message_post(body=_("This RFQ has been canceled because another RFQ was accepted."))
 
         self.write({'status': 'accepted'})
 
-        # ✅ Create a Purchase Order (PO) from the Approved RFQ
-        po_values = {
-            'partner_id': recommended_rfq.partner_id.id,
-            'rfp_id': self.id,
-            'date_order': fields.Date.today(),
-            'order_line': [(0, 0, {
-                'product_id': line.product_id.id,
-                'name': line.product_id.name,
-                'product_qty': line.product_qty,
-                'price_unit': line.price_unit,
-            }) for line in recommended_rfq.order_line],
-        }
-
-        po = self.env['purchase.order'].create(po_values)
-        self.message_post(body=_("RFP <b>%s</b> has been accepted and a Purchase Order <b>%s</b> has been created.") % (
-        self.name, po.name))
+        self.message_post(
+            body=_("RFP <b>%s</b> has been accepted and converted into a Purchase Order.") % self.name
+        )

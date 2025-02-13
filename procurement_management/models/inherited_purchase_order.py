@@ -1,4 +1,4 @@
-from odoo import models, fields, api, exceptions,_
+from odoo import models, fields, api, exceptions, _
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -13,6 +13,26 @@ class PurchaseOrder(models.Model):
 
     total_price = fields.Monetary(string="Total Price", compute="_compute_total_price", store=True)
     currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id)
+
+    partner_id = fields.Many2one('res.partner', string="Vendor", required=True)
+    user_id = fields.Many2one('res.users', string="Buyer", default=lambda self: self.env.user, required=True)
+
+    state = fields.Selection([
+        ('draft', 'RFQ'),
+        ('sent', 'RFQ Sent'),
+        ('purchase', 'Purchase Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled')
+    ], string="Status", default="draft", tracking=True)
+
+    def open_form_view(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'purchase.order',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'new',
+        }
 
     @api.depends("order_line.price_total")
     def _compute_total_price(self):

@@ -23,6 +23,7 @@
     # always loaded
     'data': [
         'data/ir_sequence_data.xml',
+        'data/email_templates.xml',
         'security/procurement_security.xml',
         'security/rule_rfp.xml',
         'security/ir.model.access.csv',
@@ -31,6 +32,7 @@
         'views/approver.xml',
         'views/reviewer.xml',
         'views/rfp_views.xml',
+        'views/inherited_purchase_order_views.xml',
         'views/menus.xml',
         'views/portal_rfp_views.xml',
         'views/templates.xml',
