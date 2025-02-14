@@ -45,6 +45,8 @@
                         groups="procurement_management.group_supplier_approver"/>
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Accepted" bg_color="text-bg-success" invisible="status != 'accepted'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="status != 'rejected'"/>
                     <group>
                         <group>
                             <field name="name"/>
@@ -79,7 +81,7 @@
                                     <field name="terms_conditions"/>
                                     <field name="warranty_period"/>
                                     <field name="score"/>
-                                    <field name="recommended"/>
+                                    <field name="recommended" widget="boolean_toggle"/>
 
                                     <button name="open_form_view" type="object" icon="fa-external-link"/>
                                 </tree>

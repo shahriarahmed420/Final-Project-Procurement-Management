@@ -1,89 +1,100 @@
 <odoo>
+    <!-- 1️⃣ RFP Submission Notification -->
+    <record id="email_template_rfp_submission" model="mail.template">
+        <field name="name">RFP Submission Notification</field>
+        <field name="email_from">${'shahriar.ahmed@g.bracu.ac.bd')|safe}</field>
+        <field name="email_to">${(object.approver_id.email or 'approver@yourcompany.com')}</field>
+        <field name="subject">New RFP ${object.name} Submitted for Review</field>
+        <field name="model_id" ref="model_procurement_management_rfp"/>
+        <field name="body_html"><![CDATA[
+            <p>Hello ${object.approver_id.name},</p>
+            <p>The RFP <b>${object.name}</b> has been submitted for review.</p>
+            <p>To review this RFP, please <a href="${object.get_portal_url()}">click here</a>.</p>
+            <p>Best regards,</p>
+            <p>Your Procurement Team</p>
+        ]]></field>
+    </record>
+
+    <!-- 1️⃣ RFQ Submission Notification -->
     <record id="email_template_rfq_submission" model="mail.template">
         <field name="name">RFQ Submission Notification</field>
-        <field name="model_id" ref="purchase.model_purchase_order"/>
-        <field name="email_from">${(object.user_id.email or 'noreply@yourcompany.com')}</field>
-        <field name="email_to">${','.join(object.rfp_id.reviewer_id.mapped('email'))}</field>
-        <field name="subject">[New RFQ Submitted] ${object.name}</field>
-        <field name="body_html">
-            <![CDATA[
+        <field name="email_from">${'shahriar.ahmed@g.bracu.ac.bd')|safe}</field>
+        <field name="email_to">${(object.rfp_id.reviewer_id.email or 'reviewer@yourcompany.com')}</field>
+        <field name="subject">New RFQ Submitted for RFP ${object.rfp_id.name}</field>
+        <field name="model_id" ref="model_purchase_order"/>
+        <field name="body_html"><![CDATA[
             <p>Hello ${object.rfp_id.reviewer_id.name},</p>
-            <p>A new RFQ has been submitted for RFP <strong>${object.rfp_id.name}</strong>.</p>
-            <p><strong>Supplier:</strong> ${object.partner_id.name}</p>
-            <p><strong>RFQ Total:</strong> ${object.amount_total}</p>
-            <p>You can review it by clicking below:</p>
-            <p><a href="${object.get_portal_url()}">View RFQ</a></p>
-            ]]>
-        </field>
+            <p>A new RFQ has been submitted for <b>RFP ${object.rfp_id.name}</b>.</p>
+            <p>Supplier: <b>${object.partner_id.name}</b></p>
+            <p>To review this RFQ, please <a href="${object.get_portal_url()}">click here</a>.</p>
+            <p>Best regards,</p>
+            <p>Your Procurement Team</p>
+        ]]></field>
     </record>
 
+    <!-- 2️⃣ RFQ Recommendation Notification -->
     <record id="email_template_rfq_recommendation" model="mail.template">
         <field name="name">RFQ Recommendation Notification</field>
-        <field name="model_id" ref="purchase.model_purchase_order"/>
-        <field name="email_from">${(object.user_id.email or 'noreply@yourcompany.com')}</field>
-        <field name="email_to">${','.join(object.rfp_id.approver_id.mapped('email'))}</field>
-        <field name="subject">[RFQ Recommended] ${object.name}</field>
-        <field name="body_html">
-            <![CDATA[
+        <field name="email_from">${'shahriar.ahmed@g.bracu.ac.bd')|safe}</field>
+        <field name="email_to">${(object.rfp_id.approver_id.email or 'approver@yourcompany.com')}</field>
+        <field name="subject">RFQ Recommended for RFP ${object.rfp_id.name}</field>
+        <field name="model_id" ref="model_purchase_order"/>
+        <field name="body_html"><![CDATA[
             <p>Hello ${object.rfp_id.approver_id.name},</p>
-            <p>The RFQ for RFP <strong>${object.rfp_id.name}</strong> has been recommended for approval.</p>
-            <p><strong>Recommended Supplier:</strong> ${object.partner_id.name}</p>
-            <p><strong>RFQ Total:</strong> ${object.amount_total}</p>
-            <p>You can approve or reject this RFQ by clicking below:</p>
-            <p><a href="${object.get_portal_url()}">Review RFQ</a></p>
-            ]]>
-        </field>
+            <p>A recommended RFQ has been submitted for <b>RFP ${object.rfp_id.name}</b>.</p>
+            <p>Recommended Supplier: <b>${object.partner_id.name}</b></p>
+            <p>To review this RFQ, please <a href="${object.get_portal_url()}">click here</a>.</p>
+            <p>Best regards,</p>
+            <p>Your Procurement Team</p>
+        ]]></field>
     </record>
 
+    <!-- 3️⃣ RFQ Approval Notification -->
     <record id="email_template_rfq_approval" model="mail.template">
         <field name="name">RFQ Approval Notification</field>
-        <field name="model_id" ref="purchase.model_purchase_order"/>
-        <field name="email_from">${(object.user_id.email or 'noreply@yourcompany.com')}</field>
-        <field name="email_to">${object.partner_id.email}</field>
-        <field name="subject">[RFQ Approved] ${object.name}</field>
-        <field name="body_html">
-            <![CDATA[
+        <field name="email_from">${'shahriar.ahmed@g.bracu.ac.bd')|safe}</field>
+        <field name="email_to">${(object.partner_id.email or 'supplier@yourcompany.com')}</field>
+        <field name="subject">Your RFQ has been Approved for RFP ${object.rfp_id.name}</field>
+        <field name="model_id" ref="model_purchase_order"/>
+        <field name="body_html"><![CDATA[
             <p>Hello ${object.partner_id.name},</p>
-            <p>Congratulations! Your RFQ for RFP <strong>${object.rfp_id.name}</strong> has been approved.</p>
-            <p><strong>Final Purchase Order:</strong> ${object.name}</p>
-            <p>You can check the order details by clicking below:</p>
-            <p><a href="${object.get_portal_url()}">View PO</a></p>
-            ]]>
-        </field>
+            <p>Your RFQ for <b>RFP ${object.rfp_id.name}</b> has been approved.</p>
+            <p>A purchase order has been created based on your quotation.</p>
+            <p>To view details, <a href="${object.get_portal_url()}">click here</a>.</p>
+            <p>Best regards,</p>
+            <p>Your Procurement Team</p>
+        ]]></field>
     </record>
 
-    <record id="email_template_rfq_rejection" model="mail.template">
-        <field name="name">RFQ Rejection Notification</field>
-        <field name="model_id" ref="purchase.model_purchase_order"/>
-        <field name="email_from">${(object.user_id.email or 'noreply@yourcompany.com')}</field>
-        <field name="email_to">${object.partner_id.email}</field>
-        <field name="email_cc">${object.rfp_id.reviewer_id.email}</field>
-        <field name="subject">[RFQ Rejected] ${object.name}</field>
-        <field name="body_html">
-            <![CDATA[
-            <p>Hello ${object.partner_id.name},</p>
-            <p>Unfortunately, your RFQ for RFP <strong>${object.rfp_id.name}</strong> has been rejected.</p>
-            <p>For more details, please contact the reviewer.</p>
-            <p><a href="${object.get_portal_url()}">View RFQ</a></p>
-            ]]>
-        </field>
+    <!-- 4️⃣ RFP Approval Notification -->
+    <record id="email_template_rfp_approval" model="mail.template">
+        <field name="name">RFP Approval Notification</field>
+        <field name="email_from">${'shahriar.ahmed@g.bracu.ac.bd')|safe}</field>
+        <field name="email_to">${(object.reviewer_id.email or 'reviewer@yourcompany.com')}</field>
+        <field name="subject">RFP ${object.name} Approved</field>
+        <field name="model_id" ref="model_procurement_management_rfp"/>
+        <field name="body_html"><![CDATA[
+            <p>Hello ${object.reviewer_id.name},</p>
+            <p>Your RFP <b>${object.name}</b> has been approved.</p>
+            <p>Suppliers can now submit their quotations.</p>
+            <p>Best regards,</p>
+            <p>Your Procurement Team</p>
+        ]]></field>
     </record>
 
-    <record id="email_template_po_creation" model="mail.template">
-        <field name="name">Purchase Order Creation Notification</field>
-        <field name="model_id" ref="purchase.model_purchase_order"/>
-        <field name="email_from">${(object.user_id.email or 'noreply@yourcompany.com')}</field>
-        <field name="email_to">${object.partner_id.email}</field>
-        <field name="subject">[New Purchase Order] ${object.name}</field>
-        <field name="body_html">
-            <![CDATA[
-            <p>Hello ${object.partner_id.name},</p>
-            <p>A new Purchase Order has been generated for your approved RFQ.</p>
-            <p><strong>PO Number:</strong> ${object.name}</p>
-            <p><strong>Total Amount:</strong> ${object.amount_total}</p>
-            <p>You can view the order details here:</p>
-            <p><a href="${object.get_portal_url()}">View Purchase Order</a></p>
-            ]]>
-        </field>
+    <!-- 5️⃣ RFP Closure Notification -->
+    <record id="email_template_rfp_closure" model="mail.template">
+        <field name="name">RFP Closure Notification</field>
+        <field name="email_from">${'shahriar.ahmed@g.bracu.ac.bd')|safe}</field>
+        <field name="email_to">${(object.rfq_line_ids.partner_id.email or 'supplier@yourcompany.com')}</field>
+        <field name="subject">RFP ${object.name} is Now Closed</field>
+        <field name="model_id" ref="model_procurement_management_rfp"/>
+        <field name="body_html"><![CDATA[
+            <p>Hello,</p>
+            <p>The RFP <b>${object.name}</b> has been closed.</p>
+            <p>No more RFQs will be accepted for this RFP.</p>
+            <p>Best regards,</p>
+            <p>Your Procurement Team</p>
+        ]]></field>
     </record>
 </odoo>

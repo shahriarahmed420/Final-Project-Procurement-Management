@@ -1,5 +1,6 @@
 from odoo import models, fields, api, exceptions, _
 
+
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
@@ -25,6 +26,7 @@ class PurchaseOrder(models.Model):
         ('cancel', 'Cancelled')
     ], string="Status", default="draft", tracking=True)
 
+
     def open_form_view(self):
         return {
             'type': 'ir.actions.act_window',
@@ -34,17 +36,45 @@ class PurchaseOrder(models.Model):
             'target': 'new',
         }
 
+
     @api.depends("order_line.price_total")
     def _compute_total_price(self):
-        """Computes the total price from order lines (product prices + delivery charges)."""
         for order in self:
             order.total_price = sum(order.order_line.mapped("price_total"))
+
+
+    def send_rfq_submission_email(self):
+        email_values = {
+            'email_from': self.env.company.email or 'shahriar.ahmed@bjitacademy.com',
+            'email_to': self.rfp_id.reviewer_id.email if self.rfp_id.reviewer_id else 'reviewer@yourcompany.com',
+            'subject': f'New RFQ Submitted for RFP {self.rfp_id.name}',
+            'body_html': f"""
+                <p>Hello {self.rfp_id.reviewer_id.name},</p>
+                <p>A new RFQ has been submitted for <b>RFP {self.rfp_id.name}</b>.</p>
+                <p>Supplier: <b>{self.partner_id.name}</b></p>
+                <p>To review this RFQ, please <a href="#">click here</a>.</p>
+                <p>Best regards,</p>
+                <p>Your Procurement Team</p>
+            """
+        }
+        self.env['mail.mail'].create(email_values).send()
+
+
+    def action_submit_rfq(self):
+        self.write({'state': 'draft'})
+        self.send_rfq_submission_email()
+
+
+    def action_approve_rfq(self):
+        self.write({'state': 'purchase'})
+
 
     def action_accept(self):
         print('action accept')
         self.rfp_id.status = 'accepted'
         rfq = self.env['purchase.order'].search([('rfp_id', '=', self.id)])
         rfq.button_confirm()
+
 
     @api.constrains('recommended', 'partner_id', 'rfp_id')
     def _check_unique_recommended_per_supplier(self):

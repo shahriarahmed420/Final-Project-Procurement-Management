@@ -14,6 +14,13 @@
     <template id="rfp_list_view_template" name="Portal RFP List">
         <t t-call="portal.portal_layout">
             <div class="container mt-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Approved RFPs</li>
+                    </ol>
+                </nav>
+
                 <h1 class="text-center mb-4">Available RFPs</h1>
                 <table class="table table-striped">
                     <thead>
@@ -120,6 +127,14 @@
             </style>
 
             <div class="container mt-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/my/rfps">Approved RFPs</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><t t-esc="rfp.name"/></li>
+                    </ol>
+                </nav>
+
                 <!-- Header Section -->
                 <div class="custom-header d-flex justify-content-between align-items-center">
                     <h1 class="m-0">
@@ -181,6 +196,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
+                                        <th><i class="fa fa-image"></i> Image</th>
                                         <th><i class="fa fa-box"></i> Product</th>
                                         <th><i class="fa fa-file-alt"></i> Description</th>
                                         <th><i class="fa fa-sort-numeric-up"></i> Quantity</th>
@@ -192,6 +208,12 @@
                                 <tbody>
                                     <t t-foreach="rfp.product_line_ids" t-as="line">
                                         <tr>
+                                            <td>
+                                                <t t-if="line.product_id.image_1920">
+                                                    <img t-att-src="'data:image/png;base64,' + line.product_id.image_1920.decode('utf-8')" width="50" height="50" class="img-thumbnail"/>
+                                                </t>
+                                                <t t-else="">No Image</t>
+                                            </td>
                                             <td><t t-esc="line.product_id.name"/></td>
                                             <td><t t-esc="line.description or 'No Description'"/></td>
                                             <td><t t-esc="line.quantity"/></td>
@@ -218,7 +240,7 @@
                         input.addEventListener("input", function () {
                             let row = this.closest("tr");
 
-                            let quantity = parseFloat(row.querySelector("td:nth-child(3)").textContent.trim()) || 0;
+                            let quantity = parseFloat(row.querySelector("td:nth-child(4)").textContent.trim()) || 0;
                             let unitPrice = parseFloat(row.querySelector("input[name^='price_unit_']").value) || 0;
                             let deliveryCharge = parseFloat(row.querySelector("input[name^='delivery_charge_']").value) || 0;
 
@@ -237,42 +259,10 @@
         <t t-call="portal.portal_layout">
             <div class="container mt-5">
                 <h2 class="text-center text-primary">RFQ Submission Status</h2>
-
-                <!-- ✅ Success Message -->
-                <t t-if="success_list">
-                    <div class="alert alert-success mt-3" role="alert">
-                        <h4 class="alert-heading">Success!</h4>
-                        <p>Your RFQ has been successfully submitted.</p>
-                        <ul>
-                            <t t-foreach="success_list" t-as="success">
-                                <li><t t-out="success"/></li>
-                            </t>
-                        </ul>
-                        <hr>
-                            <p class="mb-0">You will be notified once your quotation is reviewed.</p>
-                        </hr>
-                    </div>
-                </t>
-
-                <!-- ❌ Error Message -->
-                <t t-if="error_list">
-                    <div class="alert alert-danger mt-3" role="alert">
-                        <h4 class="alert-heading">Error!</h4>
-                        <p>There was an issue with your submission:</p>
-                        <ul>
-                            <t t-foreach="error_list" t-as="error">
-                                <li><t t-out="error"/></li>
-                            </t>
-                        </ul>
-                        <hr>
-                            <p class="mb-0">Please check your inputs and try again.</p>
-                        </hr>
-                    </div>
-                </t>
-
-                <div class="d-flex justify-content-center mt-4">
-                    <a href="/my/rfps" class="btn btn-outline-primary">Back to RFPs</a>
-                </div>
+                <h4 class="text-center alert-heading">Success!</h4>
+                <p class="text-center">Your RFQ has been successfully submitted.</p>
+                <p class="text-center mb-0">You will be notified once your quotation is reviewed.</p>
+                <a href="/my/rfps" class="text-center btn btn-outline-primary">Back to RFPs</a>
             </div>
         </t>
     </template>

@@ -23,10 +23,10 @@
     # always loaded
     'data': [
         'data/ir_sequence_data.xml',
-        'data/email_templates.xml',
         'security/procurement_security.xml',
         'security/rule_rfp.xml',
         'security/ir.model.access.csv',
+        'views/rfp_report_views.xml',
         'views/all_email_templates.xml',
         'views/email_template_supplier_rejection.xml',
         'views/approver.xml',
@@ -35,6 +35,7 @@
         'views/inherited_purchase_order_views.xml',
         'views/menus.xml',
         'views/portal_rfp_views.xml',
+        'views/portal_vendor_rfp_templates.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

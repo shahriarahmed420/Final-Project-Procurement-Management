@@ -30,6 +30,8 @@
                 </header>
 
                 <sheet>
+                    <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="status != 'approved'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="status != 'rejected'"/>
                     <group>
                         <field name="company_name"/>
                         <field name="company_address"/>
@@ -120,6 +122,11 @@
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>

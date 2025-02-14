@@ -9,8 +9,6 @@ class RFPPortal(CustomerPortal):
 
     @http.route(['/my/rfps', '/my/rfps/page/<int:page>'], type='http', auth='user', website=True)
     def portal_rfps_list(self, page=1, sortby=None, search=None, search_in='all', groupby='none', **kw):
-        """ Displays the list of approved RFPs in the portal. """
-
         searchbar_sortings = {
             'date': {'label': _('Newest'), 'order': 'create_date desc'},
             'name': {'label': _('RFP Name'), 'order': 'name'},
@@ -47,18 +45,20 @@ class RFPPortal(CustomerPortal):
             'default_url': '/my/rfps',
         })
 
+
     @http.route('/my/rfp/<int:rfp_id>', auth='user', website=True)
     def portal_rfp_details(self, rfp_id, **kw):
         """ Displays full details of a selected RFP. """
         rfp = request.env['procurement_management.rfp'].sudo().browse(rfp_id)
         return request.render('procurement_management.rfp_form_view_template', {'rfp': rfp})
 
+
     @http.route(['/my/rfp/<int:rfp_id>/submit_rfq'], type='http', auth='user', website=True)
     def portal_submit_rfq(self, rfp_id, **kw):
         """ Handles RFQ submission for an RFP. Allows multiple RFQs per vendor and ensures proper Buyer & Vendor names. """
 
         rfp = request.env['procurement_management.rfp'].sudo().browse(rfp_id)
-        if not rfp:
+        if not rfp or rfp.status == 'closed':
             return request.redirect('/my/rfps')
 
         # ✅ Ensure the Partner ID is properly linked (Vendor)
@@ -83,13 +83,25 @@ class RFPPortal(CustomerPortal):
 
         # ✅ Add RFQ Lines
         for line in rfp.product_line_ids:
+            unit_price = float(kw.get(f'price_unit_{line.id}', 0.0))
+            delivery_charge = float(kw.get(f'delivery_charge_{line.id}', 0.0))
+
+            subtotal = (line.quantity * unit_price) + delivery_charge  # ✅ Include Delivery Charges
+
             rfq_line_values = {
                 'order_id': rfq.id,
                 'product_id': line.product_id.id,
                 'product_qty': line.quantity,
-                'price_unit': float(kw.get(f'price_unit_{line.id}', 0.0)),
-                'delivery_charge': float(kw.get(f'delivery_charge_{line.id}', 0.0)),
+                'price_unit': unit_price,
+                'delivery_charge': delivery_charge,
+                'price_total': subtotal,  # ✅ Ensure total price is stored correctly
             }
             request.env['purchase.order.line'].sudo().create(rfq_line_values)
 
-        return request.redirect(f'/my/rfp/{rfp.id}')
+        return request.redirect('/my/rfp/success')
+
+
+    @http.route(['/my/rfp/success'], type='http', auth='user', website=True)
+    def rfq_submission_success(self):
+
+        return request.render('procurement_management.rfq_submit_view_template')
