@@ -10,18 +10,6 @@
             </xpath>
         </template>
 
-<!--        <template id="portal_my_home_otp" inherit_id="portal.portal_my_home">-->
-<!--            <xpath expr="//div[@id='portal_vendor_category']" position="inside">-->
-<!--                <t t-call="portal.portal_docs_entry">-->
-<!--                    <t t-set="icon" t-value="'/sale/static/src/img/quotation.svg'"/>-->
-<!--                    <t t-set="title">Supplier Registration</t>-->
-<!--                    <t t-set="text">Register as Supplier after verifying your Email with OTP</t>-->
-<!--                    <t t-set="url" t-value="'/my/supplier'"/>-->
-<!--                    <t t-set="config_card" t-value="True"/>-->
-<!--                </t>-->
-<!--            </xpath>-->
-<!--        </template>-->
-
         <template id="supplier_page_template">
             <t t-call="website.layout">
                 <div class="container mt-5">
@@ -65,7 +53,6 @@
                 </div>
             </t>
         </template>
-
 
         <template id="otp_verification_template">
             <t t-call="website.layout">
@@ -121,33 +108,125 @@
 
                         <!-- Step 1: Company Information -->
                         <div class="form-step" id="step-1">
-                            <h3 class="text-primary text-center">Section 1: Supplier Company Information</h3>
                             <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                                <div class="card-header bg-primary text-white text-center">
+                                    <h3 class="mb-0">Section 1: Supplier Company Information</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Company Name</label>
+                                        <input type="text" name="company_name" class="form-control" placeholder="Enter Company Name" required=""/>
+                                        <div class="invalid-feedback">Company Name is required.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Company Address</label>
+                                        <input type="text" name="company_address" class="form-control" placeholder="Enter Company Address" required=""/>
+                                        <div class="invalid-feedback">Company Address is required.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Company Type</label>
+                                        <select name="company_type" class="form-select" required="">
+                                            <option value="">Select your company type</option>
+                                            <option value="sole_proprietorship">Sole Proprietorship</option>
+                                            <option value="partnership">Partnership</option>
+                                            <option value="llc">Limited Liability Company (LLC)</option>
+                                            <option value="corporation">Corporation</option>
+                                            <option value="s_corporation">S Corporation</option>
+                                            <option value="cooperative">Cooperative</option>
+                                            <option value="non_profit">Non-Profit Organization</option>
+                                            <option value="government_agency">Government Agency</option>
+                                            <option value="joint_venture">Joint Venture</option>
+                                            <option value="holding_company">Holding Company</option>
+                                            <option value="private_limited">Private Limited Company</option>
+                                            <option value="public_limited">Public Limited Company</option>
+                                        </select>
+                                        <div class="invalid-feedback">Company Type is required.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Company Logo</label>
+                                        <input type="file" name="company_logo" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <h5 class="text-primary mb-3">Primary Contact</h5>
                                 <div class="mb-3">
-                                    <label class="form-label">Company Name</label>
-                                    <input type="text" name="company_name" class="form-control" placeholder="Enter Company Name" />
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="primary_contact_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Company Address</label>
-                                    <input type="text" name="company_address" class="form-control" placeholder="Enter Company Address" />
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="primary_contact_email" class="form-control" placeholder="Enter Email" required=""/>
+                                    <div class="invalid-feedback">Email is required.</div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Company Type</label>
-                                    <select name="company_type" class="form-select">
-                                        <option value="">Select your company type</option>
-                                        <option value="sole_proprietorship">Sole Proprietorship</option>
-                                        <option value="partnership">Partnership</option>
-                                        <option value="llc">Limited Liability Company (LLC)</option>
-                                        <option value="corporation">Corporation</option>
-                                        <option value="s_corporation">S Corporation</option>
-                                        <option value="cooperative">Cooperative</option>
-                                        <option value="non_profit">Non-Profit Organization</option>
-                                        <option value="government_agency">Government Agency</option>
-                                        <option value="joint_venture">Joint Venture</option>
-                                        <option value="holding_company">Holding Company</option>
-                                        <option value="private_limited">Private Limited Company</option>
-                                        <option value="public_limited">Public Limited Company</option>
-                                    </select>
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" name="primary_contact_phone" class="form-control" placeholder="Enter Phone Number" required=""/>
+                                    <div class="invalid-feedback">Phone is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" name="primary_contact_address" class="form-control" placeholder="Enter Address"/>
+                                </div>
+
+                                <h5 class="text-primary mb-3">Financial Contact</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="finance_contact_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="finance_contact_email" class="form-control" placeholder="Enter Email" required=""/>
+                                    <div class="invalid-feedback">Email is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" name="finance_contact_phone" class="form-control" placeholder="Enter Phone Number" required=""/>
+                                    <div class="invalid-feedback">Phone is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" name="finance_contact_address" class="form-control" placeholder="Enter Phone Address"/>
+                                </div>
+
+                                <h5 class="text-primary mb-3">Authorized Contact</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="authorized_contact_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="authorized_contact_email" class="form-control" placeholder="Enter Email" required=""/>
+                                    <div class="invalid-feedback">Email is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" name="authorized_contact_phone" class="form-control" placeholder="Enter Phone Number" required=""/>
+                                    <div class="invalid-feedback">Phone is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" name="authorized_contact_address" class="form-control" placeholder="Enter Phone Address"/>
+                                </div>
+
+                                <h5 class="text-primary mb-3">Additional Information</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Trade License Number</label>
+                                    <input type="text" name="trade_license_no" class="form-control" placeholder="Enter Trade License Number:"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Commencement Date</label>
+                                    <input type="email" name="commencement_date" class="form-control" placeholder="Enter Commencement Date"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" name="expiry_date" class="form-control" placeholder="Enter Expiry Date"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tax Identification Number (TIN)</label>
+                                    <input type="text" name="tax_id_num" class="form-control" placeholder="Enter Tax Identification Number (TIN)"/>
                                 </div>
                             </div>
 
@@ -160,63 +239,30 @@
                             <div class="card shadow-sm p-4 mb-4 bg-white rounded">
                                 <div class="mb-3">
                                     <label class="form-label">Bank Name</label>
-                                    <input type="text" name="bank_name" class="form-control" placeholder="Enter Bank Name" />
+                                    <input type="text" name="bank_name" class="form-control" placeholder="Enter Bank Name" required=""/>
+                                    <div class="invalid-feedback">Bank Name is required.</div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Bank Address</label>
-                                    <input type="text" name="bank_address" class="form-control" placeholder="Enter Bank Address" />
+                                    <input type="text" name="bank_address" class="form-control" placeholder="Enter Bank Address" required=""/>
+                                    <div class="invalid-feedback">Bank Address is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bank SWIFT Code</label>
+                                    <input type="text" name="bank_swift_code" class="form-control" placeholder="Enter Bank SWIFT Code" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Account Name</label>
+                                    <input type="text" name="account_name" class="form-control" placeholder="Enter Account Name" />
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Account Number</label>
-                                    <input type="text" name="account_number" class="form-control" placeholder="Enter Account Number" />
-                                </div>
-                            </div>
-
-                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
-                                <h5 class="text-primary mb-3">Primary Contact</h5>
-                                <div class="mb-3">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" name="primary_contact_name" class="form-control" placeholder="Enter Name"/>
+                                    <input type="text" name="account_number" class="form-control" placeholder="Enter Account Number" required=""/>
+                                    <div class="invalid-feedback">Account Number is required.</div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="primary_contact_email" class="form-control" placeholder="Enter Email"/>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Phone</label>
-                                    <input type="text" name="primary_contact_phone" class="form-control" placeholder="Enter Phone Number"/>
-                                </div>
-                            </div>
-
-                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">-->
-                                <h5 class="text-primary mb-3">Financial Contact</h5>
-                                <div class="mb-3">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" name="finance_contact_name" class="form-control" placeholder="Enter Name"/>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="finance_contact_email" class="form-control" placeholder="Enter Email"/>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Phone</label>
-                                    <input type="text" name="finance_contact_phone" class="form-control" placeholder="Enter Phone Number"/>
-                                </div>
-                            </div>
-
-                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">-->
-                                <h5 class="text-primary mb-3">Authorized Contact</h5>
-                                <div class="mb-3">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" name="authorized_contact_name" class="form-control" placeholder="Enter Name"/>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="authorized_contact_email" class="form-control" placeholder="Enter Email"/>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Phone</label>
-                                    <input type="text" name="authorized_contact_phone" class="form-control" placeholder="Enter Phone Number"/>
+                                    <label class="form-label">IBAN</label>
+                                    <input type="text" name="iban" class="form-control" placeholder="Enter IBAN" />
                                 </div>
                             </div>
 
@@ -229,8 +275,101 @@
                             <h3 class="text-primary text-center">Section 3: Previous Client References</h3>
                             <div class="card shadow-sm p-4 mb-4 bg-white rounded">
                                 <div class="mb-3">
-                                    <label class="form-label">Client Name</label>
-                                    <input type="text" name="client_name" class="form-control" placeholder="Enter Client Name" />
+                                    <label class="form-label">Client-1 Name</label>
+                                    <input type="text" name="client_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-1 Email</label>
+                                    <input type="text" name="client_email" class="form-control" placeholder="Enter Name" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-1 Phone</label>
+                                    <input type="text" name="client_phone" class="form-control" placeholder="Enter Name" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-1 Address</label>
+                                    <input type="text" name="client_address" class="form-control" placeholder="Enter Name" />
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                                <div class="mb-3">
+                                    <label class="form-label">Client-2 Name</label>
+                                    <input type="text" name="client_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-2 Email</label>
+                                    <input type="text" name="client_email" class="form-control" placeholder="Enter Email" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-2 Phone</label>
+                                    <input type="text" name="client_phone" class="form-control" placeholder="Enter Phone" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-2 Address</label>
+                                    <input type="text" name="client_address" class="form-control" placeholder="Enter Address" />
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                                <div class="mb-3">
+                                    <label class="form-label">Client-3 Name</label>
+                                    <input type="text" name="client_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-3 Email</label>
+                                    <input type="text" name="client_email" class="form-control" placeholder="Enter Email" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-3 Phone</label>
+                                    <input type="text" name="client_phone" class="form-control" placeholder="Enter Phone" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-3 Address</label>
+                                    <input type="text" name="client_address" class="form-control" placeholder="Enter Address" />
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                                <div class="mb-3">
+                                    <label class="form-label">Client-4 Name</label>
+                                    <input type="text" name="client_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-4 Email</label>
+                                    <input type="text" name="client_email" class="form-control" placeholder="Enter Email" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-4 Phone</label>
+                                    <input type="text" name="client_phone" class="form-control" placeholder="Enter Phone" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-4 Address</label>
+                                    <input type="text" name="client_address" class="form-control" placeholder="Enter Address" />
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                                <div class="mb-3">
+                                    <label class="form-label">Client-5 Name</label>
+                                    <input type="text" name="client_name" class="form-control" placeholder="Enter Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-5 Email</label>
+                                    <input type="text" name="client_email" class="form-control" placeholder="Enter Email" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-5 Phone</label>
+                                    <input type="text" name="client_phone" class="form-control" placeholder="Enter Phone" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Client-5 Address</label>
+                                    <input type="text" name="client_address" class="form-control" placeholder="Enter Address" />
                                 </div>
                             </div>
 
@@ -245,33 +384,123 @@
                                 <div class="mb-3">
                                     <label class="form-label">Certification Name</label>
                                     <input type="text" name="certification_name" class="form-control" placeholder="Enter Certification Name"/>
+                                    <div class="invalid-feedback">Certification Name is required.</div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Certification Number</label>
                                     <input type="text" name="certificate_number" class="form-control" placeholder="Enter Certification Name"/>
+                                    <div class="invalid-feedback">Certification Number is required.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Certifying Body</label>
+                                    <input type="text" name="certifying_body" class="form-control" placeholder="Enter Certifying Body"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Award Date</label>
+                                    <input type="text" name="award_date" class="form-control" placeholder="Enter Award Date"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" name="certificate_expiry_date" class="form-control" placeholder="Enter Expiry Date"/>
                                 </div>
                             </div>
 
-<!--                            <button type="button" class="btn btn-secondary" id="prev-4">Previous</button>-->
-<!--                            <button type="button" class="btn btn-primary" id="next-4">Next</button>-->
+                            <button type="button" class="btn btn-secondary" id="prev-4">Previous</button>
+                            <button type="button" class="btn btn-primary" id="next-4">Next</button>
+                        </div>
+
+                        <div class="form-step" id="step-5" style="display: none;">
+                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                                <div class="card-header bg-primary text-white text-center">
+                                    <h3 class="mb-0">Section 5: Document Submission</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Left Column -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Trade License / Business Registration</label>
+                                            <input type="file" name="trade_license_business_registration" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Certificate of Incorporation</label>
+                                            <input type="file" name="certificate_of_incorporation" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Certificate of Good Standing</label>
+                                            <input type="file" name="certificate_of_good_standing" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Establishment Card</label>
+                                            <input type="file" name="establishment_card" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">VAT / TAX Certificate</label>
+                                            <input type="file" name="vat_tax_certificate" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Memorandum of Association</label>
+                                            <input type="file" name="memorandum_of_association" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Identification Document for Authorized Person</label>
+                                            <input type="file" name="identification_document_for_authorized_person" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Bank Letter indicating Bank Account</label>
+                                            <input type="file" name="bank_letter_indicating_bank_account" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Past 2 Years Audited Financial Statements</label>
+                                            <input type="file" name="past_2_years_audited_financial_statements" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Other Certifications</label>
+                                            <input type="file" name="other_certifications" class="form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                                <h4 class="text-primary mb-3">Declaration</h4>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Declaration Statement</label>
+                                    <p name="declaration_statement" class="form-control">
+                                        I confirm that all information and documents supplied are true and accurate to the best of my
+                                        knowledge, and I understand that this information may be considered material in the evaluation of
+                                        quotations, bids, and/or proposals.
+                                    </p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Name of Signatory</label>
+                                    <input type="text" name="name_of_signatory" class="form-control" placeholder="Enter Signatory Name" required=""/>
+                                    <div class="invalid-feedback">Name is required.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Authorized Signatory Role</label>
+                                    <input type="text" name="authorized_signatory" class="form-control" placeholder="Enter Signatory Role" required=""/>
+                                    <div class="invalid-feedback">Role is required.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Company Stamp &amp; Date</label>
+                                    <input type="file" name="company_stamp" class="form-control" required="" />
+                                    <div class="invalid-feedback">Company Stamp is required.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Submission Date</label>
+                                    <input type="date" name="submission_date" class="form-control" t-att-value="current_date" required=""/>
+                                    <div class="invalid-feedback">Date is required.</div>
+                                </div>
+                            </div>
 
                             <button type="button" class="btn btn-secondary" id="prev-5">Previous</button>
                             <button type="submit" class="btn btn-primary" id="submit-form">Submit</button>
                         </div>
-
-                        <!-- Step 5: Document Submission -->
-<!--                        <div class="form-step" id="step-5" style="display: none;">-->
-<!--                            <h3 class="text-primary text-center">Section 5: Document Submission</h3>-->
-<!--                            <div class="card shadow-sm p-4 mb-4 bg-white rounded">-->
-<!--                                <div class="mb-3">-->
-<!--                                    <label class="form-label">Upload Documents</label>-->
-<!--                                    <input type="file" name="documents" class="form-control"/>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <button type="button" class="btn btn-secondary" id="prev-5">Previous</button>-->
-<!--                            <button type="submit" class="btn btn-primary" id="submit-form">Submit</button>-->
-<!--                        </div>-->
                     </form>
                 </div>
                 <script src="/procurement_management/static/src/js/form_navigation.js">Navigation Script</script>
@@ -286,7 +515,6 @@
                 </div>
             </t>
         </template>
-
 
     </data>
 </odoo>

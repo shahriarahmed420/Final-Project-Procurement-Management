@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_inherited_purchase_order_tree" model="ir.ui.view">
+        <field name="name">inherited.purchase.order.tree</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'rfq'" decoration-muted="state == 'draft'">
+                <field name="name"/>
+                <field name="partner_id" string="Vendor"/>
+                <field name="user_id" string="Buyer"/>
+                <field name="date_order"/>
+                <field name="rfp_id"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

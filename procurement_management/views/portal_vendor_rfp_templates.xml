@@ -1,0 +1,136 @@
+<odoo>
+    <template id="portal_my_home_otp_2" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@id='portal_vendor_category']" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/sale/static/src/img/bag.svg'"/>
+                <t t-set="title">Vendor's RFPs</t>
+                <t t-set="text">Detailed View and Information about all of the RFPs by the Vendor</t>
+                <t t-set="url" t-value="'/my/vendor_rfps'"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="vendor_rfp_list_template" name="Vendor RFQ List">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">My Accepted RFQs</li>
+                    </ol>
+                </nav>
+
+                <h1 class="text-center mb-4">My Accepted RFQs</h1>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>RFP Name</th>
+                            <th>Vendor</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="rfqs" t-as="rfq">
+                            <tr>
+                                <td><t t-esc="rfq.rfp_id.name or 'No RFP Linked'"/></td>
+                                <td><t t-esc="rfq.partner_id.name"/></td>
+                                <td>$<t t-esc="rfq.amount_total or 0.0"/></td>
+                                <td><span class="badge bg-success"><t t-esc="rfq.state"/></span></td>
+                                <td>
+                                    <a t-att-href="'/my/vendor_rfp/%s' % rfq.id" class="btn btn-primary btn-sm">View</a>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- ✅ Ensure pagination section only appears if RFQs exist -->
+                <t t-if="total_pages and total_pages != None and total_pages != 1">
+                    <div class="d-flex justify-content-between">
+                        <!-- Previous Page Button -->
+                        <t t-set="prev_available" t-value="prev_page and prev_page != None and prev_page"/>
+                        <t t-if="prev_available">
+                            <a t-att-href="'/my/vendor_rfps/page/%d' % prev_page"
+                               class="btn btn-outline-secondary">
+                                <i class="fa fa-chevron-left"></i> Previous
+                            </a>
+                        </t>
+
+                        <!-- Next Page Button -->
+                        <t t-set="next_available" t-value="next_page and next_page != None and next_page"/>
+                        <t t-if="next_available">
+                            <a t-att-href="'/my/vendor_rfps/page/%d' % next_page"
+                               class="btn btn-outline-secondary">
+                                Next <i class="fa fa-chevron-right"></i>
+                            </a>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="vendor_rfp_form_template" name="Vendor RFQ Details">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/my/vendor_rfps">My Accepted RFQs</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><t t-esc="rfq.name"/></li>
+                    </ol>
+                </nav>
+
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-0">RFQ Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p><strong>RFP ID:</strong> <span class="text-primary"><t t-esc="rfq.rfp_id.name or 'N/A'"/></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Supplier:</strong> <span class="text-dark"><t t-esc="rfq.partner_id.name"/></span></p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p><strong>Order Date:</strong> <span class="text-secondary"><t t-esc="rfq.date_order"/></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Total Amount:</strong> <span class="badge bg-success fs-5">$<t t-esc="rfq.amount_total"/></span></p>
+                            </div>
+                        </div>
+
+                        <h3 class="mt-4">Products</h3>
+                        <table class="table table-hover table-striped border">
+                            <thead class="table-dark text-white">
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-center">Unit Price</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="rfq.order_line" t-as="line">
+                                    <tr>
+                                        <td><t t-esc="line.product_id.name"/></td>
+                                        <td class="text-center"><t t-esc="line.product_qty"/></td>
+                                        <td class="text-center text-primary">$<t t-esc="line.price_unit"/></td>
+                                        <td class="text-end fw-bold">$<t t-esc="line.price_total"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

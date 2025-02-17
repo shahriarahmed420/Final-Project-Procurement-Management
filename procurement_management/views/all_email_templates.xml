@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <record id="email_template_supplier_approval" model="mail.template">
+            <field name="name">Supplier Approval Notification</field>
+            <field name="model_id" ref="procurement_management.model_registration_form"/>
+            <field name="email_from">${'shahriar.ahmed@g.bracu.ac.bd')|safe}</field>
+            <field name="email_to">${object.email}</field>
+            <field name="subject">Supplier Registration Approved</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html">
+                <![CDATA[
+                <p>Hello ${object.company_name},</p>
+                <p>Your supplier registration has been <strong>approved</strong>. Your vendor account is now active.</p>
+                <p><strong>Login Credentials:</strong></p>
+                <ul>
+                    <li><strong>Username:</strong> ${object.email}</li>
+                </ul>
+                <p>You can access your supplier portal using the following link:</p>
+                <p><a href="${object.company_id.website or 'https://bjitacademy.com/supplier-portal'}">Supplier Portal</a></p>
+                <p>Best Regards,<br/>BJIT Academy</p>
+                ]]>
+            </field>
+        </record>
+    </data>
+</odoo>

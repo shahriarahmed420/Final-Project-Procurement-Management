@@ -1,0 +1,29 @@
+<odoo>
+    <record id="view_rfp_report_form" model="ir.ui.view">
+        <field name="name">rfp.report.form</field>
+        <field name="model">procurement_management.rfp.report</field>
+        <field name="arch" type="xml">
+            <form string="Generate RFP Report">
+                <group>
+                    <field name="supplier_id" widget="many2one" options="{'no_create': True}" placeholder="Select a Supplier" class="oe_inline"/>
+                    <field name="start_date" widget="date" options="{'datepicker': true}" placeholder="Select Start Date" class="oe_inline"/>
+                    <field name="end_date" widget="date" options="{'datepicker': true}" placeholder="Select End Date" class="oe_inline"/>
+                </group>
+
+                <footer>
+                    <button name="action_generate_qweb_report" string="Generate QWeb Report" type="object" class="btn-primary"/>
+                    <button name="action_generate_excel_report" string="Generate Excel Report" type="object" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_rfp_report" model="ir.actions.act_window">
+        <field name="name">RFP Report</field>
+        <field name="res_model">procurement_management.rfp.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

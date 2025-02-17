@@ -1,0 +1,16 @@
+<odoo>
+    <menuitem id="menu_procurement_management_root" name="Procurement Management"
+              web_icon="procurement_management,static/description/icon.png" sequence="10"/>
+
+    <menuitem id="menu_supplier_reviewer" name="Reviews" parent="menu_procurement_management_root"
+              groups="procurement_management.group_supplier_reviewer" action="action_supplier_reviewer" sequence="20"/>
+
+    <menuitem id="menu_supplier_approver" name="Approvals" parent="menu_procurement_management_root"
+              groups="procurement_management.group_supplier_approver" action="action_supplier_approver" sequence="30"/>
+
+    <menuitem id="menu_rfp" name="Requests for Purchase" parent="menu_procurement_management_root"
+              action="action_rfp_list" sequence="40"/>
+
+    <menuitem id="menu_rfp_report" name="RFP Report" parent="menu_procurement_management_root"
+              action="action_rfp_report" sequence="50"/>
+</odoo>

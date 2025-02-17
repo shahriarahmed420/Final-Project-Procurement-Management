@@ -1,0 +1,269 @@
+<odoo>
+    <template id="portal_my_home_otp" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@id='portal_vendor_category']" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/sale/static/src/img/bag.svg'"/>
+                <t t-set="title">RFPs</t>
+                <t t-set="text">Formal procurement document used to solicit supplier quotations for required goods or services.</t>
+                <t t-set="url" t-value="'/my/rfps'"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="rfp_list_view_template" name="Portal RFP List">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Approved RFPs</li>
+                    </ol>
+                </nav>
+
+                <h1 class="text-center mb-4">Available RFPs</h1>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>RFP Name</th>
+                            <th>Status</th>
+                            <th>Required Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="rfps" t-as="rfp">
+                            <tr>
+                                <td><a t-att-href="'/my/rfp/%s' % rfp.id"><t t-esc="rfp.name"/></a></td>
+                                <td><t t-esc="rfp.status"/></td>
+                                <td><t t-esc="rfp.required_date"/></td>
+                                <td>
+                                    <a t-att-href="'/my/rfp/%s' % rfp.id" class="btn btn-primary btn-sm">View</a>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="rfp_form_view_template" name="Portal RFP Form">
+        <t t-call="portal.portal_layout">
+            <t t-set="title" t-value="'Request for Proposal'"/>
+
+            <style>
+                /* Custom Styles */
+                .custom-header {
+                    background: linear-gradient(to right, #007bff, #0056b3);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                }
+
+                .custom-badge {
+                    font-size: 1rem;
+                    padding: 10px 15px;
+                    border-radius: 30px;
+                    font-weight: bold;
+                }
+
+                .custom-card {
+                    border-left: 5px solid #007bff;
+                    border-radius: 10px;
+                    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                    padding: 20px;
+                }
+
+                .custom-title {
+                    font-weight: bold;
+                    font-size: 1.4rem;
+                    color: #0056b3;
+                    text-transform: uppercase;
+                    margin-bottom: 15px;
+                    border-bottom: 3px solid #007bff;
+                    display: inline-block;
+                    padding-bottom: 5px;
+                }
+
+                .table th {
+                    background-color: #007bff !important;
+                    color: white !important;
+                    text-transform: uppercase;
+                    font-size: 1rem;
+                    padding: 12px;
+                }
+
+                .table tbody tr:hover {
+                    background-color: #f1f1f1 !important;
+                    transition: 0.3s ease-in-out;
+                }
+
+                .form-control {
+                    border-radius: 8px;
+                    border: 2px solid #007bff;
+                    transition: all 0.3s ease-in-out;
+                }
+
+                .form-control:focus {
+                    border-color: #0056b3;
+                    box-shadow: 0px 0px 5px rgba(0, 91, 187, 0.5);
+                }
+
+                .btn-custom {
+                    background: #28a745;
+                    color: white;
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                    padding: 10px 20px;
+                    border-radius: 50px;
+                    transition: 0.3s;
+                }
+
+                .btn-custom:hover {
+                    background: #218838;
+                }
+            </style>
+
+            <div class="container mt-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/my/rfps">Approved RFPs</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><t t-esc="rfp.name"/></li>
+                    </ol>
+                </nav>
+
+                <!-- Header Section -->
+                <div class="custom-header d-flex justify-content-between align-items-center">
+                    <h1 class="m-0">
+                        <i class="fa fa-file-alt"></i> <t t-esc="rfp.name"/>
+                    </h1>
+                    <span class="badge bg-light text-dark custom-badge">
+                        <i class="fa fa-info-circle"></i> <t t-esc="rfp.status"/>
+                    </span>
+                </div>
+
+                <!-- RFP Details Card -->
+                <div class="card custom-card mt-4">
+                    <h3 class="custom-title"><i class="fa fa-list-alt"></i> RFP Details</h3>
+                    <div class="row">
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-hashtag"></i> RFP Reference:</strong>
+                            <span class="text-dark fs-5"><t t-esc="rfp.name"/></span>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-calendar-alt"></i> Required Date:</strong>
+                            <span class="text-dark"><t t-esc="rfp.required_date"/></span>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-user-check"></i> Reviewer:</strong>
+                            <span class="text-dark"><t t-esc="rfp.reviewer_id.name or 'Not Assigned'"/></span>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-user-tie"></i> Approved Supplier:</strong>
+                            <span class="text-dark"><t t-esc="rfp.approved_supplier_id.name or 'Pending'"/></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quotation Form -->
+                <div class="card custom-card mt-4">
+                    <h3 class="custom-title"><i class="fa fa-file-signature"></i> Submit Your Quotation</h3>
+                    <form t-attf-action="/my/rfp/{{rfp.id}}/submit_rfq" method="POST">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold"><i class="fa fa-shield-alt"></i> Warranty Period (months)</label>
+                                <input type="number" name="warranty_period" class="form-control" required="" placeholder="Enter warranty period"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold"><i class="fa fa-calendar-day"></i> Expected Delivery Date</label>
+                                <input type="date" name="expected_delivery_date" class="form-control" required=""/>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="form-label fw-bold"><i class="fa fa-file-contract"></i> Terms &amp; Conditions</label>
+                            <textarea name="terms_conditions" class="form-control" rows="3" placeholder="Enter any special terms and conditions"></textarea>
+                        </div>
+
+                        <!-- Product Lines Table -->
+                        <div class="table-responsive mt-4">
+                            <h4 class="custom-title"><i class="fa fa-box"></i> Product Lines</h4>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fa fa-image"></i> Image</th>
+                                        <th><i class="fa fa-box"></i> Product</th>
+                                        <th><i class="fa fa-file-alt"></i> Description</th>
+                                        <th><i class="fa fa-sort-numeric-up"></i> Quantity</th>
+                                        <th><i class="fa fa-dollar-sign"></i> Unit Price ($)</th>
+                                        <th><i class="fa fa-truck"></i> Delivery Charges ($)</th>
+                                        <th><i class="fa fa-calculator"></i> Subtotal ($)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="rfp.product_line_ids" t-as="line">
+                                        <tr>
+                                            <td>
+                                                <t t-if="line.product_id.image_1920">
+                                                    <img t-att-src="'data:image/png;base64,' + line.product_id.image_1920.decode('utf-8')" width="50" height="50" class="img-thumbnail"/>
+                                                </t>
+                                                <t t-else="">No Image</t>
+                                            </td>
+                                            <td><t t-esc="line.product_id.name"/></td>
+                                            <td><t t-esc="line.description or 'No Description'"/></td>
+                                            <td><t t-esc="line.quantity"/></td>
+                                            <td><input type="number" t-attf-name="price_unit_{{line.id}}" class="form-control"/></td>
+                                            <td><input type="number" t-attf-name="delivery_charge_{{line.id}}" class="form-control"/></td>
+                                            <td><t t-esc="line.subtotal_price"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-custom">
+                                <i class="fa fa-paper-plane"></i> Submit RFQ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.querySelectorAll("input[name^='price_unit_'], input[name^='delivery_charge_']").forEach(input => {
+                        input.addEventListener("input", function () {
+                            let row = this.closest("tr");
+
+                            let quantity = parseFloat(row.querySelector("td:nth-child(4)").textContent.trim()) || 0;
+                            let unitPrice = parseFloat(row.querySelector("input[name^='price_unit_']").value) || 0;
+                            let deliveryCharge = parseFloat(row.querySelector("input[name^='delivery_charge_']").value) || 0;
+
+                            let subtotal = (quantity * unitPrice) + deliveryCharge;
+
+                            // Update the subtotal cell
+                            row.querySelector("td:last-child").textContent = subtotal.toFixed(2);
+                        });
+                    });
+                });
+            </script>
+        </t>
+    </template>
+
+    <template id="rfq_submit_view_template" name="Portal RFQ Submission">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-5">
+                <h2 class="text-center text-primary">RFQ Submission Status</h2>
+                <h4 class="text-center alert-heading">Success!</h4>
+                <p class="text-center">Your RFQ has been successfully submitted.</p>
+                <p class="text-center mb-0">You will be notified once your quotation is reviewed.</p>
+                <a href="/my/rfps" class="text-center btn btn-outline-primary">Back to RFPs</a>
+            </div>
+        </t>
+    </template>
+</odoo>
