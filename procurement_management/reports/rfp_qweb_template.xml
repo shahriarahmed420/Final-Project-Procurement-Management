@@ -1,3 +1,113 @@
 <odoo>
+    <template id="rfp_report_template">
+        <t t-call="web.html_container">
+            <t t-set="company" t-value="request.env.company"/>
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <!-- Company Header with Logo & Horizontal Line -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <t t-if="company.logo">
+                            <img t-att-src="'data:image/png;base64,%s' % company.logo.decode()" style="max-width: 150px;"/>
+                        </t>
+                        <div style="text-align: right;">
+                            <h2 style="margin: 0; font-size: 24px; color: #2c3e50;">RFP Report</h2>
+                            <p style="margin: 0; color: #7f8c8d;">Report Date Range: <t t-esc="doc.start_date"/> - <t t-esc="doc.end_date"/></p>
+                        </div>
+                    </div>
+                    <hr style="border-top: 2px solid #3498db; margin: 10px 0;"/>
 
+                    <!-- Supplier Information -->
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="text-align: center; color: #2980b9;">Supplier Information</h3>
+                        <table class="table table-bordered" style="width: 100%; margin-top: 20px;">
+                            <tr><td><strong>Email:</strong></td><td><t t-esc="doc.supplier_id.email or 'N/A'"/></td></tr>
+                            <tr><td><strong>Phone:</strong></td><td><t t-esc="doc.supplier_id.phone or 'N/A'"/></td></tr>
+                            <tr><td><strong>Address:</strong></td><td><t t-esc="doc.supplier_id.contact_address or 'N/A'"/></td></tr>
+                        </table>
+                    </div>
+
+                    <!-- Approved RFPs -->
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #27ae60;">Approved RFPs &amp; Product Line Summary </h3>
+                        <table class="table table-striped" style="width: 100%; margin-top: 20px;">
+                            <thead>
+                                <tr>
+                                    <th style="background-color: #f1c40f; color: white;">RFP Number</th>
+                                    <th style="background-color: #f1c40f; color: white;">RFP Date</th>
+                                    <th style="background-color: #f1c40f; color: white;">Required Date</th>
+                                    <th style="background-color: #f1c40f; color: white;">Total Amount</th>
+                                    <th style="background-color: #f1c40f; color: white;">Supplier Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.supplier_id.rfp_ids" t-as="rfp">
+                                    <tr>
+                                        <td><t t-esc="rfp.name"/></td>
+                                        <td><t t-esc="rfp.create_date.strftime('%d/%m/%Y')"/></td>
+                                        <td><t t-esc="rfp.required_date.strftime('%d/%m/%Y')"/></td>
+                                        <td><t t-esc="rfp.total_amount"/></td>
+                                        <td><t t-esc="rfp.approved_supplier_id.name"/></td>
+                                    </tr>
+
+                                    <!-- Fetching Product Lines from Related Purchase Orders -->
+                                    <t t-set="order_lines" t-value="request.env['purchase.order.line'].search([('order_id.rfp_id', '=', rfp.id)])"/>
+                                    <t t-if="order_lines">
+                                        <tr>
+                                            <td colspan="5">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Product Name</th>
+                                                            <th>Quantity</th>
+                                                            <th>Unit Price</th>
+                                                            <th>Delivery Charge</th>
+                                                            <th>Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="order_lines" t-as="line">
+                                                            <tr>
+                                                                <td><t t-esc="line.product_id.name"/></td>
+                                                                <td><t t-esc="line.product_qty"/></td>
+                                                                <td><t t-esc="line.price_unit"/></td>
+                                                                <td><t t-esc="line.delivery_charge"/></td>
+                                                                <td><t t-esc="line.price_subtotal"/></td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-if="not doc.supplier_id.rfp_ids">
+                                    <tr><td colspan="5" class="text-center" style="color: #e74c3c; font-weight: bold;">No Approved RFPs Found</td></tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Company Contact Information -->
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #2980b9;">Company Contact Information</h3>
+                        <table class="table table-bordered" style="width: 100%; margin-top: 20px;">
+                            <tr><td><strong>Email:</strong></td><td><t t-esc="company.email or 'N/A'"/></td></tr>
+                            <tr><td><strong>Phone:</strong></td><td><t t-esc="company.phone or 'N/A'"/></td></tr>
+                            <tr><td><strong>Address:</strong></td><td><t t-esc="company.partner_id.contact_address or 'N/A'"/></td></tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+
+    <record id="action_rfp_qweb_report" model="ir.actions.report">
+        <field name="name">RFP Report</field>
+        <field name="model">procurement_management.rfp.report</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">procurement_management.rfp_report_template</field>
+        <field name="report_file">procurement_management.rfp_report_template</field>
+    </record>
 </odoo>

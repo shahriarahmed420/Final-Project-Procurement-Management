@@ -98,9 +98,36 @@
         </field>
     </record>
 
+    <record id="view_rfp_graph" model="ir.ui.view">
+		<field name="name">rfp.graph</field>
+		<field name="model">procurement_management.rfp</field>
+		<field name="arch" type="xml">
+            <graph string="RFP View Graph" type="line" disable_linking="True" stacked="0">
+                <field name="required_date" type="row" interval="month"/>
+                <field name="total_amount" type="col"/>
+                <field name="name" string="RFP Number" type="group"/>
+                <field name="approved_supplier_id" string="Supplier" type="group"/>
+                <field name="status" string="Status" type="group"/>
+            </graph>
+		</field>
+	</record>
+
+	<record id="view_rfp_pivot" model="ir.ui.view">
+		<field name="name">rfp.pivot</field>
+		<field name="model">procurement_management.rfp</field>
+		<field name="arch" type="xml">
+		    <pivot string="RFP View Pivot" disable_linking="0" display_quantity="1">
+                <field name="approved_supplier_id" string="Supplier" type="row"/>
+                <field name="required_date" type="col" interval="month"/>
+                <field name="status" type="subgroup"/>
+                <field name="total_amount" type="measure"/>
+		    </pivot>
+		</field>
+	</record>
+
     <record id="action_rfp_list" model="ir.actions.act_window">
         <field name="name">RFPs</field>
         <field name="res_model">procurement_management.rfp</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
     </record>
 </odoo>

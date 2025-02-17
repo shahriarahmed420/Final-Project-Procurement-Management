@@ -31,7 +31,7 @@ class RFP(models.Model):
     reviewer_id = fields.Many2one('res.users', string="Reviewer", required=True, default=lambda self: self.env.user, tracking=True)
     approver_id = fields.Many2one('res.users', string="Approver", tracking=True)
 
-    approved_supplier_id = fields.Many2one('res.partner', string="Approved Supplier", domain="[('id', 'in', recommended_supplier_ids)]", tracking=True)
+    approved_supplier_id = fields.Many2one('res.partner', string="Approved Supplier", domain="[('id', 'in', recommended_supplier_ids), ('supplier_rank', '>', 0)]", tracking=True)
     recommended_supplier_ids = fields.Many2many('res.partner', string="Recommended Suppliers", compute="_compute_recommended_suppliers")
 
     product_line_ids = fields.One2many("procurement_management.rfp.product", "rfp_id", string="Product Lines")
@@ -284,6 +284,11 @@ class RFP(models.Model):
 
         if not recommended_rfq:
             raise ValidationError(_("There must be a recommended RFQ in 'RFQ Sent' state before accepting the RFP."))
+
+        self.write({
+            'status': 'accepted',
+            'approved_supplier_id': recommended_rfq.partner_id.id
+        })
 
         recommended_rfq.write({'state': 'purchase'})
 

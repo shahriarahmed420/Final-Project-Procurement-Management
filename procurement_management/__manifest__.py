@@ -26,6 +26,7 @@
         'security/procurement_security.xml',
         'security/rule_rfp.xml',
         'security/ir.model.access.csv',
+        'reports/rfp_qweb_template.xml',
         'views/rfp_report_views.xml',
         'views/all_email_templates.xml',
         'views/email_template_supplier_rejection.xml',

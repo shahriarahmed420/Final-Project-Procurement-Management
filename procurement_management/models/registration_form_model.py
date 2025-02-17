@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class RegistrationForm(models.Model):
@@ -160,15 +160,27 @@ class RegistrationForm(models.Model):
 
         user = self.env['res.users'].sudo().search([('login', '=', self.email)], limit=1)
 
-        vendor = self.env['res.partner'].create({
-            'name': self.company_name,
-            'email': self.email,
-            'phone': self.primary_contact_phone,
-            'is_company': True,
-            'company_type': 'company',
-            'supplier_rank': 1,
-            'user_ids': [(4, user.id)] if user else [],
-        })
+        existing_partner = self.env['res.partner'].sudo().search([('email', '=', self.email)], limit=1)
+
+        if not existing_partner:
+            # Create the vendor record if partner doesn't exist
+            vendor = self.env['res.partner'].create({
+                'name': self.company_name,
+                'email': self.email,
+                'phone': self.primary_contact_phone,
+                'is_company': True,
+                'company_type': 'company',
+                'supplier_rank': 1,
+                'user_ids': [(4, user.id)] if user else [],
+                'company_id': self.env.company.id,
+            })
+        else:
+            # If partner exists, assign the existing partner to vendor
+            vendor = existing_partner
+            if vendor.supplier_rank != 1:
+                vendor.sudo().write({
+                    'supplier_rank': 1  # Ensure supplier_rank is set to 1
+                })
 
         existing_bank = self.env['res.bank'].sudo().search([
             ('name', '=', self.bank_name),
@@ -211,11 +223,21 @@ class RegistrationForm(models.Model):
             self.message_post(body=_("User already exists for supplier: %s" % self.email))
             return
 
+        supplier_partner = self.env['res.partner'].sudo().search([('email', '=', self.email)], limit=1)
+        if not supplier_partner:
+            supplier_partner = self.env['res.partner'].sudo().create({
+                'name': self.company_name,
+                'email': self.email,
+                'company_id': self.env.company.id,
+            })
+
         user = self.env['res.users'].sudo().create({
             'name': self.company_name,
             'login': self.email,
             'email': self.email,
             'password': self.email,
+            'partner_id': supplier_partner.id,
+            'company_id': self.env.company.id,
             'groups_id': [(6, 0, [portal_group.id])]
         })
         self.message_post(body=_("Portal user account created for supplier: %s" % user.login))
