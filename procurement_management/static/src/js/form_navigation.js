@@ -1,5 +1,3 @@
-// static/src/js/form_navigation.js
-// JavaScript for handling form step navigation
 document.getElementById("next-1").onclick = function() {
     document.getElementById("step-1").style.display = "none";
     document.getElementById("step-2").style.display = "block";

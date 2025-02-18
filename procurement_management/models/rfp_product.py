@@ -18,3 +18,19 @@ class RFPProduct(models.Model):
     def _compute_subtotal(self):
         for line in self:
             line.subtotal_price = (line.quantity * line.unit_price) + (line.delivery_charges or 0.0)
+
+    @api.depends("rfp_id", "product_id")
+    def _compute_prices(self):
+        """Fetch Unit Price and Delivery Charges from the related RFQ Purchase Order Line."""
+        for line in self:
+            purchase_line = self.env["purchase.order.line"].search([
+                ("order_id.rfp_id", "=", line.rfp_id.id),
+                ("product_id", "=", line.product_id.id),
+            ], limit=1)
+
+            if purchase_line:
+                line.unit_price = purchase_line.price_unit or 0.0
+                line.delivery_charges = purchase_line.delivery_charge or 0.0
+            else:
+                line.unit_price = 0.0
+                line.delivery_charges = 0.0

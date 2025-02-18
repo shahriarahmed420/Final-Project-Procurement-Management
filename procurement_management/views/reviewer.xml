@@ -164,8 +164,8 @@
                                 </div>
 
                                 <!-- Footer -->
-                                <div class="o_kanban_footer">
-                                    <span class="text-muted">Click to view details</span>
+                                <div class="o_kanban_footer text-center mt-2">
+                                    <span class="text-muted"><i class="fa fa-mouse-pointer"></i> Click to open</span>
                                 </div>
                             </div>
                         </div>

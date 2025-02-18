@@ -125,9 +125,68 @@
 		</field>
 	</record>
 
+    <record id="view_rfp_kanban" model="ir.ui.view">
+        <field name="name">rfp.kanban</field>
+        <field name="model">procurement_management.rfp</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_view">
+                <field name="name"/>
+                <field name="reviewer_id"/>
+                <field name="approver_id"/>
+                <field name="status"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click shadow-sm rounded border">
+                            <div class="oe_kanban_details p-3">
+
+                                <!-- Status Badge -->
+                                <div class="o_kanban_status text-center mb-2">
+                                    <span t-if="record.status.value == 'draft'" class="badge bg-warning text-dark px-3 py-2">
+                                        <i class="fa fa-pencil-alt"></i> Draft
+                                    </span>
+                                    <span t-if="record.status.value == 'submitted'" class="badge bg-success px-3 py-2">
+                                        <i class="fa fa-check-circle"></i> Submitted
+                                    </span>
+                                    <span t-if="record.status.value == 'rejected'" class="badge bg-danger px-3 py-2">
+                                        <i class="fa fa-times-circle"></i> Rejected
+                                    </span>
+                                    <span t-if="record.status.value == 'Approved'" class="badge bg-dark px-3 py-2">
+                                        <i class="fa fa-thumbs-up"></i> Approved
+                                    </span>
+                                    <span t-if="record.status.value == 'closed'" class="badge bg-secondary px-3 py-2">
+                                        <i class="fa fa-lock"></i> Closed
+                                    </span>
+                                    <span t-if="record.status.value == 'recommendation'" class="badge bg-info px-3 py-2">
+                                        <i class="fa fa-comment-alt"></i> Recommendation
+                                    </span>
+                                    <span t-if="record.status.value == 'accepted'" class="badge bg-primary px-3 py-2">
+                                        <i class="fa fa-handshake"></i> Accepted
+                                    </span>
+                                </div>
+
+                                <!-- Main Content -->
+                                <div class="o_kanban_body text-center">
+                                    <p class="fw-bold text-primary"><i class="fa fa-file-alt"></i> RFP: <t t-esc="record.name.value or 'Not Assigned'"/></p>
+                                    <p class="text-muted"><i class="fa fa-user-check"></i> Reviewer: <t t-esc="record.reviewer_id.value or 'Not Assigned'"/></p>
+                                    <p class="text-muted"><i class="fa fa-user-tie"></i> Approver: <t t-esc="record.approver_id.value or 'Not Assigned'"/></p>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="o_kanban_footer text-center mt-2">
+                                    <span class="text-muted"><i class="fa fa-mouse-pointer"></i> Click to open</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <record id="action_rfp_list" model="ir.actions.act_window">
         <field name="name">RFPs</field>
         <field name="res_model">procurement_management.rfp</field>
-        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="view_mode">tree,form,kanban,graph,pivot</field>
     </record>
 </odoo>

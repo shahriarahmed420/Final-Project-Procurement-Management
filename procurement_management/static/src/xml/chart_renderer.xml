@@ -1,0 +1,7 @@
+<template xml:space="preserve">
+    <t t-name="procurement_management.ChartRenderer" owl="1">
+        <div class="chart-container">
+            <canvas t-ref="chart"></canvas>
+        </div>
+    </t>
+</template>

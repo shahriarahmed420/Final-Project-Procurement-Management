@@ -1,0 +1,6 @@
+<odoo>
+    <record id="action_procurement_dashboard" model="ir.actions.client">
+        <field name="name">Procurement Dashboard</field>
+        <field name="tag">procurement_management.procurement_dashboard</field> <!-- ✅ MUST MATCH JS REGISTRY KEY -->
+    </record>
+</odoo>

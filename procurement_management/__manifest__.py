@@ -33,6 +33,7 @@
         'views/approver.xml',
         'views/reviewer.xml',
         'views/rfp_views.xml',
+        'views/dashboard_views.xml',
         'views/inherited_purchase_order_views.xml',
         'views/menus.xml',
         'views/portal_rfp_views.xml',
@@ -43,5 +44,14 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'procurement_management/static/src/js/chart_renderer.js',
+            'procurement_management/static/src/css/dashboard_css.css',
+            'procurement_management/static/src/js/procurement_dashboard.js',
+            'procurement_management/static/src/xml/chart_renderer.xml',
+            'procurement_management/static/src/xml/procurement_dashboard_templates.xml',
+        ],
+    },
 }
 
