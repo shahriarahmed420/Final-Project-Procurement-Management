@@ -112,6 +112,51 @@
                         <p>No monthly data available.</p>
                     </t>
                 </div>
+                <div class="chart-card">
+                    <h3>📊 Supplier RFQ Approval vs. Rejection Rate</h3>
+                    <t t-if="state.rfqApprovalChartData">
+                        <ChartRenderer type="'doughnut'" title="'RFQ Approval Rate'" chartData="state.rfqApprovalChartData"/>
+                    </t>
+                    <t t-else="">
+                        <p>No statistics data available.</p>
+                    </t>
+                </div>
+                <div class="chart-card">
+                    <h3>📈 RFQ Trends by Week</h3>
+                    <t t-if="state.rfqWeeklyTrendsChartData">
+                        <ChartRenderer type="'bar'" title="'RFQ Trends by Week'" chartData="state.rfqWeeklyTrendsChartData"/>
+                    </t>
+                    <t t-else="">
+                        <p>No weekly data available.</p>
+                    </t>
+                </div>
+                <div class="chart-card">
+                    <h3>📊 Top 5 Most Ordered Products</h3>
+                    <t t-if="state.topProductsChartData">
+                        <ChartRenderer type="'bar'" title="'Top 5 Most Ordered Products'" chartData="state.topProductsChartData" indexAxis="'y'"/>
+                    </t>
+                    <t t-else="">
+                        <p>No products data available.</p>
+                    </t>
+                </div>
+                <div class="chart-card">
+                    <h3>⏳ Average RFQ Response Time</h3>
+                    <t t-if="state.rfqResponseTimeChartData">
+                        <ChartRenderer type="'bar'" title="'RFQ Response Time Efficiency'" chartData="state.rfqResponseTimeChartData"/>
+                    </t>
+                    <t t-else="">
+                        <p>No response time data available.</p>
+                    </t>
+                </div>
+                <div class="chart-card">
+                    <h3>📊 Monthly Supplier Performance</h3>
+                    <t t-if="state.monthlySupplierPerformanceChartData">
+                        <ChartRenderer type="'bar'" title="'Monthly Supplier Performance'" chartData="state.monthlySupplierPerformanceChartData"/>
+                    </t>
+                    <t t-else="">
+                        <p>No monthly data available.</p>
+                    </t>
+                </div>
             </div>
         </section>
         <script src="/procurement_management/static/src/js/buttons.js">Navigation Script</script>

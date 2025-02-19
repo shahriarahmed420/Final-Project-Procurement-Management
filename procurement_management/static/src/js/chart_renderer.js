@@ -1,5 +1,7 @@
 /** @odoo-module */
+import { registry } from "@web/core/registry";
 import { Component, useRef, onMounted } from "@odoo/owl";
+
 
 export class ChartRenderer extends Component {
     static template = "procurement_management.ChartRenderer";

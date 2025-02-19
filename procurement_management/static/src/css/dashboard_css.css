@@ -1,3 +1,10 @@
+html, body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-y: auto; /* Allow vertical scrolling */
+    height: 100%;
+    margin: 0;
+}
+
 .dashboard-container {
     max-height: 90vh;  /* ✅ Prevents overflow */
     overflow-y: auto;  /* ✅ Enables vertical scrolling */
@@ -7,9 +14,18 @@
     color: #ffffff;
 }
 
-.dashboard-section, .dashboard-metrics, .dashboard-charts {
+.dashboard-section, .dashboard-metrics {
     overflow-y: auto;
     max-height: 70vh;  /* ✅ Allows scrolling within sections */
+}
+
+.dashboard-charts {
+    overflow-y: auto;
+    max-height: 70vh;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* Ensures centering when odd charts exist */
 }
 
 .dashboard-header {
@@ -89,7 +105,17 @@
     background: rgba(255, 255, 255, 0.05);
     padding: 15px;
     border-radius: 8px;
+    border: 2px solid orange;
+    width: calc(50% - 10px); /* Two charts per row */
+    min-width: 300px;
+    box-sizing: border-box;
 }
+
+.dashboard-charts .chart-card:last-child:nth-child(odd) {
+    width: 100%; /* Make it full width to center */
+    text-align: center;
+}
+
 .supplier-info {
     background: linear-gradient(45deg, #6a11cb, #2575fc); /* Deep Blue-Purple Gradient */
     padding: 12px;

@@ -101,8 +101,6 @@
         </t>
     </template>
 
-
-
     <record id="action_rfp_qweb_report" model="ir.actions.report">
         <field name="name">RFP Report</field>
         <field name="model">procurement_management.rfp.report</field>

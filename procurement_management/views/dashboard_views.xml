@@ -3,4 +3,7 @@
         <field name="name">Procurement Dashboard</field>
         <field name="tag">procurement_management.procurement_dashboard</field> <!-- ✅ MUST MATCH JS REGISTRY KEY -->
     </record>
+
+    <menuitem id="menu_procurement_dashboard" name="Procurement Dashboard" web_icon="procurement_management,static/description/dashboard.png"
+              action="action_procurement_dashboard" sequence="10"/>
 </odoo>

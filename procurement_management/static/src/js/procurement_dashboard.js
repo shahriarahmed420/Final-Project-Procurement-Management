@@ -109,7 +109,7 @@ export class ProcurementDashboard extends Component {
                     ["create_date", ">=", startDate],
                     ["create_date", "<=", endDate],
                 ],
-                ["id", "name", "total_amount", "create_date"]
+                ["id", "name", "total_amount", "create_date", "approved_supplier_id", "status"]
             );
 
             this.state.approvedRFQs = rfqRecords;
@@ -125,6 +125,181 @@ export class ProcurementDashboard extends Component {
                 console.log(`✅ Total Approved RFQs: ${this.state.totalRFQs}`);
                 console.log(`✅ Total RFQ Amount: $${this.state.totalRFQAmount}`);
             }
+
+            if (rfqRecords.length === 0) {
+                console.warn("⚠️ No Approved RFQs found.");
+                this.state.supplierContributionChartData = null;
+                this.state.monthlyRFQChartData = null;
+                return;
+            }
+
+            console.log("📦 Raw RFQ Records for Supplier Contribution:", rfqRecords);
+
+
+            // ✅ **Supplier Contribution Breakdown (Pie Chart)**
+            const supplierCounts = {};
+            rfqRecords.forEach(rfq => {
+                if (rfq.approved_supplier_id && rfq.approved_supplier_id.length > 1) {
+                    const supplierName = rfq.approved_supplier_id[1];  // ✅ Extract Supplier Name
+                    supplierCounts[supplierName] = (supplierCounts[supplierName] || 0) + rfq.total_amount;  // ✅ Sum RFQ amounts
+                }
+            });
+
+            console.log("📊 Processed Supplier Contribution Data:", supplierCounts);
+
+            this.state.supplierContributionChartData = {
+                labels: Object.keys(supplierCounts),  // ✅ Supplier Names
+                datasets: [
+                    {
+                        label: "Total RFQ Value",
+                        data: Object.values(supplierCounts),  // ✅ Supplier RFQ Totals
+                        backgroundColor: ["#ff5722", "#03a9f4", "#4caf50", "#ffc107"],
+                    }
+                ]
+            };
+
+            // ✅ Debugging Log
+            console.log("✅ Final Supplier Contribution Chart Data:", this.state.supplierContributionChartData);
+
+            // ✅ **Monthly RFQ Trends (Line Chart)**
+            const monthCounts = new Array(12).fill(0);
+            rfqRecords.forEach(rfq => {
+                const monthIndex = new Date(rfq.create_date).getMonth();
+                monthCounts[monthIndex]++;
+            });
+
+            this.state.monthlyRFQChartData = {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                datasets: [
+                    {
+                        label: "Total RFQs",
+                        data: monthCounts,
+                        borderColor: "blue",
+                        backgroundColor: "rgba(0,0,255,0.3)",
+                        fill: true
+                    }
+                ]
+            };
+
+            console.log("✅ Monthly RFQ Trends Chart Data:", this.state.monthlyRFQChartData);
+
+            let approvedCount = 0;
+            let rejectedCount = 0;
+
+            rfqRecords.forEach(rfq => {
+                if (rfq.status === "accepted") {
+                    approvedCount++;
+                } else if (rfq.status === "rejected") {
+                    rejectedCount++;
+                }
+            });
+
+            this.state.rfqApprovalChartData = {
+                labels: ["Approved RFQs", "Rejected RFQs"],
+                datasets: [
+                    {
+                        data: [approvedCount, rejectedCount],
+                        backgroundColor: ["green", "red"],
+                    }
+                ]
+            };
+
+            // ✅ Debugging Log
+            console.log("✅ RFQ Approval Chart Data:", this.state.rfqApprovalChartData);
+
+            const weeklyCounts = {};
+
+            rfqRecords.forEach(rfq => {
+                const week = new Date(rfq.create_date).toLocaleDateString("en-US", { week: "long" });
+                weeklyCounts[week] = (weeklyCounts[week] || 0) + 1;
+            });
+
+            this.state.rfqWeeklyTrendsChartData = {
+                labels: Object.keys(weeklyCounts),
+                datasets: [
+                    {
+                        label: "Total RFQs Per Week",
+                        data: Object.values(weeklyCounts),
+                        backgroundColor: "#03a9f4",
+                    }
+                ]
+            };
+
+            // ✅ Debugging Log
+            console.log("✅ Weekly RFQ Trends Chart Data:", this.state.rfqWeeklyTrendsChartData);
+
+            let totalResponseTime = 0;
+            let totalRFQs = 0;
+
+            rfqRecords.forEach(rfq => {
+                if (rfq.create_date && rfq.status !== "draft") {
+                    const createdDate = new Date(rfq.create_date);
+                    const today = new Date();
+                    const diffInDays = Math.floor((today - createdDate) / (1000 * 60 * 60 * 24));
+                    totalResponseTime += diffInDays;
+                    totalRFQs++;
+                }
+            });
+
+            const avgResponseTime = totalRFQs > 0 ? (totalResponseTime / totalRFQs).toFixed(1) : 0;
+
+            this.state.rfqResponseTimeChartData = {
+                labels: ["Average Response Time (Days)"],
+                datasets: [
+                    {
+                        data: [avgResponseTime],
+                        backgroundColor: ["#4caf50"],
+                    }
+                ],
+                options: {  // ✅ Include options INSIDE chartData
+                    indexAxis: 'y',
+                    scales: {
+                        x: { suggestedMin: 0, suggestedMax: 10 }
+                    }
+                }
+            };
+
+            // ✅ Debugging Log
+            console.log("✅ RFQ Response Time Chart Data:", this.state.rfqResponseTimeChartData);
+
+            const monthlySupplierData = {};
+            rfqRecords.forEach(rfq => {
+                if (rfq.approved_supplier_id) {
+                    const month = new Date(rfq.create_date).toLocaleDateString("en-US", { month: "short" });
+                    const supplierName = rfq.approved_supplier_id[1];
+
+                    if (!monthlySupplierData[month]) {
+                        monthlySupplierData[month] = {};
+                    }
+
+                    monthlySupplierData[month][supplierName] = (monthlySupplierData[month][supplierName] || 0) + rfq.total_amount;
+                }
+            });
+
+            const months = Object.keys(monthlySupplierData);
+            const suppliers = [...new Set(rfqRecords.map(rfq => rfq.approved_supplier_id ? rfq.approved_supplier_id[1] : null))];
+
+            const datasets = suppliers.map(supplier => ({
+                label: supplier,
+                data: months.map(month => monthlySupplierData[month][supplier] || 0),
+                backgroundColor: "#" + Math.floor(Math.random() * 16777215).toString(16), // Random color
+            }));
+
+            this.state.monthlySupplierPerformanceChartData = {
+                labels: months,
+                datasets: datasets
+            };
+
+            this.state.monthlySupplierPerformanceChartOptions = {
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                }
+            };
+
+            // ✅ Debugging Log
+            console.log("✅ Monthly Supplier Performance Chart Data:", this.state.monthlySupplierPerformanceChartData);
+
         } catch (error) {
             console.error("❌ Error fetching Approved RFQs:", error);
         }
@@ -199,27 +374,29 @@ export class ProcurementDashboard extends Component {
 
             console.log("✅ Final Processed Product Breakdown:", this.state.productBreakdown);
 
-            this.state.productCategoryChart = {
-                labels: ["Office Supplies", "IT Equipment", "Furniture", "Machinery"],  // Example categories
+            const productCounts = {};
+            this.state.productBreakdown.forEach(product => {
+                productCounts[product.product] = (productCounts[product.product] || 0) + product.quantity;
+            });
+
+            // ✅ Sort and take the top 5 products
+            const sortedProducts = Object.entries(productCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            this.state.topProductsChartData = {
+                labels: sortedProducts.map(p => p[0]),  // ✅ Product Names
                 datasets: [
                     {
-                        label: "Total Purchased",
-                        data: [Math.floor(Math.random() * 50), Math.floor(Math.random() * 30), Math.floor(Math.random() * 40), Math.floor(Math.random() * 60)],  // Example data
-                        backgroundColor: ["blue", "orange", "green", "purple"]
+                        label: "Quantity Ordered",
+                        data: sortedProducts.map(p => p[1]),
+                        backgroundColor: "#ff9800",
                     }
                 ]
             };
 
-            this.state.topRequestedProductsChart = JSON.parse(JSON.stringify({
-                labels: ["Laptop", "Office Chair", "Desk", "Projector", "Printer"], // Example Products
-                datasets: [
-                    {
-                        label: "Requests",
-                        data: [50, 40, 60, 35, 45], // Example Data
-                        backgroundColor: "blue"
-                    }
-                ]
-            }));
+            // ✅ Debugging Log
+            console.log("✅ Top 5 Products Chart Data:", this.state.topProductsChartData);
 
 
         } catch (error) {
@@ -227,12 +404,6 @@ export class ProcurementDashboard extends Component {
         }
     }
 
-    async fetchCharts() {
-        this.fetchSupplierContribution();
-        this.fetchRFQTrends();
-//        this.fetchRFQApprovalTrends();
-//        this.fetchTopRequestedProducts();
-    }
 
     /** ✅ Supplier Contribution Breakdown (Pie Chart) */
     async fetchSupplierContribution() {
