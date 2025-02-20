@@ -53,13 +53,13 @@
                             <field name="status"/>
                             <field name="required_date"/>
                             <field name="currency_id" readonly="1"/>
-                            <field name="company_id" column_invsible="True"/> <!-- ✅ Fix: Added company_id to avoid domain errors -->
+                            <field name="company_id" column_invisible="True"/> <!-- ✅ Fix: Added company_id to avoid domain errors -->
                         </group>
                         <group>
                             <field name="reviewer_id" readonly="1"/>
                             <field name="approver_id"/>
                             <field name="approved_supplier_id" domain="[('id', 'in', recommended_supplier_ids)]"/>
-                            <field name="recommended_supplier_ids" column_invsible="True"/>
+                            <field name="recommended_supplier_ids" column_invisible="True"/>
                         </group>
                     </group>
                     <notebook>
@@ -76,13 +76,13 @@
                             <field name="rfq_line_ids">
                                 <tree editable="bottom">
                                     <field name="partner_id" domain="[('company_id', '=', company_id)]"/> <!-- ✅ Fix: Ensuring domain works correctly -->
-                                    <field name="company_id" column_invsible="True"/>
+                                    <field name="company_id" column_invisible="True"/>
                                     <field name="expected_delivery_date"/>
                                     <field name="terms_conditions"/>
                                     <field name="warranty_period"/>
                                     <field name="score"/>
                                     <field name="recommended" widget="boolean_toggle"/>
-
+                                    <field name="is_selected" widget="boolean_toggle"/>
                                     <button name="open_form_view" type="object" icon="fa-external-link"/>
                                 </tree>
                             </field>

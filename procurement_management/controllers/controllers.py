@@ -226,6 +226,28 @@ class OTPCustomerPortal(CustomerPortal):
             if file_vals:
                 registration.sudo().write(file_vals)  # Save file fields
             print("Supplier Registration Updated Successfully:", registration.id)
+
+            reviewer_group = request.env.ref('procurement_management.group_supplier_reviewer')
+            approver_group = request.env.ref('procurement_management.group_supplier_approver')
+            reviewers = request.env['res.users'].sudo().search([
+                ('groups_id', 'in', reviewer_group.id),
+                ('groups_id', 'not in', approver_group.id),
+                ('email', '!=', False),
+                ('email', '!=', 'admin@yourcompany.example.com')
+            ])
+
+            for reviewer in reviewers:
+                email_values = {
+                    'email_from': 'shahriar.ahmed@bjitacademy.com',
+                    'email_to': reviewer.email,
+                    'subject': 'New Supplier Registration Request',
+                    'body_html': '<p>A new supplier registration request has been submitted. Please review it.</p>'
+                }
+                mail = request.env['mail.mail'].sudo().create(email_values)
+                print(f"✅ Email Created: ID {mail.id} for {reviewer.email}")
+                mail.sudo().send()
+                print(f"✅ Email Sent to {reviewer.email}")
+
         except Exception as e:
             print(f"ERROR Updating Registration: {e}")
             return request.render('procurement_management.supplier_registration_form_template', {
@@ -233,6 +255,7 @@ class OTPCustomerPortal(CustomerPortal):
                 'supplier_email': supplier_email,
                 'form_data': kwargs
             })
+
 
         request.session.pop('supplier_email', None)
 

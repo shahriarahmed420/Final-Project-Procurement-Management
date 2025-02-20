@@ -11,6 +11,7 @@ class PurchaseOrder(models.Model):
     score = fields.Integer()
     recommended = fields.Boolean()
     rfp_status = fields.Selection(related='rfp_id.status', store=True, string="RFP Status")
+    is_selected = fields.Boolean(string="Selected RFQ", help="Flag to determine which RFQ was selected.")
 
     total_price = fields.Monetary(string="Total Price", compute="_compute_total_price", store=True)
     currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id)

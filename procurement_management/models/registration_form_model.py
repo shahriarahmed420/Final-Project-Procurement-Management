@@ -166,10 +166,10 @@ class RegistrationForm(models.Model):
             # Create the vendor record if partner doesn't exist
             vendor = self.env['res.partner'].create({
                 'name': self.company_name,
-                'email': self.email,
-                'phone': self.primary_contact_phone,
                 'is_company': True,
                 'company_type': 'company',
+                'email': self.email,
+                'phone': self.primary_contact_phone,
                 'supplier_rank': 1,
                 'user_ids': [(4, user.id)] if user else [],
                 'company_id': self.env.company.id,
@@ -192,6 +192,7 @@ class RegistrationForm(models.Model):
                 'name': self.bank_name,
                 'street': self.bank_address,
                 'bic': self.bank_swift_code,
+                'iban': self.iban,
             })
 
         existing_bank_entry = self.env['res.partner.bank'].sudo().search_count([
@@ -206,6 +207,7 @@ class RegistrationForm(models.Model):
                 'bank_id': existing_bank.id,
                 'acc_number': self.account_number,
                 'acc_holder_name': self.account_name,
+                'bank_address': self.bank_address,
             })
 
         self.write({
@@ -242,6 +244,17 @@ class RegistrationForm(models.Model):
         })
         self.message_post(body=_("Portal user account created for supplier: %s" % user.login))
 
+    # email_values = {
+    #     'email_from': 'shahriar.ahmed@bjitacademy.com',
+    #     'email_to': email,
+    #     'subject': 'Your OTP Code',
+    #     'body_html': f'<p>Your OTP code is: <strong>{otp_record.otp}</strong>. It is valid for 5 minutes.</p>'
+    # }
+    # mail = request.env['mail.mail'].sudo().create(email_values)
+    # print(f"✅ Email Created: ID {mail.id} for {email}")
+    # mail.sudo().send()
+    # print(f"✅ Email Sent to {email}")
+
     def send_supplier_approval_email(self):
         template = self.env.ref('procurement_management.email_template_supplier_approval')
         if template:
@@ -259,11 +272,10 @@ class RegistrationForm(models.Model):
                 raise ValidationError("Certificate expiry date must be in the future.")
 
     @api.constrains(
-        'trade_license_business_registration', 'certificate_of_incorporation',
-        'certificate_of_good_standing', 'establishment_card', 'vat_tax_certificate',
-        'memorandum_of_association', 'identification_document_for_authorized_person',
-        'bank_letter_indicating_bank_account', 'past_2_years_audited_financial_statements',
-        'other_certifications'
+        'trade_license_business_registration', 'certificate_of_incorporation', 'certificate_of_good_standing',
+        'establishment_card', 'vat_tax_certificate', 'memorandum_of_association',
+        'identification_document_for_authorized_person', 'bank_letter_indicating_bank_account',
+        'past_2_years_audited_financial_statements', 'other_certifications'
     )
     def _check_file_size(self):
         max_size = 5 * 1024 * 1024  # 5 MB

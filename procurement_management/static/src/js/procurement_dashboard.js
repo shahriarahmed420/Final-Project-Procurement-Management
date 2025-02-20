@@ -183,29 +183,40 @@ export class ProcurementDashboard extends Component {
 
             console.log("✅ Monthly RFQ Trends Chart Data:", this.state.monthlyRFQChartData);
 
-            let approvedCount = 0;
-            let rejectedCount = 0;
+            let purchaseCount = 0;
+            let cancelCount = 0;
 
-            rfqRecords.forEach(rfq => {
-                if (rfq.status === "accepted") {
-                    approvedCount++;
-                } else if (rfq.status === "rejected") {
-                    rejectedCount++;
+            // ✅ Fetch all Purchase Orders for the selected supplier
+            const purchaseOrders = await this.orm.searchRead(
+                "purchase.order",
+                [["partner_id", "=", parseInt(this.state.selectedSupplier)]],
+                ["state", "name"]
+            );
+
+            console.log("📜 Raw Purchase Orders:", purchaseOrders);
+
+            // ✅ Count RFQs that are 'Purchased' or 'Cancelled'
+            purchaseOrders.forEach(order => {
+                if (order.state === "purchase") {
+                    purchaseCount++;  // Count RFQs that became POs
+                } else if (order.state === "cancel") {
+                    cancelCount++;  // Count RFQs that were Cancelled
                 }
             });
 
+            // ✅ Debugging Log
+            console.log(`✅ Final Count → Purchase: ${purchaseCount}, ❌ Cancelled: ${cancelCount}`);
+
             this.state.rfqApprovalChartData = {
-                labels: ["Approved RFQs", "Rejected RFQs"],
+                labels: ["Accepted RFQs", "Rejected RFQs"],
                 datasets: [
                     {
-                        data: [approvedCount, rejectedCount],
+                        data: [purchaseCount, cancelCount],
                         backgroundColor: ["green", "red"],
                     }
                 ]
             };
 
-            // ✅ Debugging Log
-            console.log("✅ RFQ Approval Chart Data:", this.state.rfqApprovalChartData);
 
             const weeklyCounts = {};
 
@@ -456,9 +467,7 @@ export class ProcurementDashboard extends Component {
 
 
 
-    /** ✅ Monthly RFQ Trends (Line Chart) */
 
-    /** ✅ Monthly RFQ Trends (Line Chart) */
     async fetchRFQTrends() {
         console.log("🔍 Fetching Monthly RFQ Trends...");
         try {

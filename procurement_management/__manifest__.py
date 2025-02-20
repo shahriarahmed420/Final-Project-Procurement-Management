@@ -18,7 +18,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'purchase', 'web', 'mail', 'website', 'portal', 'account', 'contacts'],
+    'depends': ['purchase', 'web', 'website', 'portal', 'account', 'contacts'],
 
     # always loaded
     'data': [
@@ -35,6 +35,8 @@
         'views/rfp_views.xml',
         'views/dashboard_views.xml',
         'views/inherited_purchase_order_views.xml',
+        'views/inherited_bank_views.xml',
+        'views/inherited_res_partner_views.xml',
         'views/menus.xml',
         'views/portal_rfp_views.xml',
         'views/portal_vendor_rfp_templates.xml',

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_partner_extended_form_view" model="ir.ui.view">
+        <field name="name">res.partner.extended.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page name="certification" string="Certification">
+                    <group>
+                        <field name="certification_name"/>
+                        <field name="certificate_number"/>
+                        <field name="certifying_body"/>
+                        <field name="award_date"/>
+                        <field name="certificate_expiry_date"/>
+                    </group>
+                </page>
+                <page name="document_upload" string="Document Upload">
+                    <group>
+
+                        <group>
+                            <field name="trade_license_business_registration" widget="binary"/>
+                            <field name="certificate_of_incorporation" widget="binary"/>
+                            <field name="certificate_of_good_standing" widget="binary"/>
+                            <field name="establishment_card" widget="binary"/>
+                            <field name="vat_tax_certificate" widget="binary"/>
+                        </group>
+                        <group>
+                            <field name="memorandum_of_association" widget="binary"/>
+                            <field name="identification_document_for_authorized_person" widget="binary"/>
+                            <field name="bank_letter_indicating_bank_account" widget="binary"/>
+                            <field name="past_2_years_audited_financial_statements" widget="binary"/>
+                            <field name="other_certifications" widget="binary"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

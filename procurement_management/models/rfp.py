@@ -50,13 +50,6 @@ class RFP(models.Model):
     show_accept_button = fields.Boolean(compute="_compute_button_visibility", store=False)
 
 
-    @api.constrains('status')
-    def _check_edit_restrictions(self):
-        for rfp in self:
-            if rfp.status != 'draft' and not self.env.user.has_group('procurement_management.group_supplier_approver'):
-                raise ValidationError(_("You can not edit a RFP after you submits it"))
-
-
     @api.depends('rfq_line_ids.total_price')
     def _compute_total_amount(self):
         for rfp in self:
@@ -148,24 +141,24 @@ class RFP(models.Model):
         if not recommended_rfq:
             raise ValidationError(_("You must have at least one recommended RFQ before proceeding."))
 
+        # ✅ Allow multiple RFQs from different vendors, even if they belong to the same company
         for rfq in recommended_rfq:
             duplicate_rfqs = self.env['purchase.order'].search([
                 ('rfp_id', '=', self.id),
-                ('partner_id', '=', rfq.partner_id.id),
+                ('partner_id', '=', rfq.partner_id.id),  # Vendor-specific check, not company
                 ('recommended', '=', True),
                 ('id', '!=', rfq.id)  # Exclude the current record
             ])
             if duplicate_rfqs:
-                raise ValidationError(_(
-                    f"Supplier {rfq.partner_id.name} already has a recommended RFQ for RFP {self.name}."
-                ))
+                print(f"⚠️ Multiple RFQs detected for vendor: {rfq.partner_id.name}, but allowed.")  # Debug log
 
+        # ✅ Update RFQ State to 'sent'
         recommended_rfq.write({'state': 'sent'})
 
+        # ✅ Ensure Correct Field Name for State Change
         self.write({'status': 'recommendation'})
 
-        self.send_rfq_recommendation_email()
-
+        # ✅ Notify Approvers
         approver_group = self.env.ref('procurement_management.group_supplier_approver')
         for approver in approver_group.users:
             self.message_post(
@@ -274,37 +267,46 @@ class RFP(models.Model):
         }
         self.env['mail.mail'].create(email_values).send()
 
-
     def action_accept(self):
-        recommended_rfq = self.env['purchase.order'].search([
+        self.ensure_one()  # Ensure only one RFP is being processed
+
+        # ✅ Fetch the RFQ marked as selected
+        selected_rfq = self.env['purchase.order'].sudo().search([
             ('rfp_id', '=', self.id),
-            ('recommended', '=', True),
-            ('state', '=', 'sent')  # ✅ Ensures only RFQs in 'RFQ Sent' state can be accepted
+            ('is_selected', '=', True),  # ✅ Identify the selected RFQ
+            ('state', '=', 'sent')
         ], limit=1)
 
-        if not recommended_rfq:
-            raise ValidationError(_("There must be a recommended RFQ in 'RFQ Sent' state before accepting the RFP."))
+        if not selected_rfq:
+            raise ValidationError(_("You must select an RFQ before accepting."))
 
-        self.write({
-            'status': 'accepted',
-            'approved_supplier_id': recommended_rfq.partner_id.id
+        # ✅ Step 1: Convert Selected RFQ to a Purchase Order
+        selected_rfq.sudo().write({
+            'state': 'purchase'  # ✅ "state" is the correct field, not "status"
         })
 
-        recommended_rfq.write({'state': 'purchase'})
+        self.sudo().write({
+            'status': 'accepted',  # ✅ Ensure this field exists in "rfp"
+            'approved_supplier_id': selected_rfq.partner_id.id
+        })
 
-        other_rfqs = self.env['purchase.order'].search([
+        # ✅ Step 2: Cancel All Other RFQs for this RFP
+        other_rfqs = self.env['purchase.order'].sudo().search([
             ('rfp_id', '=', self.id),
-            ('id', '!=', recommended_rfq.id),
+            ('id', '!=', selected_rfq.id),
             ('state', '=', 'sent')
         ])
-        other_rfqs.write({'state': 'cancel'})
 
         for rfq in other_rfqs:
+            rfq.sudo().write({
+                'state': 'cancel'  # ✅ Use "state" instead of "status"
+            })
             rfq.message_post(body=_("This RFQ has been canceled because another RFQ was accepted."))
 
-        self.write({'status': 'accepted'})
-        self.send_rfq_approval_email()
 
-        self.message_post(
-            body=_("RFP <b>%s</b> has been accepted and converted into a Purchase Order.") % self.name
-        )
+        self.message_post(body=_("RFP <b>%s</b> has been accepted and converted into a Purchase Order.") % self.name)
+
+        # ✅ Debugging Output
+        print(f"✅ Accepted RFQ: {selected_rfq.name} (Converted to Purchase Order)")
+        for rfq in other_rfqs:
+            print(f"🚨 Rejected RFQ: {rfq.name} (Canceled)")
