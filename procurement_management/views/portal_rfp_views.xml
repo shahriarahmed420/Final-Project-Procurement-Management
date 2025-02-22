@@ -13,37 +13,60 @@
 
     <template id="rfp_list_view_template" name="Portal RFP List">
         <t t-call="portal.portal_layout">
-            <div class="container mt-5">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Approved RFPs</li>
+            <div class="container mt-4">
+                <!-- Breadcrumb Navigation -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb bg-light p-2 rounded">
+                        <li class="breadcrumb-item"><a href="/my">🏠 Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">📑 Available RFPs</li>
                     </ol>
                 </nav>
 
-                <h1 class="text-center mb-4">Available RFPs</h1>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>RFP Name</th>
-                            <th>Status</th>
-                            <th>Required Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <t t-foreach="rfps" t-as="rfp">
-                            <tr>
-                                <td><a t-att-href="'/my/rfp/%s' % rfp.id"><t t-esc="rfp.name"/></a></td>
-                                <td><t t-esc="rfp.status"/></td>
-                                <td><t t-esc="rfp.required_date"/></td>
-                                <td>
-                                    <a t-att-href="'/my/rfp/%s' % rfp.id" class="btn btn-primary btn-sm">View</a>
-                                </td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                <!-- Page Header -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">📜 Available RFPs</h2>
+                    <p class="text-muted">Browse and participate in approved Request for Proposals</p>
+                </div>
+
+                <!-- RFP List Table -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>📌 RFP Name</th>
+                                    <th>📊 Status</th>
+                                    <th>📅 Required Date</th>
+                                    <th class="text-center">🔍 Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="rfps" t-as="rfp">
+                                    <tr>
+                                        <td>
+                                            <a t-att-href="'/my/rfp/%s' % rfp.id" class="text-decoration-none fw-bold text-primary">
+                                                <t t-esc="rfp.name"/>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success px-3 py-2">
+                                                <t t-esc="rfp.status"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted"><t t-esc="rfp.required_date"/></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a t-att-href="'/my/rfp/%s' % rfp.id" class="btn btn-outline-primary btn-sm">
+                                                🔍 View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </t>
     </template>
@@ -60,13 +83,16 @@
                     padding: 20px;
                     border-radius: 8px;
                     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                    text-align: center;
                 }
 
                 .custom-badge {
                     font-size: 1rem;
-                    padding: 10px 15px;
-                    border-radius: 30px;
+                    padding: 8px 14px;
+                    border-radius: 20px;
                     font-weight: bold;
+                    display: inline-block;
+                    margin-top: 5px;
                 }
 
                 .custom-card {
@@ -74,6 +100,7 @@
                     border-radius: 10px;
                     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
                     padding: 20px;
+                    background: #ffffff;
                 }
 
                 .custom-title {
@@ -81,7 +108,6 @@
                     font-size: 1.4rem;
                     color: #0056b3;
                     text-transform: uppercase;
-                    margin-bottom: 15px;
                     border-bottom: 3px solid #007bff;
                     display: inline-block;
                     padding-bottom: 5px;
@@ -114,7 +140,7 @@
                 .btn-custom {
                     background: #28a745;
                     color: white;
-                    font-size: 1.2rem;
+                    font-size: 1.1rem;
                     font-weight: bold;
                     padding: 10px 20px;
                     border-radius: 50px;
@@ -124,19 +150,25 @@
                 .btn-custom:hover {
                     background: #218838;
                 }
+
+                .table td img {
+                    border-radius: 6px;
+                    border: 1px solid #ddd;
+                    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+                }
             </style>
 
             <div class="container mt-5">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/my">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/my/rfps">Approved RFPs</a></li>
+                    <ol class="breadcrumb bg-light p-2 rounded">
+                        <li class="breadcrumb-item"><a href="/my">🏠 Home</a></li>
+                        <li class="breadcrumb-item"><a href="/my/rfps">📜 Available RFPs</a></li>
                         <li class="breadcrumb-item active" aria-current="page"><t t-esc="rfp.name"/></li>
                     </ol>
                 </nav>
 
                 <!-- Header Section -->
-                <div class="custom-header d-flex justify-content-between align-items-center">
+                <div class="custom-header">
                     <h1 class="m-0">
                         <i class="fa fa-file-alt"></i> <t t-esc="rfp.name"/>
                     </h1>
@@ -225,7 +257,6 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="d-flex justify-content-end mt-4">
                             <button type="submit" class="btn btn-custom">
                                 <i class="fa fa-paper-plane"></i> Submit RFQ

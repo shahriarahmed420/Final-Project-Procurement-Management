@@ -28,8 +28,6 @@
         'security/ir.model.access.csv',
         'reports/rfp_qweb_template.xml',
         'views/rfp_report_views.xml',
-        'views/all_email_templates.xml',
-        'views/email_template_supplier_rejection.xml',
         'views/approver.xml',
         'views/reviewer.xml',
         'views/rfp_views.xml',

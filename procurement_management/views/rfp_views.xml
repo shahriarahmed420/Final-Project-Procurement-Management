@@ -21,28 +21,30 @@
                 <header>
                     <field name="status" widget="statusbar" clickable="1"/>
 
+                    <!-- ✅ Reviewers' Buttons -->
                     <button name="action_submit" type="object" string="Submit" class="btn-primary"
-                        modifiers="{'invisible': [('show_submit_button', '=', False)]}"
-                        groups="procurement_management.group_supplier_reviewer"/>
+                            invisible="status != 'draft'"
+                            groups="procurement_management.group_supplier_reviewer"/>
                     <button name="action_recommend" type="object" string="Recommend" class="btn-secondary"
-                        modifiers="{'invisible': [('show_recommend_button', '=', False)]}"
-                        groups="procurement_management.group_supplier_reviewer"/>
+                            invisible="status != 'closed'"
+                            groups="procurement_management.group_supplier_reviewer"/>
                     <button name="action_return_draft" type="object" string="Return to Draft" class="btn-warning"
-                        modifiers="{'invisible': [('show_return_draft_button', '=', False)]}"
-                        groups="procurement_management.group_supplier_reviewer"/>
+                            invisible="status != 'submitted'"
+                            groups="procurement_management.group_supplier_reviewer"/>
 
+                    <!-- ✅ Approvers' Buttons -->
                     <button name="action_approve" type="object" string="Approve" class="btn-success"
-                        modifiers="{'invisible': [('show_approve_button', '=', False)]}"
-                        groups="procurement_management.group_supplier_approver"/>
+                            invisible="status != 'submitted'"
+                            groups="procurement_management.group_supplier_approver"/>
                     <button name="action_reject" type="object" string="Reject" class="btn-danger"
-                        modifiers="{'invisible': [('show_reject_button', '=', False)]}"
-                        groups="procurement_management.group_supplier_approver"/>
+                            invisible="status != 'submitted'"
+                            groups="procurement_management.group_supplier_approver"/>
                     <button name="action_close" type="object" string="Close" class="btn-dark"
-                        modifiers="{'invisible': [('show_close_button', '=', False)]}"
-                        groups="procurement_management.group_supplier_approver"/>
+                            invisible="status != 'approved'"
+                            groups="procurement_management.group_supplier_approver"/>
                     <button name="action_accept" type="object" string="Accept" class="btn-primary"
-                        modifiers="{'invisible': [('show_accept_button', '=', False)]}"
-                        groups="procurement_management.group_supplier_approver"/>
+                            invisible="status != 'recommendation'"
+                            groups="procurement_management.group_supplier_approver"/>
                 </header>
                 <sheet>
                     <widget name="web_ribbon" title="Accepted" bg_color="text-bg-success" invisible="status != 'accepted'"/>
@@ -125,92 +127,103 @@
 		</field>
 	</record>
 
-    <record id="view_rfp_kanban" model="ir.ui.view">
-        <field name="name">rfp.kanban</field>
-        <field name="model">procurement_management.rfp</field>
+    <record id="view_registration_form_approver_kanban" model="ir.ui.view">
+        <field name="name">registration.form.approver.kanban</field>
+        <field name="model">registration.form</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="status" class="o_kanban_view">
-                <field name="name"/>
+            <kanban default_group_by="status">
+                <field name="company_name"/>
+                <field name="email"/>
                 <field name="reviewer_id"/>
                 <field name="approver_id"/>
                 <field name="status"/>
 
-                <!-- ✅ CSS Header Section -->
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click shadow-sm rounded border">
-                            <div class="oe_kanban_details p-3">
+                        <div class="oe_kanban_card oe_kanban_global_click shadow-lg rounded border position-relative">
+                            <!-- Status Badge at the top -->
+                            <div class="position-absolute top-0 start-50 translate-middle badge-container">
+                                <span t-if="record.status.value == 'under_review'" class="badge bg-warning">
+                                    <i class="fa fa-hourglass-half"></i> Under Review
+                                </span>
+                                <span t-if="record.status.value == 'approved'" class="badge bg-success">
+                                    <i class="fa fa-check-circle"></i> Approved
+                                </span>
+                                <span t-if="record.status.value == 'rejected'" class="badge bg-danger">
+                                    <i class="fa fa-times-circle"></i> Rejected
+                                </span>
+                                <span t-if="record.status.value == 'blacklisted'" class="badge bg-dark">
+                                    <i class="fa fa-ban"></i> Blacklisted
+                                </span>
+                            </div>
 
-                                <!-- Status Badge -->
-                                <div class="o_kanban_status text-center mb-2">
-                                    <span t-if="record.status.value == 'draft'" class="badge bg-warning text-dark px-3 py-2">
-                                        <i class="fa fa-pencil-alt"></i> Draft
-                                    </span>
-                                    <span t-if="record.status.value == 'submitted'" class="badge bg-success px-3 py-2">
-                                        <i class="fa fa-check-circle"></i> Submitted
-                                    </span>
-                                    <span t-if="record.status.value == 'rejected'" class="badge bg-danger px-3 py-2">
-                                        <i class="fa fa-times-circle"></i> Rejected
-                                    </span>
-                                    <span t-if="record.status.value == 'Approved'" class="badge bg-dark px-3 py-2">
-                                        <i class="fa fa-thumbs-up"></i> Approved
-                                    </span>
-                                    <span t-if="record.status.value == 'closed'" class="badge bg-secondary px-3 py-2">
-                                        <i class="fa fa-lock"></i> Closed
-                                    </span>
-                                    <span t-if="record.status.value == 'recommendation'" class="badge bg-info px-3 py-2">
-                                        <i class="fa fa-comment-alt"></i> Recommendation
-                                    </span>
-                                    <span t-if="record.status.value == 'accepted'" class="badge bg-primary px-3 py-2">
-                                        <i class="fa fa-handshake"></i> Accepted
-                                    </span>
-                                </div>
+                            <div class="oe_kanban_details p-4 text-center">
+                                <!-- Header with Company Name -->
+                                <h4 class="fw-bold text-primary">
+                                    <i class="fa fa-building"></i> <t t-esc="record.company_name.value or 'Not Assigned'"/>
+                                </h4>
+                                <hr class="my-2"/>
 
-                                <!-- Main Content -->
-                                <div class="o_kanban_body text-center">
-                                    <p class="fw-bold text-primary"><i class="fa fa-file-alt"></i> RFP: <t t-esc="record.name.value or 'Not Assigned'"/></p>
-                                    <p class="text-muted"><i class="fa fa-user-check"></i> Reviewer: <t t-esc="record.reviewer_id.value or 'Not Assigned'"/></p>
-                                    <p class="text-muted"><i class="fa fa-user-tie"></i> Approver: <t t-esc="record.approver_id.value or 'Not Assigned'"/></p>
-                                </div>
+                                <!-- Contact Information -->
+                                <p class="text-muted"><i class="fa fa-envelope text-info"></i> <strong>Email:</strong> <t t-esc="record.email.value or 'N/A'"/></p>
+                                <p class="text-muted"><i class="fa fa-user-check text-success"></i> <strong>Reviewer:</strong> <t t-esc="record.reviewer_id.value or 'Not Assigned'"/></p>
+                                <p class="text-muted"><i class="fa fa-user-tie text-warning"></i> <strong>Approver:</strong> <t t-esc="record.approver_id.value or 'Not Assigned'"/></p>
+                            </div>
 
-                                <!-- Footer -->
-                                <div class="o_kanban_footer text-center mt-2">
-                                    <span class="text-muted"><i class="fa fa-mouse-pointer"></i> Click to open</span>
-                                </div>
+                            <!-- Footer -->
+                            <div class="o_kanban_footer text-center py-2 bg-light rounded-bottom">
+                                <span class="text-muted"><i class="fa fa-mouse-pointer"></i> Click to Open</span>
                             </div>
                         </div>
                     </t>
 
-                    <!-- ✅ CSS Styling Inside Template -->
+                    <!-- ✅ Enhanced CSS Styling -->
                     <t t-name="kanban-styles">
                         <style>
                             .oe_kanban_card {
-                                background: rgba(255, 255, 255, 0.05);
-                                padding: 15px;
-                                border-radius: 8px;
+                                background: linear-gradient(135deg, #1e3c72, #2a5298);
+                                color: white;
+                                border-radius: 12px;
+                                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
                                 transition: all 0.3s ease-in-out;
+                                overflow: hidden;
+                                position: relative;
                             }
                             .oe_kanban_card:hover {
                                 transform: scale(1.05);
-                                box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+                                box-shadow: 0px 0px 12px rgba(255, 255, 255, 0.3);
+                            }
+                            .badge-container {
+                                top: -10px;
+                                background: white;
+                                padding: 5px 15px;
+                                border-radius: 15px;
+                                box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
                             }
                             .o_kanban_status .badge {
                                 font-size: 12px;
+                                padding: 6px 12px;
+                                border-radius: 12px;
                             }
                             .o_kanban_body p {
+                                font-size: 14px;
                                 margin: 5px 0;
                             }
                             .o_kanban_footer {
-                                font-size: 11px;
+                                font-size: 12px;
+                                font-weight: bold;
+                            }
+                            .o_kanban_footer span {
+                                display: block;
+                                padding: 8px;
+                                border-top: 1px solid rgba(255, 255, 255, 0.2);
                             }
                         </style>
                     </t>
-
                 </templates>
             </kanban>
         </field>
     </record>
-
 
     <record id="action_rfp_list" model="ir.actions.act_window">
         <field name="name">RFPs</field>

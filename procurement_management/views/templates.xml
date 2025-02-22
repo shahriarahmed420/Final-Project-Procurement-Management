@@ -100,14 +100,28 @@
 
         <template id="supplier_registration_form_template">
             <t t-call="website.layout">
-                <head>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"/>
-                </head>
+                <style>
+                    label[for]:after {
+                        content: " *";
+                        color: red;
+                        font-weight: bold;
+                    }
+
+                    .required-message {
+                        font-size: 14px;
+                        font-weight: bold;
+                        color: red;
+                    }
+                </style>
                 <div class="container mt-5">
                     <h1 class="text-center mb-4 text-uppercase text-primary">Supplier Registration Form</h1>
 
                     <form id="multi-step-form" method="POST" action="/my/supplier/form/submit" enctype="multipart/form-data">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                        <div class="alert alert-warning text-center" role="alert">
+                            <strong>Fields with <span style="color: red;">*</span> must be filled to submit the form.</strong>
+                        </div>
 
                         <!-- Step 1: Company Information -->
                         <div class="form-step" id="step-1">
@@ -117,17 +131,17 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label class="form-label">Company Name</label>
+                                        <label for="company_name" class="form-label">Company Name</label>
                                         <input type="text" name="company_name" class="form-control" placeholder="Enter Company Name" required=""/>
                                         <div class="invalid-feedback">Company Name is required.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Company Address</label>
+                                        <label for="company_address" class="form-label o_required">Company Address</label>
                                         <input type="text" name="company_address" class="form-control" placeholder="Enter Company Address" required=""/>
                                         <div class="invalid-feedback">Company Address is required.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Company Type</label>
+                                        <label for="company_type" class="form-label o_required">Company Type</label>
                                         <select name="company_type" class="form-select" required="">
                                             <option value="">Select your company type</option>
                                             <option value="sole_proprietorship">Sole Proprietorship</option>
@@ -155,17 +169,17 @@
                                 <div class="border rounded p-3 mb-4">
                                     <h4 class="text-primary">Primary Contact</h4>
                                     <div class="mb-3">
-                                        <label class="form-label">Name</label>
+                                        <label for="primary_contact_name" class="form-label">Name</label>
                                         <input type="text" name="primary_contact_name" class="form-control" placeholder="Enter Name" required=""/>
                                         <div class="invalid-feedback">Name is required.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Email</label>
+                                        <label for="primary_contact_email" class="form-label">Email</label>
                                         <input type="email" name="primary_contact_email" class="form-control" placeholder="Enter Email" required=""/>
                                         <div class="invalid-feedback">Email is required.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Phone</label>
+                                        <label for="primary_contact_phone" class="form-label">Phone</label>
                                         <input type="text" name="primary_contact_phone" class="form-control" placeholder="Enter Phone Number" required=""/>
                                         <div class="invalid-feedback">Phone is required.</div>
                                     </div>
@@ -179,16 +193,16 @@
                                 <div class="border rounded p-3 mb-4">
                                     <h4 class="text-success">Financial Contact</h4>
                                     <div class="mb-3">
-                                        <label class="form-label">Name</label>
+                                        <label for="finance_contact_name" class="form-label">Name</label>
                                         <input type="text" name="finance_contact_name" class="form-control" placeholder="Enter Name" required=""/>
                                         <div class="invalid-feedback">Name is required.</div>
                                     </div>
-                                    <div class="mb-3">
+                                    <div for="finance_contact_email" class="mb-3">
                                         <label class="form-label">Email</label>
                                         <input type="email" name="finance_contact_email" class="form-control" placeholder="Enter Email" required=""/>
                                         <div class="invalid-feedback">Email is required.</div>
                                     </div>
-                                    <div class="mb-3">
+                                    <div for="finance_contact_phone" class="mb-3">
                                         <label class="form-label">Phone</label>
                                         <input type="text" name="finance_contact_phone" class="form-control" placeholder="Enter Phone Number" required=""/>
                                         <div class="invalid-feedback">Phone is required.</div>
@@ -203,17 +217,17 @@
                                 <div class="border rounded p-3 mb-4">
                                     <h4 class="text-danger">Authorized Contact</h4>
                                     <div class="mb-3">
-                                        <label class="form-label">Name</label>
+                                        <label for="authorized_contact_name" class="form-label">Name</label>
                                         <input type="text" name="authorized_contact_name" class="form-control" placeholder="Enter Name" required=""/>
                                         <div class="invalid-feedback">Name is required.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Email</label>
+                                        <label for="authorized_contact_email" class="form-label">Email</label>
                                         <input type="email" name="authorized_contact_email" class="form-control" placeholder="Enter Email" required=""/>
                                         <div class="invalid-feedback">Email is required.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Phone</label>
+                                        <label for="authorized_contact_phone" class="form-label">Phone</label>
                                         <input type="text" name="authorized_contact_phone" class="form-control" placeholder="Enter Phone Number" required=""/>
                                         <div class="invalid-feedback">Phone is required.</div>
                                     </div>
@@ -259,12 +273,12 @@
                                     <div class="border rounded p-4 mb-4 bg-light shadow-sm">
                                         <h5 class="text-primary fw-bold">🏦 Bank Details</h5>
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold">Bank Name</label>
+                                            <label for="bank_name" class="form-label fw-semibold">Bank Name</label>
                                             <input type="text" name="bank_name" class="form-control shadow-sm" placeholder="Enter Bank Name" required=""/>
                                             <div class="invalid-feedback">Bank Name is required.</div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold">Bank Address</label>
+                                            <label for="bank_address" class="form-label fw-semibold">Bank Address</label>
                                             <input type="text" name="bank_address" class="form-control shadow-sm" placeholder="Enter Bank Address" required=""/>
                                             <div class="invalid-feedback">Bank Address is required.</div>
                                         </div>
@@ -281,7 +295,7 @@
                                             <input type="text" name="account_name" class="form-control shadow-sm" placeholder="Enter Account Name" />
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold">Account Number</label>
+                                            <label for="account_number" class="form-label fw-semibold">Account Number</label>
                                             <input type="text" name="account_number" class="form-control shadow-sm" placeholder="Enter Account Number" required=""/>
                                             <div class="invalid-feedback">Account Number is required.</div>
                                         </div>
@@ -313,7 +327,6 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Name</label>
                                             <input type="text" name="client_name" class="form-control shadow-sm" placeholder="Enter Name" required=""/>
-                                            <div class="invalid-feedback">Name is required.</div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Email</label>
@@ -432,12 +445,12 @@
                                     <div class="border rounded p-4 mb-4 bg-light shadow-sm">
                                         <h5 class="text-primary fw-bold">📜 Certification Details</h5>
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold">Certification Name</label>
+                                            <label for="certification_name" class="form-label fw-semibold">Certification Name</label>
                                             <input type="text" name="certification_name" class="form-control shadow-sm" placeholder="Enter Certification Name" required=""/>
                                             <div class="invalid-feedback">Certification Name is required.</div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold">Certification Number</label>
+                                            <label for="certificate_number" class="form-label fw-semibold">Certification Number</label>
                                             <input type="text" name="certificate_number" class="form-control shadow-sm" placeholder="Enter Certification Number" required=""/>
                                             <div class="invalid-feedback">Certification Number is required.</div>
                                         </div>
@@ -479,43 +492,43 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Trade License / Business Registration</label>
-                                                <input type="file" name="trade_license_business_registration" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="trade_license_business_registration" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Certificate of Incorporation</label>
-                                                <input type="file" name="certificate_of_incorporation" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="certificate_of_incorporation" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Certificate of Good Standing</label>
-                                                <input type="file" name="certificate_of_good_standing" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="certificate_of_good_standing" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Establishment Card</label>
-                                                <input type="file" name="establishment_card" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="establishment_card" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">VAT / TAX Certificate</label>
-                                                <input type="file" name="vat_tax_certificate" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="vat_tax_certificate" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Memorandum of Association</label>
-                                                <input type="file" name="memorandum_of_association" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="memorandum_of_association" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Identification Document for Authorized Person</label>
-                                                <input type="file" name="identification_document_for_authorized_person" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="identification_document_for_authorized_person" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Bank Letter indicating Bank Account</label>
-                                                <input type="file" name="bank_letter_indicating_bank_account" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="bank_letter_indicating_bank_account" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Past 2 Years Audited Financial Statements</label>
-                                                <input type="file" name="past_2_years_audited_financial_statements" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="past_2_years_audited_financial_statements" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Other Certifications</label>
-                                                <input type="file" name="other_certifications" class="form-control shadow-sm"/>
+                                                <input type="file" id="pdfUpload" name="other_certifications" class="form-control shadow-sm" accept="application/pdf"/>
                                             </div>
                                         </div>
                                     </div>
@@ -529,21 +542,21 @@
                                     <p class="form-control shadow-sm">I confirm that all information and documents supplied are true and accurate to the best of my knowledge, and I understand that this information may be considered material in the evaluation of quotations, bids, and/or proposals.</p>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Name of Signatory</label>
+                                    <label for="name_of_signatory" class="form-label fw-semibold">Name of Signatory</label>
                                     <input type="text" name="name_of_signatory" class="form-control shadow-sm" placeholder="Enter Signatory Name" required=""/>
                                     <div class="invalid-feedback">Name is required.</div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Authorized Signatory Role</label>
+                                    <label for="authorized_signatory" class="form-label fw-semibold">Authorized Signatory Role</label>
                                     <input type="text" name="authorized_signatory" class="form-control shadow-sm" placeholder="Enter Signatory Role" required=""/>
                                     <div class="invalid-feedback">Role is required.</div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Company Stamp &amp; Date</label>
+                                    <label for="company_stamp" class="form-label fw-semibold">Company Stamp &amp; Date</label>
                                     <input type="file" name="company_stamp" class="form-control shadow-sm" required=""/>
                                     <div class="invalid-feedback">Company Stamp is required.</div>
                                 </div>
-                                <div class="mb-3">
+                                <div for="submission_date" class="mb-3">
                                     <label class="form-label fw-semibold">Submission Date</label>
                                     <input type="date" name="submission_date" class="form-control shadow-sm" required=""/>
                                     <div class="invalid-feedback">Date is required.</div>

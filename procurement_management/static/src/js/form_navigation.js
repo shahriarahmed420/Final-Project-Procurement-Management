@@ -55,3 +55,14 @@ document.getElementById("supplier-form").addEventListener("submit", function(eve
         event.preventDefault(); // Prevent form submission if validation fails
     }
 });
+
+document.getElementById("pdfUpload").addEventListener("change", function() {
+        var file = this.files[0];
+        if (file) {
+            var allowedTypes = ["application/pdf"];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Only PDF files are allowed!");
+                this.value = ""; // Clear the file input
+            }
+        }
+});

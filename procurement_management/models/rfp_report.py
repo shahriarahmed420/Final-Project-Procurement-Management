@@ -42,123 +42,125 @@ class RFPReport(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet("RFP Report")
 
-        worksheet.set_column("A:A", 30)
-        worksheet.set_column("B:B", 40)
-        worksheet.set_column("C:C", 40)
+        # Define column widths
+        worksheet.set_column("A:A", 22)
+        worksheet.set_column("B:B", 35)
+        worksheet.set_column("C:C", 28)
         worksheet.set_column("D:D", 30)
+        worksheet.set_column("E:E", 30)
+
+        # Define refined styles
+        soft_blue_header = workbook.add_format(
+            {"bold": True, "border": 1, "bg_color": "#005f73", "font_color": "white", "align": "center"})
+        deep_teal_header = workbook.add_format(
+            {"bold": True, "border": 1, "bg_color": "#0a9396", "font_color": "white", "align": "center"})
+        title_format = workbook.add_format(
+            {"bold": True, "font_size": 13, "bg_color": "#005f73", "font_color": "white", "border": 1,
+             "align": "center"})
+        bold_center = workbook.add_format(
+            {"bold": True, "align": "center", "font_size": 14, "bg_color": "#94d2bd", "border": 1})
+        alt_row_format = workbook.add_format(
+            {"border": 1, "bg_color": "#f0fdfa", "align": "center"})  # Light pastel blue
+        cell_format = workbook.add_format({"border": 1, "align": "center", "font_color": "#3d405b"})  # Modern gray font
+        currency_format = workbook.add_format(
+            {"border": 1, "num_format": "$#,##0.00", "align": "center", "font_color": "#3d405b"})
+        highlight_total = workbook.add_format(
+            {"bold": True, "border": 1, "bg_color": "#0a9396", "font_color": "white", "align": "center"})
 
         company = self.env.company
         if not company.logo:
             raise UserError(
                 _("The current company does not have a logo. Please add a logo before exporting the report."))
 
+        # Remove any unwanted highlight in the top-left cell
+        worksheet.write("A1", "", workbook.add_format({"bg_color": "#FFFFFF"}))
+
+        # Insert Logo aligned with Vendor Info
         logo_data = base64.b64decode(company.logo)
         logo_image = Image.open(io.BytesIO(logo_data))
-        logo_image.thumbnail((120, 120))  # Resize logo to smaller size
-        logo_buffer = BytesIO()
+        logo_image.thumbnail((120, 120))
+        logo_buffer = io.BytesIO()
         logo_image.save(logo_buffer, format="PNG")
         logo_buffer.seek(0)
+        worksheet.insert_image("A5", "company_logo.png", {"image_data": logo_buffer, "x_scale": 1, "y_scale": 1})
 
-        worksheet.insert_image("A1", "company_logo.png", {"image_data": logo_buffer, "x_scale": 1, "y_scale": 1})
+        # Vendor Name (Centered Title)
+        worksheet.merge_range("B5:D5", supplier.name, bold_center)
 
-        start_row = 5
-        worksheet.merge_range(f"A{start_row}:B{start_row}", supplier.name,
-                              workbook.add_format(
-                                  {"bold": True, "font_size": 14, "align": "center", "bg_color": "#D1E8E2"}))
+        # Vendor Information Section
+        vendor_info_start = 7
+        vendor_fields = ["Email", "Phone", "Address", "TIN", "Bank", "Account Name", "Account Number"]
+        vendor_values = [
+            supplier.email or "N/A", supplier.phone or "N/A", supplier.contact_address or "N/A",
+            supplier.vat or "N/A",
+            supplier.bank_ids.mapped("bank_id.name")[0] if supplier.bank_ids else "N/A",
+            supplier.bank_ids.mapped("acc_holder_name")[0] if supplier.bank_ids else "N/A",
+            supplier.bank_ids.mapped("acc_number")[0] if supplier.bank_ids else "N/A"
+        ]
 
-        start_row += 2
-        worksheet.write(f"A{start_row}", "Email",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#ADD8E6"}))
-        worksheet.write(f"B{start_row}", supplier.email or "N/A", workbook.add_format({"border": 1}))
-        worksheet.write(f"A{start_row + 1}", "Phone",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#ADD8E6"}))
-        worksheet.write(f"B{start_row + 1}", supplier.phone or "N/A", workbook.add_format({"border": 1}))
-        worksheet.write(f"A{start_row + 2}", "Address",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#ADD8E6"}))
-        worksheet.write(f"B{start_row + 2}", supplier.contact_address or "N/A", workbook.add_format({"border": 1}))
+        for i, field in enumerate(vendor_fields):
+            worksheet.write(f"B{vendor_info_start + i}", field, deep_teal_header)
+            worksheet.write(f"C{vendor_info_start + i}", vendor_values[i], cell_format)
 
+        # Approved RFPs Section
+        rfp_start = vendor_info_start + len(vendor_fields) + 2
+        worksheet.merge_range(f"A{rfp_start}:D{rfp_start}", "Approved RFPs", title_format)
+        worksheet.write(f"A{rfp_start + 1}", "RFP Number", soft_blue_header)
+        worksheet.write(f"B{rfp_start + 1}", "RFP Date", soft_blue_header)
+        worksheet.write(f"C{rfp_start + 1}", "Required Date", soft_blue_header)
+        worksheet.write(f"D{rfp_start + 1}", "Total Amount", soft_blue_header)
 
-        start_row += 4
-        worksheet.write(f"A{start_row}", "Approved RFPs",
-                        workbook.add_format({"bold": True, "font_size": 12, "bg_color": "#D9D9D9"}))
-
-        start_row += 1
-        # Write headers for the RFP table
-        worksheet.write(f"A{start_row}", "RFP Number",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"B{start_row}", "RFP Date",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"C{start_row}", "Required Date",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"D{start_row}", "Total Amount",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-
-
-        total_amount = 0
-        row = start_row + 1
-        for rfp in approved_rfqs:
-            worksheet.write(row, 0, rfp.name, workbook.add_format({"border": 1}))
-            worksheet.write(row, 1, rfp.create_date.strftime("%d/%m/%Y"), workbook.add_format({"border": 1}))
-            worksheet.write(row, 2, rfp.required_date.strftime("%d/%m/%Y"), workbook.add_format({"border": 1}))
-            worksheet.write(row, 3, rfp.total_amount, workbook.add_format({"border": 1, "num_format": "$#,##0.00"}))
-            total_amount += rfp.total_amount
+        row = rfp_start + 2
+        for index, rfp in enumerate(approved_rfqs):
+            row_format = alt_row_format if index % 2 == 0 else cell_format
+            worksheet.write(row, 0, rfp.name, row_format)
+            worksheet.write(row, 1, rfp.create_date.strftime("%d/%m/%Y"), row_format)
+            worksheet.write(row, 2, rfp.required_date.strftime("%d/%m/%Y"), row_format)
+            worksheet.write(row, 3, rfp.total_amount, currency_format)
             row += 1
 
-        worksheet.write(row, 2, "Total Amount", workbook.add_format({"bold": True, "border": 1, "bg_color": "#D9D9D9"}))
-        worksheet.write(row, 3, total_amount,
-                        workbook.add_format({"border": 1, "num_format": "$#,##0.00", "bg_color": "#D9D9D9"}))
-
-        start_row = row + 3
-        worksheet.write(f"A{start_row}", "Product Line Summary",
-                        workbook.add_format({"bold": True, "font_size": 12, "bg_color": "#D9D9D9"}))
-        start_row += 1
-
-        worksheet.write(f"A{start_row}", "Product Name",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"B{start_row}", "Quantity",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"C{start_row}", "Unit Price",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"D{start_row}", "Delivery Charge",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"E{start_row}", "Subtotal",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
+        # Product Line Summary
+        product_start = row + 3
+        worksheet.merge_range(f"A{product_start}:E{product_start}", "Product Line Summary", title_format)
+        worksheet.write(f"A{product_start + 1}", "Product Name", soft_blue_header)
+        worksheet.write(f"B{product_start + 1}", "Quantity", soft_blue_header)
+        worksheet.write(f"C{product_start + 1}", "Unit Price", soft_blue_header)
+        worksheet.write(f"D{product_start + 1}", "Delivery Charge", soft_blue_header)
+        worksheet.write(f"E{product_start + 1}", "Subtotal", soft_blue_header)
 
         rfq_products = self.env["purchase.order.line"].search([
             ("order_id.rfp_id", "in", approved_rfqs.ids),
             ("order_id.state", "=", "purchase"),
         ])
 
-        row = start_row + 1
+        row = product_start + 2
         total_price = 0
-        for line in rfq_products:
-            worksheet.write(row, 0, line.product_id.name, workbook.add_format({"border": 1}))
-            worksheet.write(row, 1, line.product_qty, workbook.add_format({"border": 1}))
-            worksheet.write(row, 2, line.price_unit, workbook.add_format({"border": 1, "num_format": "$#,##0.00"}))
-            worksheet.write(row, 3, line.delivery_charge, workbook.add_format({"border": 1, "num_format": "$#,##0.00"}))
-            worksheet.write(row, 4, line.price_subtotal, workbook.add_format({"border": 1, "num_format": "$#,##0.00"}))
+        for index, line in enumerate(rfq_products):
+            row_format = alt_row_format if index % 2 == 0 else cell_format
+            worksheet.write(row, 0, line.product_id.name, row_format)
+            worksheet.write(row, 1, line.product_qty, row_format)
+            worksheet.write(row, 2, line.price_unit, currency_format)
+            worksheet.write(row, 3, line.delivery_charge, currency_format)
+            worksheet.write(row, 4, line.price_subtotal, currency_format)
             total_price += line.price_subtotal
             row += 1
 
-        worksheet.write(row, 3, "Total Price", workbook.add_format({"bold": True, "border": 1, "bg_color": "#D9D9D9"}))
-        worksheet.write(row, 4, total_price,
-                        workbook.add_format({"border": 1, "num_format": "$#,##0.00", "bg_color": "#D9D9D9"}))
+        worksheet.write(row, 3, "Total Price", highlight_total)
+        worksheet.write(row, 4, total_price, currency_format)
 
-        start_row = row + 3
-        worksheet.write(f"A{start_row}", "Company Contact Information",
-                        workbook.add_format({"bold": True, "font_size": 12, "bg_color": "#D9D9D9"}))
-        start_row += 1
+        # Company Contact Information (Spans 3 Columns)
+        contact_start = row + 3
+        worksheet.merge_range(f"A{contact_start}:C{contact_start}", "Company Contact Information", title_format)
+        contact_fields = ["Email", "Phone", "Address"]
+        contact_values = [
+            company.email,
+            company.phone,
+            company.partner_id.contact_address.replace("\n", ", ")
+        ]
 
-        worksheet.write(f"A{start_row}", "Email",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"B{start_row}", company.email, workbook.add_format({"border": 1}))
-        worksheet.write(f"A{start_row + 1}", "Phone",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"B{start_row + 1}", company.phone, workbook.add_format({"border": 1}))
-        worksheet.write(f"A{start_row + 2}", "Address",
-                        workbook.add_format({"bold": True, "border": 1, "bg_color": "#B0E0E6"}))
-        worksheet.write(f"B{start_row + 2}", company.partner_id.contact_address.replace("\n", ", "),
-                        workbook.add_format({"border": 1}))
+        for i, field in enumerate(contact_fields):
+            worksheet.write(f"A{contact_start + 1 + i}", field, deep_teal_header)
+            worksheet.merge_range(f"B{contact_start + 1 + i}:C{contact_start + 1 + i}", contact_values[i], cell_format)
 
         workbook.close()
         output.seek(0)

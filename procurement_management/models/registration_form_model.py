@@ -60,7 +60,7 @@ class RegistrationForm(models.Model):
 
     # Section - 3
 
-    client_name = fields.Char("Client Name", required=True)
+    client_name = fields.Char("Client Name")
     client_email = fields.Char("Email")
     client_phone = fields.Char("Phone")
     client_address = fields.Text("Address")
@@ -126,6 +126,7 @@ class RegistrationForm(models.Model):
         self.write({'status': 'under_review'})
         self.message_post(body=_("Application has been forwarded to the approver."))
 
+
     def action_final_approve(self):
         if not self.approver_id:
             raise ValidationError(_("An approver must be assigned before final approval."))
@@ -141,6 +142,7 @@ class RegistrationForm(models.Model):
         self.write({'status': 'approved'})
         self.message_post(body=_("Supplier application approved, vendor created, and user assigned."))
 
+
     def action_reject(self):
         if not self.rejection_reason:
             raise ValidationError(_("Please provide a reason for rejection."))
@@ -148,12 +150,14 @@ class RegistrationForm(models.Model):
         self.send_rejection_email()
         self.message_post(body=_("Application rejected: %s" % self.rejection_reason))
 
+
     def action_blacklist(self):
         if not self.blacklist_reason:
             raise ValidationError(_("Please provide a reason for blacklisting."))
         self.write({'status': 'blacklisted'})
         self.send_rejection_email()
         self.message_post(body=_("Supplier blacklisted: %s" % self.blacklist_reason))
+
 
     def create_vendor_record(self):
         default_reviewer = self.env.ref("procurement_management.group_supplier_reviewer").users[:1]
@@ -217,6 +221,7 @@ class RegistrationForm(models.Model):
 
         self.message_post(body=_("Vendor Record Created: %s with Bank Details" % vendor.name))
 
+
     def create_supplier_user(self):
         portal_group = self.env.ref('base.group_portal')
         existing_user = self.env['res.users'].sudo().search([('login', '=', self.email)], limit=1)
@@ -244,32 +249,13 @@ class RegistrationForm(models.Model):
         })
         self.message_post(body=_("Portal user account created for supplier: %s" % user.login))
 
-    # email_values = {
-    #     'email_from': 'shahriar.ahmed@bjitacademy.com',
-    #     'email_to': email,
-    #     'subject': 'Your OTP Code',
-    #     'body_html': f'<p>Your OTP code is: <strong>{otp_record.otp}</strong>. It is valid for 5 minutes.</p>'
-    # }
-    # mail = request.env['mail.mail'].sudo().create(email_values)
-    # print(f"✅ Email Created: ID {mail.id} for {email}")
-    # mail.sudo().send()
-    # print(f"✅ Email Sent to {email}")
-
-    def send_supplier_approval_email(self):
-        template = self.env.ref('procurement_management.email_template_supplier_approval')
-        if template:
-            self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
-
-    def send_rejection_email(self):
-        template = self.env.ref('procurement_management.email_template_supplier_rejection')
-        if template:
-            self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
 
     @api.constrains('certificate_expiry_date')
     def _check_certificate_expiry(self):
         for record in self:
             if record.certificate_expiry_date and record.certificate_expiry_date <= fields.Date.today():
                 raise ValidationError("Certificate expiry date must be in the future.")
+
 
     @api.constrains(
         'trade_license_business_registration', 'certificate_of_incorporation', 'certificate_of_good_standing',

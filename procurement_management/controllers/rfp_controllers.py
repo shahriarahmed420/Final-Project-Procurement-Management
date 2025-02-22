@@ -22,6 +22,7 @@ class RFPPortal(CustomerPortal):
 
         search_domain = search_list.get(search_in, {'domain': []})['domain']
         search_domain.append(('status', '=', 'approved'))  # Show only approved RFPs
+        search_domain.append(('status', '!=', 'closed')) # Show only closed RFPs
 
         if not sortby:
             sortby = 'date'
