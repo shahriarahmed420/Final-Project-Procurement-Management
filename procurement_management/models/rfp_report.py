@@ -111,13 +111,18 @@ class RFPReport(models.TransientModel):
         worksheet.write(f"D{rfp_start + 1}", "Total Amount", soft_blue_header)
 
         row = rfp_start + 2
+        total_rfp_amount = 0
         for index, rfp in enumerate(approved_rfqs):
             row_format = alt_row_format if index % 2 == 0 else cell_format
             worksheet.write(row, 0, rfp.name, row_format)
             worksheet.write(row, 1, rfp.create_date.strftime("%d/%m/%Y"), row_format)
             worksheet.write(row, 2, rfp.required_date.strftime("%d/%m/%Y"), row_format)
             worksheet.write(row, 3, rfp.total_amount, currency_format)
+            total_rfp_amount += rfp.total_amount
             row += 1
+
+        worksheet.write(row, 2, "Total", highlight_total)
+        worksheet.write(row, 3, total_rfp_amount, currency_format)
 
         # Product Line Summary
         product_start = row + 3

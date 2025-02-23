@@ -36,6 +36,15 @@
                         <field name="approver_id"/>
                     </group>
                     <notebook>
+                        <page string="Review Decision">
+                            <group>
+                                <field name="status"/>
+
+                                <field name="reviewer_comments"
+                                       placeholder="Provide a reason if rejecting or blacklisting..."/>
+                            </group>
+                        </page>
+
                         <!-- Section 1: Company Information -->
                         <page string="Contact Information">
                             <group>
@@ -73,10 +82,34 @@
                         <!-- Section 3: Previous Client References -->
                         <page string="Client References">
                             <group>
-                                <field name="client_name"/>
-                                <field name="client_email"/>
-                                <field name="client_phone"/>
-                                <field name="client_address"/>
+                                <field name="client_1_name"/>
+                                <field name="client_1_email"/>
+                                <field name="client_1_phone"/>
+                                <field name="client_1_address"/>
+                            </group>
+                            <group>
+                                <field name="client_2_name"/>
+                                <field name="client_2_email"/>
+                                <field name="client_2_phone"/>
+                                <field name="client_2_address"/>
+                            </group>
+                            <group>
+                                <field name="client_3_name"/>
+                                <field name="client_3_email"/>
+                                <field name="client_3_phone"/>
+                                <field name="client_3_address"/>
+                            </group>
+                            <group>
+                                <field name="client_4_name"/>
+                                <field name="client_4_email"/>
+                                <field name="client_4_phone"/>
+                                <field name="client_4_address"/>
+                            </group>
+                            <group>
+                                <field name="client_5_name"/>
+                                <field name="client_5_email"/>
+                                <field name="client_5_phone"/>
+                                <field name="client_5_address"/>
                             </group>
                         </page>
 

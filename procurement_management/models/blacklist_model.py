@@ -1,3 +1,5 @@
+from email.policy import default
+
 from odoo import models, fields, api
 
 class SupplierBlacklist(models.Model):
@@ -10,4 +12,4 @@ class SupplierBlacklist(models.Model):
 
     @api.model
     def is_blacklisted(self, email):
-        return bool(self.sudo().search([('email', '=', email), ('blacklist', '=', 'True')], limit=1))
+        return bool(self.sudo().search([('email', '=', email), ('blacklisted', '=', 'True')], limit=1))

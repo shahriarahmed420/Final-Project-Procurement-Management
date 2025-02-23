@@ -1,11 +1,137 @@
 <odoo>
+<!--    <template id="rfp_report_template">-->
+<!--        <t t-call="web.html_container">-->
+<!--            <t t-set="company" t-value="request.env.company"/>-->
+<!--            <t t-foreach="docs" t-as="doc">-->
+<!--                <div class="page" style="font-family: 'Arial', sans-serif; color: #2c3e50;">-->
+
+<!--                    &lt;!&ndash; Company Header with Logo & Report Title &ndash;&gt;-->
+<!--                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #3498db; padding-bottom: 15px; margin-bottom: 20px;">-->
+<!--                        <t t-if="company.logo">-->
+<!--                            <img t-att-src="'data:image/png;base64,%s' % company.logo.decode()" style="max-width: 150px; border-radius: 5px;"/>-->
+<!--                        </t>-->
+<!--                        <div style="text-align: right;">-->
+<!--                            <h1 style="margin: 0; font-size: 26px; font-weight: bold; color: #2980b9;">📑 RFP Report</h1>-->
+<!--                            <p style="margin: 0; font-size: 14px; color: #7f8c8d;">📅 Date Range: <t t-esc="doc.start_date"/> - <t t-esc="doc.end_date"/></p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Supplier Information Section &ndash;&gt;-->
+<!--                    <div style="background-color: #ecf0f1; padding: 15px; border-radius: 8px; margin-bottom: 25px;">-->
+<!--                        <h3 style="color: #2980b9; text-align: center; margin-bottom: 10px;">🏢 Supplier Information</h3>-->
+<!--                        <table class="table table-bordered" style="width: 100%;">-->
+<!--                            <tr><td><strong>📛 Name:</strong></td><td><t t-esc="doc.supplier_id.name or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>📧 Email:</strong></td><td><t t-esc="doc.supplier_id.email or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>📞 Phone:</strong></td><td><t t-esc="doc.supplier_id.phone or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>🏦 TIN:</strong></td><td><t t-esc="doc.supplier_id.vat or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>🏛️ Bank:</strong></td><td><t t-esc="doc.supplier_id.bank_ids and doc.supplier_id.bank_ids[0].bank_id.name or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>👤 Account Name:</strong></td><td><t t-esc="doc.supplier_id.bank_ids and doc.supplier_id.bank_ids[0].acc_holder_name or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>💳 Account Number:</strong></td><td><t t-esc="doc.supplier_id.bank_ids and doc.supplier_id.bank_ids[0].acc_number or 'N/A'"/></td></tr>-->
+<!--                        </table>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Approved RFPs & Product Line Summary &ndash;&gt;-->
+<!--                    <h3 style="color: #27ae60; margin-bottom: 20px;">✔️ Approved RFPs &amp; Product Line Summary</h3>-->
+
+<!--                    <t t-foreach="doc.supplier_id.rfp_ids" t-as="rfp">-->
+<!--                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 10px;-->
+<!--                                    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); margin-bottom: 20px;-->
+<!--                                    border: 2px solid #d1d1d1;">  &lt;!&ndash; Added border &ndash;&gt;-->
+
+<!--                            <h4 style="color: #2c3e50; margin-bottom: 15px;">📄 RFP Details</h4>-->
+<!--                            <table class="table table-bordered">-->
+<!--                                <tr><td><strong>🔢 RFP Number:</strong></td><td><t t-esc="rfp.name"/></td></tr>-->
+<!--                                <tr><td><strong>📅 RFP Date:</strong></td><td><t t-esc="rfp.create_date.strftime('%d/%m/%Y')"/></td></tr>-->
+<!--                                <tr><td><strong>📆 Required Date:</strong></td><td><t t-esc="rfp.required_date.strftime('%d/%m/%Y')"/></td></tr>-->
+<!--                                <tr><td><strong>💲 Total Amount:</strong></td><td><strong>$<t t-esc="rfp.total_amount"/></strong></td></tr>-->
+<!--                                <tr><td><strong>🏷️ Supplier Name:</strong></td>-->
+<!--                                    <td><span style="font-weight: bold; font-size: 1.1rem; color: #2980b9;">-->
+<!--                                        <t t-esc="rfp.approved_supplier_id.name or 'N/A'"/>-->
+<!--                                    </span></td>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+
+<!--                            &lt;!&ndash; Product Lines &ndash;&gt;-->
+<!--                            <t t-set="order_lines" t-value="request.env['purchase.order.line'].search([('order_id.rfp_id', '=', rfp.id)])"/>-->
+<!--                            <t t-if="order_lines">-->
+<!--                                <div style="background-color: white; padding: 10px; border-radius: 5px;-->
+<!--                                            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); margin-top: 10px;-->
+<!--                                            border: 2px solid #ccc;">  &lt;!&ndash; Added border to product lines &ndash;&gt;-->
+
+<!--                                    <h4 style="color: #2c3e50; margin-bottom: 10px;">📦 Product Details</h4>-->
+<!--                                    <table class="table table-bordered">-->
+<!--                                        <thead style="background-color: #2c3e50; color: white;">-->
+<!--                                            <tr>-->
+<!--                                                <th>🛍️ Product</th>-->
+<!--                                                <th>🔢 Quantity</th>-->
+<!--                                                <th>💲 Unit Price</th>-->
+<!--                                                <th>🚚 Delivery Charge</th>-->
+<!--                                                <th>💵 Subtotal</th>-->
+<!--                                            </tr>-->
+<!--                                        </thead>-->
+<!--                                        <tbody>-->
+<!--                                            <t t-foreach="order_lines" t-as="line">-->
+<!--                                                <tr>-->
+<!--                                                    <td><t t-esc="line.product_id.name"/></td>-->
+<!--                                                    <td><t t-esc="line.product_qty"/></td>-->
+<!--                                                    <td>$<t t-esc="line.price_unit"/></td>-->
+<!--                                                    <td>$<t t-esc="line.delivery_charge"/></td>-->
+<!--                                                    <td><strong>$<t t-esc="line.price_subtotal"/></strong></td>-->
+<!--                                                </tr>-->
+<!--                                            </t>-->
+<!--                                        </tbody>-->
+<!--                                    </table>-->
+<!--                                </div>-->
+<!--                            </t>-->
+<!--                        </div>-->
+<!--                    </t>-->
+
+<!--                    <t t-if="not doc.supplier_id.rfp_ids">-->
+<!--                        <div style="background-color: #f8d7da; color: #721c24; padding: 15px;-->
+<!--                                    border-radius: 8px; text-align: center; margin-bottom: 20px;-->
+<!--                                    border: 2px solid #f5c6cb;">  &lt;!&ndash; Added border &ndash;&gt;-->
+<!--                            ❌ No Approved RFPs Found-->
+<!--                        </div>-->
+<!--                    </t>-->
+
+<!--                    &lt;!&ndash; Company Contact Information &ndash;&gt;-->
+<!--                    <div style="background-color: #ecf0f1; padding: 15px; border-radius: 8px; margin-top: 30px;">-->
+<!--                        <h3 style="color: #2980b9; text-align: center; margin-bottom: 10px;">🏢 Company Contact Information</h3>-->
+<!--                        <table class="table table-bordered" style="width: 100%;">-->
+<!--                            <tr><td><strong>📧 Email:</strong></td><td><t t-esc="company.email or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>📞 Phone:</strong></td><td><t t-esc="company.phone or 'N/A'"/></td></tr>-->
+<!--                            <tr><td><strong>📍 Address:</strong></td><td><t t-esc="company.partner_id.contact_address or 'N/A'"/></td></tr>-->
+<!--                        </table>-->
+<!--                    </div>-->
+
+<!--                </div>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+
     <template id="rfp_report_template">
         <t t-call="web.html_container">
-            <t t-set="company" t-value="request.env.company"/>
             <t t-foreach="docs" t-as="doc">
-                <div class="page" style="font-family: 'Arial', sans-serif; color: #2c3e50;">
+                <t t-set="company" t-value="request.env.company"/>
+                <t t-set="supplier" t-value="doc.supplier_id"/>
 
-                    <!-- Company Header with Logo & Report Title -->
+                <!-- FIX: Store each filter condition separately to avoid unescaped characters in XML -->
+                <t t-set="rfp_model" t-value="doc.env['procurement_management.rfp']"/>
+                <t t-set="approved_rfqs" t-value="rfp_model.search([
+                    ('approved_supplier_id', '=', supplier.id),
+                    ('status', '=', 'accepted'),
+                    ('required_date', '&gt;=', doc.start_date),
+                    ('required_date', '&lt;=', doc.end_date),
+                ])"/>
+
+                <t t-set="rfq_model" t-value="doc.env['purchase.order.line']"/>
+                <t t-set="rfq_products" t-value="rfq_model.search([
+                    ('order_id.rfp_id', 'in', approved_rfqs.ids),
+                    ('order_id.state', '=', 'purchase'),
+                ])"/>
+
+                <div class="page">
+                    <!-- Header Section -->
                     <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #3498db; padding-bottom: 15px; margin-bottom: 20px;">
                         <t t-if="company.logo">
                             <img t-att-src="'data:image/png;base64,%s' % company.logo.decode()" style="max-width: 150px; border-radius: 5px;"/>
@@ -16,87 +142,133 @@
                         </div>
                     </div>
 
-                    <!-- Supplier Information Section -->
-                    <div style="background-color: #ecf0f1; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
-                        <h3 style="color: #2980b9; text-align: center; margin-bottom: 10px;">🏢 Supplier Information</h3>
-                        <table class="table table-bordered" style="width: 100%;">
-                            <tr><td><strong>📛 Name:</strong></td><td><t t-esc="doc.supplier_id.name or 'N/A'"/></td></tr>
-                            <tr><td><strong>📧 Email:</strong></td><td><t t-esc="doc.supplier_id.email or 'N/A'"/></td></tr>
-                            <tr><td><strong>📞 Phone:</strong></td><td><t t-esc="doc.supplier_id.phone or 'N/A'"/></td></tr>
+                    <hr/>
+
+                    <!-- Supplier Information -->
+                    <div class="supplier-info card p-3 shadow-sm">
+                        <h4 class="text-info">
+                            <i class="fa fa-building"></i> Supplier Information
+                        </h4>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa fa-id-badge"></i> <strong>Name:</strong></td>
+                                    <td t-att-title="'Supplier Name: %s' % supplier.name">
+                                        <t t-esc="supplier.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-envelope"></i> <strong>Email:</strong></td>
+                                    <td><t t-esc="supplier.email or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-phone"></i> <strong>Phone:</strong></td>
+                                    <td><t t-esc="supplier.phone or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-barcode"></i> <strong>TIN:</strong></td>
+                                    <td><t t-esc="supplier.vat or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-university"></i> <strong>Bank:</strong></td>
+                                    <td><t t-esc="supplier.bank_ids and supplier.bank_ids[0].bank_id.name or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-user"></i> <strong>Account Name:</strong></td>
+                                    <td><t t-esc="supplier.bank_ids and supplier.bank_ids[0].acc_holder_name or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-credit-card"></i> <strong>Account Number:</strong></td>
+                                    <td><t t-esc="supplier.bank_ids and supplier.bank_ids[0].acc_number or 'N/A'"/></td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
 
-                    <!-- Approved RFPs & Product Line Summary -->
-                    <h3 style="color: #27ae60; margin-bottom: 20px;">✔️ Approved RFPs &amp; Product Line Summary</h3>
+                    <hr/>
 
-                    <t t-foreach="doc.supplier_id.rfp_ids" t-as="rfp">
-                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 10px;
-                                    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); margin-bottom: 20px;
-                                    border: 2px solid #d1d1d1;">  <!-- Added border -->
-
-                            <h4 style="color: #2c3e50; margin-bottom: 15px;">📄 RFP Details</h4>
-                            <table class="table table-bordered">
-                                <tr><td><strong>🔢 RFP Number:</strong></td><td><t t-esc="rfp.name"/></td></tr>
-                                <tr><td><strong>📅 RFP Date:</strong></td><td><t t-esc="rfp.create_date.strftime('%d/%m/%Y')"/></td></tr>
-                                <tr><td><strong>📆 Required Date:</strong></td><td><t t-esc="rfp.required_date.strftime('%d/%m/%Y')"/></td></tr>
-                                <tr><td><strong>💲 Total Amount:</strong></td><td><strong>$<t t-esc="rfp.total_amount"/></strong></td></tr>
-                                <tr><td><strong>🏷️ Supplier Name:</strong></td>
-                                    <td><span style="font-weight: bold; font-size: 1.1rem; color: #2980b9;">
-                                        <t t-esc="rfp.approved_supplier_id.name or 'N/A'"/>
-                                    </span></td>
+                    <!-- Approved RFPs -->
+                    <h4 class="text-primary">Approved RFPs</h4>
+                    <table class="table table-bordered text-center">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th>RFP Number</th>
+                                <th>RFP Date</th>
+                                <th>Required Date</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_rfp_amount" t-value="0"/>
+                            <t t-foreach="approved_rfqs" t-as="rfp">
+                                <tr>
+                                    <td><t t-esc="rfp.name"/></td>
+                                    <td><t t-esc="rfp.create_date.strftime('%d/%m/%Y')"/></td>
+                                    <td><t t-esc="rfp.required_date.strftime('%d/%m/%Y')"/></td>
+                                    <td><t t-esc="rfp.total_amount"/> $</td>
                                 </tr>
-                            </table>
-
-                            <!-- Product Lines -->
-                            <t t-set="order_lines" t-value="request.env['purchase.order.line'].search([('order_id.rfp_id', '=', rfp.id)])"/>
-                            <t t-if="order_lines">
-                                <div style="background-color: white; padding: 10px; border-radius: 5px;
-                                            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); margin-top: 10px;
-                                            border: 2px solid #ccc;">  <!-- Added border to product lines -->
-
-                                    <h4 style="color: #2c3e50; margin-bottom: 10px;">📦 Product Details</h4>
-                                    <table class="table table-bordered">
-                                        <thead style="background-color: #2c3e50; color: white;">
-                                            <tr>
-                                                <th>🛍️ Product</th>
-                                                <th>🔢 Quantity</th>
-                                                <th>💲 Unit Price</th>
-                                                <th>🚚 Delivery Charge</th>
-                                                <th>💵 Subtotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <t t-foreach="order_lines" t-as="line">
-                                                <tr>
-                                                    <td><t t-esc="line.product_id.name"/></td>
-                                                    <td><t t-esc="line.product_qty"/></td>
-                                                    <td>$<t t-esc="line.price_unit"/></td>
-                                                    <td>$<t t-esc="line.delivery_charge"/></td>
-                                                    <td><strong>$<t t-esc="line.price_subtotal"/></strong></td>
-                                                </tr>
-                                            </t>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <t t-set="total_rfp_amount" t-value="total_rfp_amount + rfp.total_amount"/>
                             </t>
-                        </div>
-                    </t>
+                            <tr class="bg-secondary text-white">
+                                <td colspan="3"><strong>Total</strong></td>
+                                <td><strong><t t-esc="total_rfp_amount"/> $</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <t t-if="not doc.supplier_id.rfp_ids">
-                        <div style="background-color: #f8d7da; color: #721c24; padding: 15px;
-                                    border-radius: 8px; text-align: center; margin-bottom: 20px;
-                                    border: 2px solid #f5c6cb;">  <!-- Added border -->
-                            ❌ No Approved RFPs Found
-                        </div>
-                    </t>
+                    <hr/>
+
+                    <!-- Product Line Summary -->
+                    <h4 class="text-primary">Product Line Summary</h4>
+                    <table class="table table-bordered text-center">
+                        <thead class="bg-info text-white">
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Delivery Charge</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_price" t-value="0"/>
+                            <t t-foreach="rfq_products" t-as="line">
+                                <tr>
+                                    <td><t t-esc="line.product_id.name"/></td>
+                                    <td><t t-esc="line.product_qty"/></td>
+                                    <td><t t-esc="line.price_unit"/> $</td>
+                                    <td><t t-esc="line.delivery_charge or 0.00"/> $</td>
+                                    <td><t t-esc="line.price_subtotal"/> $</td>
+                                </tr>
+                                <t t-set="total_price" t-value="total_price + line.price_subtotal"/>
+                            </t>
+                            <tr class="bg-secondary text-white">
+                                <td colspan="4"><strong>Total Price</strong></td>
+                                <td><strong><t t-esc="total_price"/> $</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <hr/>
 
                     <!-- Company Contact Information -->
-                    <div style="background-color: #ecf0f1; padding: 15px; border-radius: 8px; margin-top: 30px;">
-                        <h3 style="color: #2980b9; text-align: center; margin-bottom: 10px;">🏢 Company Contact Information</h3>
-                        <table class="table table-bordered" style="width: 100%;">
-                            <tr><td><strong>📧 Email:</strong></td><td><t t-esc="company.email or 'N/A'"/></td></tr>
-                            <tr><td><strong>📞 Phone:</strong></td><td><t t-esc="company.phone or 'N/A'"/></td></tr>
-                            <tr><td><strong>📍 Address:</strong></td><td><t t-esc="company.partner_id.contact_address or 'N/A'"/></td></tr>
+                    <div class="company-contact card p-3 shadow-sm">
+                        <h4 class="text-info"><i class="fa fa-building"></i> Company Contact Information</h4>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa fa-envelope"></i> <strong>Email:</strong></td>
+                                    <td><t t-esc="company.email or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-phone"></i> <strong>Phone:</strong></td>
+                                    <td><t t-esc="company.phone or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-map-marker"></i> <strong>Address:</strong></td>
+                                    <td><t t-esc="company.partner_id.contact_address.replace('\n', ', ') or 'N/A'"/></td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
 

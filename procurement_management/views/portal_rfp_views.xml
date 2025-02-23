@@ -4,11 +4,52 @@
             <t t-call="portal.portal_docs_entry">
                 <t t-set="icon" t-value="'/sale/static/src/img/bag.svg'"/>
                 <t t-set="title">RFPs</t>
-                <t t-set="text">Formal procurement document used to solicit supplier quotations for required goods or services.</t>
-                <t t-set="url" t-value="'/my/rfps'"/>
+                <t t-set="text">Find the list of all RFP including the RFP that are currently available.</t>
+                <t t-set="url" t-value="'/my/dashboard'"/>
                 <t t-set="config_card" t-value="True"/>
             </t>
         </xpath>
+    </template>
+
+    <template id="rfp_dashboard_view" name="RFP Dashboard View">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb bg-light p-2 rounded">
+                        <li class="breadcrumb-item"><a href="/my">🏠 Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">📑 RFPs Dashboard</li>
+                    </ol>
+                </nav>
+
+                <!-- Page Header -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">📊 RFP Dashboard</h2>
+                    <p class="text-muted">Manage and explore all available Request for Proposals</p>
+                </div>
+
+                <div class="row">
+                    <!-- Section for All RFPs -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm text-center p-4 h-100 d-flex flex-column">
+                            <h1 class="mb-3">📋</h1>
+                            <h4 class="fw-bold">All RFPs</h4>
+                            <p class="text-muted flex-grow-1">View the list of all RFPs, including past and current proposals.</p>
+                            <a href="/my/all_rfps" class="btn btn-outline-primary mt-auto">🔎 Browse All RFPs</a>
+                        </div>
+                    </div>
+
+                    <!-- Section for Available RFPs -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm text-center p-4 h-100 d-flex flex-column">
+                            <h1 class="mb-3">🛒</h1>
+                            <h4 class="fw-bold">Available RFPs</h4>
+                            <p class="text-muted flex-grow-1">Find and participate in RFPs that are currently open.</p>
+                            <a href="/my/rfps" class="btn btn-outline-success mt-auto">🛒 View Available RFPs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
     </template>
 
     <template id="rfp_list_view_template" name="Portal RFP List">
@@ -294,6 +335,309 @@
                 <p class="text-center">Your RFQ has been successfully submitted.</p>
                 <p class="text-center mb-0">You will be notified once your quotation is reviewed.</p>
                 <a href="/my/rfps" class="text-center btn btn-outline-primary">Back to RFPs</a>
+            </div>
+        </t>
+    </template>
+
+    <template id="rfp_all_list_view_template" name="All RFPs List View">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <!-- Breadcrumb Navigation -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb bg-light p-2 rounded">
+                        <li class="breadcrumb-item"><a href="/my">🏠 Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">📑 All RFPs</li>
+                    </ol>
+                </nav>
+
+                <!-- Page Header -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">📜 All RFPs</h2>
+                    <p class="text-muted">List of all Request for Purchases</p>
+                </div>
+
+                <!-- Search and Grouping Filters -->
+                <form method="get" action="/my/all_rfps" class="mb-4">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <input type="text" name="search" class="form-control" placeholder="🔎 Search RFPs..."/>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="search_in" class="form-control">
+                                <option value="all">All</option>
+                                <option value="name">RFP Name</option>
+                                <option value="status">Status</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="groupby" class="form-control">
+                                <option value="none">No Grouping</option>
+                                <option value="status">Group by Status</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button type="submit" class="btn btn-primary">🔍 Search</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- RFP List Table -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>📌 RFP Name</th>
+                                    <th>📊 Status</th>
+                                    <th>📅 Required Date</th>
+                                    <th class="text-center">🔍 Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="grouped_rfps">
+                                    <t t-foreach="grouped_rfps" t-as="group">
+                                        <tr class="table-light">
+                                            <td colspan="4" class="fw-bold text-uppercase">📂 <t t-esc="group['group']"/></td>
+                                        </tr>
+                                        <t t-foreach="group['rfps']" t-as="rfp">
+                                            <tr>
+                                                <td>
+                                                    <a t-att-href="'/my/rfp/%s' % rfp.id" class="text-decoration-none fw-bold text-primary">
+                                                        <t t-esc="rfp.name"/>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <t t-if="rfp.status == 'draft'">
+                                                        <span class="badge bg-secondary px-3 py-2">Draft</span>
+                                                    </t>
+                                                    <t t-if="rfp.status == 'submitted'">
+                                                        <span class="badge bg-info px-3 py-2">Submitted</span>
+                                                    </t>
+                                                    <t t-if="rfp.status == 'approved'">
+                                                        <span class="badge bg-success px-3 py-2">Approved</span>
+                                                    </t>
+                                                    <t t-if="rfp.status == 'rejected'">
+                                                        <span class="badge bg-danger px-3 py-2">Rejected</span>
+                                                    </t>
+                                                    <t t-if="rfp.status == 'closed'">
+                                                        <span class="badge bg-dark px-3 py-2">Closed</span>
+                                                    </t>
+                                                    <t t-if="rfp.status == 'recommendation'">
+                                                        <span class="badge bg-warning px-3 py-2 text-dark">Recommendation</span>
+                                                    </t>
+                                                    <t t-if="rfp.status == 'accepted'">
+                                                        <span class="badge bg-primary px-3 py-2">Accepted</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span class="text-muted"><t t-esc="rfp.required_date"/></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a t-att-href="'/my/rfp/%s' % rfp.id" class="btn btn-outline-primary btn-sm">
+                                                        🔍 View
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <t t-foreach="rfps" t-as="rfp">
+                                        <tr>
+                                            <td>
+                                                <a t-att-href="'/my/rfp/%s' % rfp.id" class="text-decoration-none fw-bold text-primary">
+                                                    <t t-esc="rfp.name"/>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <t t-if="rfp.status == 'draft'">
+                                                    <span class="badge bg-secondary px-3 py-2">Draft</span>
+                                                </t>
+                                                <t t-if="rfp.status == 'submitted'">
+                                                    <span class="badge bg-info px-3 py-2">Submitted</span>
+                                                </t>
+                                                <t t-if="rfp.status == 'approved'">
+                                                    <span class="badge bg-success px-3 py-2">Approved</span>
+                                                </t>
+                                                <t t-if="rfp.status == 'rejected'">
+                                                    <span class="badge bg-danger px-3 py-2">Rejected</span>
+                                                </t>
+                                                <t t-if="rfp.status == 'closed'">
+                                                    <span class="badge bg-dark px-3 py-2">Closed</span>
+                                                </t>
+                                                <t t-if="rfp.status == 'recommendation'">
+                                                    <span class="badge bg-warning px-3 py-2 text-dark">Recommendation</span>
+                                                </t>
+                                                <t t-if="rfp.status == 'accepted'">
+                                                    <span class="badge bg-primary px-3 py-2">Accepted</span>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span class="text-muted"><t t-esc="rfp.required_date"/></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a t-att-href="'/my/rfp/%s' % rfp.id" class="btn btn-outline-primary btn-sm">
+                                                    🔍 View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="rfp_form_view_template" name="Portal RFP Form">
+        <t t-call="portal.portal_layout">
+            <t t-set="title" t-value="'Request for Proposal'"/>
+
+            <style>
+                /* Custom Styles */
+                .custom-header {
+                    background: linear-gradient(to right, #007bff, #0056b3);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                    text-align: center;
+                }
+
+                .custom-badge {
+                    font-size: 1rem;
+                    padding: 8px 14px;
+                    border-radius: 20px;
+                    font-weight: bold;
+                    display: inline-block;
+                    margin-top: 5px;
+                }
+
+                .custom-card {
+                    border-left: 5px solid #007bff;
+                    border-radius: 10px;
+                    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                    padding: 20px;
+                    background: #ffffff;
+                }
+
+                .custom-title {
+                    font-weight: bold;
+                    font-size: 1.4rem;
+                    color: #0056b3;
+                    text-transform: uppercase;
+                    border-bottom: 3px solid #007bff;
+                    display: inline-block;
+                    padding-bottom: 5px;
+                }
+
+                .table th {
+                    background-color: #007bff !important;
+                    color: white !important;
+                    text-transform: uppercase;
+                    font-size: 1rem;
+                    padding: 12px;
+                }
+
+                .table tbody tr:hover {
+                    background-color: #f1f1f1 !important;
+                    transition: 0.3s ease-in-out;
+                }
+
+                .btn-custom {
+                    background: #28a745;
+                    color: white;
+                    font-size: 1.1rem;
+                    font-weight: bold;
+                    padding: 10px 20px;
+                    border-radius: 50px;
+                    transition: 0.3s;
+                }
+
+                .btn-custom:hover {
+                    background: #218838;
+                }
+
+                .table td img {
+                    border-radius: 6px;
+                    border: 1px solid #ddd;
+                    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+                }
+            </style>
+
+            <div class="container mt-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-light p-2 rounded">
+                        <li class="breadcrumb-item"><a href="/my">🏠 Home</a></li>
+                        <li class="breadcrumb-item"><a href="/my/all_rfps">v</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><t t-esc="rfp.name"/></li>
+                    </ol>
+                </nav>
+
+                <!-- Header Section -->
+                <div class="custom-header">
+                    <h1 class="m-0">
+                        <i class="fa fa-file-alt"></i> <t t-esc="rfp.name"/>
+                    </h1>
+                    <span class="badge bg-light text-dark custom-badge">
+                        <i class="fa fa-info-circle"></i> <t t-esc="rfp.status"/>
+                    </span>
+                </div>
+
+                <!-- RFP Details Card -->
+                <div class="card custom-card mt-4">
+                    <h3 class="custom-title"><i class="fa fa-list-alt"></i> RFP Details</h3>
+                    <div class="row">
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-hashtag"></i> RFP Reference:</strong>
+                            <span class="text-dark fs-5"><t t-esc="rfp.name"/></span>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-calendar-alt"></i> Required Date:</strong>
+                            <span class="text-dark"><t t-esc="rfp.required_date"/></span>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-user-check"></i> Reviewer:</strong>
+                            <span class="text-dark"><t t-esc="rfp.reviewer_id.name or 'Not Assigned'"/></span>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <strong><i class="fa fa-user-tie"></i> Approved Supplier:</strong>
+                            <span class="text-dark"><t t-esc="rfp.approved_supplier_id.name or 'Pending'"/></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Lines Table -->
+                <div class="table-responsive mt-4">
+                    <h4 class="custom-title"><i class="fa fa-box"></i> Product Lines</h4>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fa fa-image"></i> Image</th>
+                                <th><i class="fa fa-box"></i> Product</th>
+                                <th><i class="fa fa-file-alt"></i> Description</th>
+                                <th><i class="fa fa-sort-numeric-up"></i> Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="rfp.product_line_ids" t-as="line">
+                                <tr>
+                                    <td>
+                                        <t t-if="line.product_id.image_1920">
+                                            <img t-att-src="'data:image/png;base64,' + line.product_id.image_1920.decode('utf-8')" width="50" height="50" class="img-thumbnail"/>
+                                        </t>
+                                        <t t-else="">No Image</t>
+                                    </td>
+                                    <td><t t-esc="line.product_id.name"/></td>
+                                    <td><t t-esc="line.description or 'No Description'"/></td>
+                                    <td><t t-esc="line.quantity"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </t>
     </template>

@@ -1,9 +1,23 @@
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo import http, fields
 from odoo.http import request
+import werkzeug.datastructures
 from datetime import date
 import base64
 from odoo.exceptions import ValidationError
+
+
+def process_uploaded_file(file_obj, chunk_size=8192):
+    if file_obj and hasattr(file_obj, 'read'):
+        try:
+            file_obj.seek(0)
+            file_content = b""
+            while chunk := file_obj.read(chunk_size):
+                file_content += chunk
+            return base64.b64encode(file_content)
+        except Exception as e:
+            print(f"🚨 ERROR Processing File: {e}")
+    return False
 
 
 class OTPCustomerPortal(CustomerPortal):
@@ -165,12 +179,9 @@ class OTPCustomerPortal(CustomerPortal):
 
         # ✅ Define required fields
         required_fields = [
-            "company_name", "company_address", "company_type",
-            "primary_contact_name", "primary_contact_email", "primary_contact_phone",
-            "finance_contact_name", "finance_contact_email", "finance_contact_phone",
-            "authorized_contact_name", "authorized_contact_email", "authorized_contact_phone",
-            "bank_name", "bank_address", "account_number",
-            "client_name", "certification_name", "certificate_number",
+            "company_name", "company_address", "company_type", "primary_contact_name", "primary_contact_email", "primary_contact_phone",
+            "finance_contact_name", "finance_contact_email", "finance_contact_phone", "authorized_contact_name", "authorized_contact_email",
+            "authorized_contact_phone", "bank_name", "bank_address", "account_number", "certification_name", "certificate_number",
             "name_of_signatory", "authorized_signatory"
         ]
 
@@ -200,32 +211,31 @@ class OTPCustomerPortal(CustomerPortal):
                     'form_data': kwargs
                 })
 
+        # ✅ Process Uploaded Files and Convert to Binary in Chunks
         file_fields = [
-            'trade_license_business_registration', 'certificate_of_incorporation', 'certificate_of_good_standing',
+            'trade_license_business_registration', 'certificate_of_incorporation',
+            'certificate_of_good_standing',
             'establishment_card', 'vat_tax_certificate', 'memorandum_of_association',
             'identification_document_for_authorized_person', 'bank_letter_indicating_bank_account',
             'past_2_years_audited_financial_statements', 'other_certifications', 'company_stamp'
         ]
+
         file_vals = {}
 
         for field in file_fields:
             file_obj = kwargs.get(field)
-
-            if file_obj and hasattr(file_obj, 'read'):
-                try:
-                    file_content = file_obj.read()
-                    encoded_file = base64.b64encode(file_content).decode('utf-8')  # Convert to base64 string
+            if isinstance(file_obj, werkzeug.datastructures.FileStorage):
+                encoded_file = process_uploaded_file(file_obj)
+                if encoded_file:
                     file_vals[field] = encoded_file
-                    print(f"File '{field}' processed successfully and converted to binary.")
-                except Exception as e:
-                    print(f"ERROR Processing File '{field}': {e}")
+                    print(f"✅ File '{field}' processed successfully.")
 
         try:
             registration.sudo().write(
-                {key: kwargs[key] for key in kwargs if key not in file_fields})  # Save normal fields
+                {key: kwargs[key] for key in kwargs if key not in file_fields})  # ✅ Save normal fields
             if file_vals:
-                registration.sudo().write(file_vals)  # Save file fields
-            print("Supplier Registration Updated Successfully:", registration.id)
+                registration.sudo().write(file_vals)  # ✅ Save file fields
+            print("✅ Supplier Registration Updated Successfully:", registration.id)
 
             reviewer_group = request.env.ref('procurement_management.group_supplier_reviewer')
             approver_group = request.env.ref('procurement_management.group_supplier_approver')

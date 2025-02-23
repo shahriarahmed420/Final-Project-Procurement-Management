@@ -1,68 +1,79 @@
-document.getElementById("next-1").onclick = function() {
-    document.getElementById("step-1").style.display = "none";
-    document.getElementById("step-2").style.display = "block";
-};
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("#multi-step-form");
 
-document.getElementById("prev-2").onclick = function() {
-    document.getElementById("step-2").style.display = "none";
-    document.getElementById("step-1").style.display = "block";
-};
+    if (!form) {
+        console.warn("⚠️ Form element not found. Check if `id="multi-step-form"` exists in your HTML.");
+        return;
+    }
 
-document.getElementById("next-2").onclick = function() {
-    document.getElementById("step-2").style.display = "none";
-    document.getElementById("step-3").style.display = "block";
-};
+    const steps = document.querySelectorAll(".form-step");
+    let currentStep = 0;
 
-document.getElementById("prev-3").onclick = function() {
-    document.getElementById("step-3").style.display = "none";
-    document.getElementById("step-2").style.display = "block";
-};
+    function showStep(stepIndex) {
+        steps.forEach((step, index) => {
+            step.style.display = index === stepIndex ? "block" : "none";
+        });
+    }
 
-document.getElementById("next-3").onclick = function() {
-    document.getElementById("step-3").style.display = "none";
-    document.getElementById("step-4").style.display = "block";
-};
-
-document.getElementById("prev-4").onclick = function() {
-    document.getElementById("step-4").style.display = "none";
-    document.getElementById("step-3").style.display = "block";
-};
-
-document.getElementById("next-4").onclick = function() {
-    document.getElementById("step-4").style.display = "none";
-    document.getElementById("step-5").style.display = "block";
-};
-
-document.getElementById("prev-5").onclick = function() {
-    document.getElementById("step-5").style.display = "none";
-    document.getElementById("step-4").style.display = "block";
-};
-
-document.getElementById("supplier-form").addEventListener("submit", function(event) {
-    let isValid = true;
-    let fields = this.querySelectorAll("[required]");
-
-    fields.forEach(function(field) {
-        if (!field.value.trim()) {
-            field.classList.add("is-invalid"); // Add Bootstrap invalid style
-            isValid = false;
-        } else {
-            field.classList.remove("is-invalid"); // Remove error style if corrected
+    function nextStep() {
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            showStep(currentStep);
         }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    }
+
+    function safeAddEventListener(selector, event, handler) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.addEventListener(event, handler);
+        } else {
+            console.warn(`⚠️ Element not found: ${selector}`);
+        }
+    }
+
+    safeAddEventListener("#next-1", "click", nextStep);
+    safeAddEventListener("#prev-2", "click", prevStep);
+    safeAddEventListener("#next-2", "click", nextStep);
+    safeAddEventListener("#prev-3", "click", prevStep);
+    safeAddEventListener("#next-3", "click", nextStep);
+    safeAddEventListener("#prev-4", "click", prevStep);
+    safeAddEventListener("#next-4", "click", nextStep);
+    safeAddEventListener("#prev-5", "click", prevStep);
+
+    showStep(currentStep);
+
+    // ✅ Remove "required" from hidden fields before form submission
+    form.addEventListener("submit", function (event) {
+        document.querySelectorAll("input[required], select[required]").forEach(field => {
+            if (field.offsetParent === null) { // If the field is hidden
+                field.removeAttribute("required");
+            }
+        });
     });
 
-    if (!isValid) {
-        event.preventDefault(); // Prevent form submission if validation fails
-    }
-});
+    // ✅ Validate Required Fields Before Submitting
+    form.addEventListener("submit", function (event) {
+        let isValid = true;
+        let fields = this.querySelectorAll("[required]");
 
-document.getElementById("pdfUpload").addEventListener("change", function() {
-        var file = this.files[0];
-        if (file) {
-            var allowedTypes = ["application/pdf"];
-            if (!allowedTypes.includes(file.type)) {
-                alert("Only PDF files are allowed!");
-                this.value = ""; // Clear the file input
+        fields.forEach(function (field) {
+            if (!field.value.trim()) {
+                field.classList.add("is-invalid");
+                isValid = false;
+            } else {
+                field.classList.remove("is-invalid");
             }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
         }
+    });
 });

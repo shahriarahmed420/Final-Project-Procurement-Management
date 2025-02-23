@@ -6,6 +6,66 @@ from operator import itemgetter
 
 
 class RFPPortal(CustomerPortal):
+    @http.route(['/my/dashboard'], type='http', auth='user', website=True)
+    def portal_dashboard(self, **kw):
+        return request.render('procurement_management.rfp_dashboard_view')
+
+
+    @http.route(['/my/all_rfps', '/my/all_rfps/page/<int:page>'], type='http', auth='user', website=True)
+    def portal_all_rfps_list(self, page=1, sortby=None, search=None, search_in='all', groupby='status', **kw):
+        searchbar_sortings = {
+            'date': {'label': _('Newest'), 'order': 'create_date desc'},
+            'name': {'label': _('RFP Name'), 'order': 'name'},
+            'required_date': {'label': _('Required Date'), 'order': 'required_date'},
+            'status': {'label': _('Status'), 'order': 'status'},
+        }
+
+        search_list = {
+            'all': {'label': _('All'), 'domain': []},
+            'name': {'label': _('RFP Name'), 'domain': [('name', 'ilike', search)]},
+            'status': {'label': _('Status'), 'domain': [('status', 'ilike', search)]},
+        }
+
+        search_domain = search_list.get(search_in, {'domain': []})['domain']
+
+        if not sortby:
+            sortby = 'date'
+        order = searchbar_sortings[sortby]['order']
+
+        rfp_obj = request.env['procurement_management.rfp']
+        rfp_count = rfp_obj.search_count(search_domain)
+        items_per_page = 10
+        pager = portal_pager(url='/my/all_rfps', total=rfp_count, page=page, step=items_per_page)
+
+        rfps = rfp_obj.search(search_domain, limit=items_per_page, offset=pager['offset'], order=order)
+
+        grouped_rfps = []
+        if groupby != 'none':
+            grouped_rfps = [{
+                'group': key,
+                'rfps': list(values)
+            } for key, values in groupbyelem(rfps, itemgetter(groupby))]
+
+        return request.render('procurement_management.rfp_all_list_view_template', {
+            'rfps': rfps,
+            'grouped_rfps': grouped_rfps,
+            'page_name': 'rfp_all_portal',
+            'pager': pager,
+            'searchbar_sortings': searchbar_sortings,
+            'searchbar_inputs': search_list,
+            'search_in': search_in,
+            'search': search,
+            'groupby': groupby,
+            'default_url': '/my/all_rfps',
+        })
+
+
+    @http.route('/my/all_rfp/<int:rfp_id>', auth='user', website=True)
+    def portal_all_rfp_details(self, rfp_id, **kw):
+        """ Displays full details of any RFP. """
+        rfp = request.env['procurement_management.rfp'].sudo().browse(rfp_id)
+        return request.render('procurement_management.rfp_all_form_view_template', {'rfp': rfp})
+
 
     @http.route(['/my/rfps', '/my/rfps/page/<int:page>'], type='http', auth='user', website=True)
     def portal_rfps_list(self, page=1, sortby=None, search=None, search_in='all', groupby='none', **kw):

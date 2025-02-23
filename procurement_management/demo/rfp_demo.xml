@@ -1,0 +1,285 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data noupdate="0">
+    <record id="rfp_15" model="procurement_management.rfp">
+      <field name="name">RFP/00015</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_15_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_15"/>
+      <field name="product_id" ref="product.product_product_5"/>
+      <field name="description">product.product_product_5 for rfp_15</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_15_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_15"/>
+      <field name="product_id" ref="product.product_product_6"/>
+      <field name="description">product.product_product_6 for rfp_15</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_16" model="procurement_management.rfp">
+      <field name="name">RFP/00016</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_16_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_16"/>
+      <field name="product_id" ref="product.product_product_7"/>
+      <field name="description">product.product_product_7 for rfp_16</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_16_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_16"/>
+      <field name="product_id" ref="product.product_product_8"/>
+      <field name="description">product.product_product_8 for rfp_16</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_17" model="procurement_management.rfp">
+      <field name="name">RFP/00017</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_17_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_17"/>
+      <field name="product_id" ref="product.product_product_9"/>
+      <field name="description">product.product_product_9 for rfp_17</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_17_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_17"/>
+      <field name="product_id" ref="product.product_product_10"/>
+      <field name="description">product.product_product_10 for rfp_17</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_18" model="procurement_management.rfp">
+      <field name="name">RFP/00018</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_18_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_18"/>
+      <field name="product_id" ref="product.product_product_12"/>
+      <field name="description">product.product_product_12 for rfp_18</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_18_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_18"/>
+      <field name="product_id" ref="product.product_product_13"/>
+      <field name="description">product.product_product_13 for rfp_18</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_19" model="procurement_management.rfp">
+      <field name="name">RFP/00019</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_19_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_19"/>
+      <field name="product_id" ref="product.product_product_20"/>
+      <field name="description">product.product_product_20 for rfp_19</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_19_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_19"/>
+      <field name="product_id" ref="product.product_product_22"/>
+      <field name="description">product.product_product_22 for rfp_19</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_20" model="procurement_management.rfp">
+      <field name="name">RFP/00020</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_20_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_20"/>
+      <field name="product_id" ref="product.product_product_24"/>
+      <field name="description">product.product_product_24 for rfp_20</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_20_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_20"/>
+      <field name="product_id" ref="product.product_product_25"/>
+      <field name="description">product.product_product_25 for rfp_20</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_21" model="procurement_management.rfp">
+      <field name="name">RFP/00021</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_21_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_21"/>
+      <field name="product_id" ref="product.product_product_27"/>
+      <field name="description">product.product_product_27 for rfp_21</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_21_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_21"/>
+      <field name="product_id" ref="product.consu_delivery_03"/>
+      <field name="description">product.consu_delivery_03 for rfp_21</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_22" model="procurement_management.rfp">
+      <field name="name">RFP/00022</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_22_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_22"/>
+      <field name="product_id" ref="product.consu_delivery_02"/>
+      <field name="description">product.consu_delivery_02 for rfp_22</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_22_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_22"/>
+      <field name="product_id" ref="product.consu_delivery_01"/>
+      <field name="description">product.consu_delivery_01 for rfp_22</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_23" model="procurement_management.rfp">
+      <field name="name">RFP/00023</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_23_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_23"/>
+      <field name="product_id" ref="product.product_product_5"/>
+      <field name="description">product.product_product_5 for rfp_23</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_23_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_23"/>
+      <field name="product_id" ref="product.product_product_6"/>
+      <field name="description">product.product_product_6 for rfp_23</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_24" model="procurement_management.rfp">
+      <field name="name">RFP/00024</field>
+      <field name="status">submitted</field>
+      <field name="required_date">2025-03-01</field>
+      <field name="currency_id" ref="base.USD"/>
+      <field name="total_amount">50000</field>
+      <field name="reviewer_id" ref="base.user_demo"/>
+      <field name="approver_id" ref="base.user_admin"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="rfp_product_24_0" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_24"/>
+      <field name="product_id" ref="product.product_product_7"/>
+      <field name="description">product.product_product_7 for rfp_24</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+    <record id="rfp_product_24_1" model="procurement_management.rfp.product">
+      <field name="rfp_id" ref="rfp_24"/>
+      <field name="product_id" ref="product.product_product_8"/>
+      <field name="description">product.product_product_8 for rfp_24</field>
+      <field name="quantity">10</field>
+      <field name="unit_price">500</field>
+      <field name="delivery_charges">50</field>
+      <field name="currency_id" ref="base.USD"/>
+    </record>
+  </data>
+</odoo>

@@ -112,6 +112,13 @@
                         font-weight: bold;
                         color: red;
                     }
+                    .hidden {
+                        display: none !important; /* This makes fields un-focusable */
+                    }
+
+                    .visible {
+                        display: block;
+                    }
                 </style>
                 <div class="container mt-5">
                     <h1 class="text-center mb-4 text-uppercase text-primary">Supplier Registration Form</h1>
@@ -259,7 +266,7 @@
                             </div>
 
                             <!-- Enhanced Next Button -->
-                            <button type="button" class="btn btn-lg btn-primary w-100 shadow-sm" id="next-1">Next <i class="fas fa-arrow-right"></i></button>
+                            <button type="button" class="btn btn-primary w-100 mt-3" id="next-1">Next</button>
                         </div>
 
                         <!-- Step 2: Financial Information -->
@@ -308,8 +315,8 @@
                             </div>
 
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-lg btn-outline-primary shadow-sm px-4 py-2" id="prev-2"><i class="fas fa-arrow-left"></i> Previous</button>
-                                <button type="button" class="btn btn-lg btn-primary shadow-lg px-4 py-2" id="next-2">Next <i class="fas fa-arrow-right"></i></button>
+                                <button type="button" class="btn btn-outline-primary" id="prev-2">Previous</button>
+                                <button type="button" class="btn btn-primary" id="next-2">Next</button>
                             </div>
                         </div>
 
@@ -326,19 +333,19 @@
                                         <h5 class="text-primary fw-bold">👤 Client 1</h5>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Name</label>
-                                            <input type="text" name="client_name" class="form-control shadow-sm" placeholder="Enter Name" required=""/>
+                                            <input type="text" name="client_1_name" class="form-control shadow-sm" placeholder="Enter Name"/>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Email</label>
-                                            <input type="email" name="client_email" class="form-control shadow-sm" placeholder="Enter Email" />
+                                            <input type="email" name="client_1_email" class="form-control shadow-sm" placeholder="Enter Email" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Phone</label>
-                                            <input type="text" name="client_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
+                                            <input type="text" name="client_1_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Address</label>
-                                            <input type="text" name="client_address" class="form-control shadow-sm" placeholder="Enter Address" />
+                                            <input type="text" name="client_1_address" class="form-control shadow-sm" placeholder="Enter Address" />
                                         </div>
                                     </div>
 
@@ -346,20 +353,20 @@
                                         <h5 class="text-success fw-bold">👤 Client 2</h5>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Name</label>
-                                            <input type="text" name="client_name" class="form-control shadow-sm" placeholder="Enter Name" required=""/>
+                                            <input type="text" name="client_2_name" class="form-control shadow-sm" placeholder="Enter Name" />
                                             <div class="invalid-feedback">Name is required.</div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Email</label>
-                                            <input type="email" name="client_email" class="form-control shadow-sm" placeholder="Enter Email" />
+                                            <input type="email" name="client_2_email" class="form-control shadow-sm" placeholder="Enter Email" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Phone</label>
-                                            <input type="text" name="client_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
+                                            <input type="text" name="client_2_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Address</label>
-                                            <input type="text" name="client_address" class="form-control shadow-sm" placeholder="Enter Address" />
+                                            <input type="text" name="client_2_address" class="form-control shadow-sm" placeholder="Enter Address" />
                                         </div>
                                     </div>
 
@@ -367,20 +374,20 @@
                                         <h5 class="text-danger fw-bold">👤 Client 3</h5>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Name</label>
-                                            <input type="text" name="client_name" class="form-control shadow-sm" placeholder="Enter Name" required=""/>
+                                            <input type="text" name="client_3_name" class="form-control shadow-sm" placeholder="Enter Name" />
                                             <div class="invalid-feedback">Name is required.</div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Email</label>
-                                            <input type="email" name="client_email" class="form-control shadow-sm" placeholder="Enter Email" />
+                                            <input type="email" name="client_3_email" class="form-control shadow-sm" placeholder="Enter Email" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Phone</label>
-                                            <input type="text" name="client_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
+                                            <input type="text" name="client_3_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Address</label>
-                                            <input type="text" name="client_address" class="form-control shadow-sm" placeholder="Enter Address" />
+                                            <input type="text" name="client_3_address" class="form-control shadow-sm" placeholder="Enter Address" />
                                         </div>
                                     </div>
 
@@ -388,20 +395,20 @@
                                         <h5 class="text-info fw-bold">👤 Client 4</h5>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Name</label>
-                                            <input type="text" name="client_name" class="form-control shadow-sm" placeholder="Enter Name" required=""/>
+                                            <input type="text" name="client_4_name" class="form-control shadow-sm" placeholder="Enter Name" />
                                             <div class="invalid-feedback">Name is required.</div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Email</label>
-                                            <input type="email" name="client_email" class="form-control shadow-sm" placeholder="Enter Email" />
+                                            <input type="email" name="client_4_email" class="form-control shadow-sm" placeholder="Enter Email" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Phone</label>
-                                            <input type="text" name="client_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
+                                            <input type="text" name="client_4_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Address</label>
-                                            <input type="text" name="client_address" class="form-control shadow-sm" placeholder="Enter Address" />
+                                            <input type="text" name="client_4_address" class="form-control shadow-sm" placeholder="Enter Address" />
                                         </div>
                                     </div>
 
@@ -409,28 +416,28 @@
                                         <h5 class="text-warning fw-bold">👤 Client 5</h5>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Name</label>
-                                            <input type="text" name="client_name" class="form-control shadow-sm" placeholder="Enter Name" required=""/>
+                                            <input type="text" name="client_5_name" class="form-control shadow-sm" placeholder="Enter Name" />
                                             <div class="invalid-feedback">Name is required.</div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Email</label>
-                                            <input type="email" name="client_email" class="form-control shadow-sm" placeholder="Enter Email" />
+                                            <input type="email" name="client_5_email" class="form-control shadow-sm" placeholder="Enter Email" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Phone</label>
-                                            <input type="text" name="client_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
+                                            <input type="text" name="client_5_phone" class="form-control shadow-sm" placeholder="Enter Phone" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Address</label>
-                                            <input type="text" name="client_address" class="form-control shadow-sm" placeholder="Enter Address" />
+                                            <input type="text" name="client_5_address" class="form-control shadow-sm" placeholder="Enter Address" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-lg btn-outline-primary shadow-sm px-4 py-2" id="prev-3"><i class="fas fa-arrow-left"></i> Previous</button>
-                                <button type="button" class="btn btn-lg btn-primary shadow-lg px-4 py-2" id="next-3">Next <i class="fas fa-arrow-right"></i></button>
+                                <button type="button" class="btn btn-outline-primary" id="prev-3">Previous</button>
+                                <button type="button" class="btn btn-primary" id="next-3">Next</button>
                             </div>
                         </div>
 
@@ -464,19 +471,19 @@
                                         <h5 class="text-success fw-bold">📅 Certification Dates</h5>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Award Date</label>
-                                            <input type="date" name="award_date" class="form-control shadow-sm" required=""/>
+                                            <input type="date" name="award_date" class="form-control shadow-sm" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Expiry Date</label>
-                                            <input type="date" name="certificate_expiry_date" class="form-control shadow-sm" required=""/>
+                                            <input type="date" name="certificate_expiry_date" class="form-control shadow-sm" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-lg btn-outline-primary shadow-sm px-4 py-2" id="prev-4"><i class="fas fa-arrow-left"></i> Previous</button>
-                                <button type="button" class="btn btn-lg btn-primary shadow-lg px-4 py-2" id="next-4">Next <i class="fas fa-arrow-right"></i></button>
+                                <button type="button" class="btn btn-outline-primary" id="prev-4">Previous</button>
+                                <button type="button" class="btn btn-primary" id="next-4">Next</button>
                             </div>
                         </div>
 
@@ -492,43 +499,43 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Trade License / Business Registration</label>
-                                                <input type="file" id="pdfUpload" name="trade_license_business_registration" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="trade_license_business_registration" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Certificate of Incorporation</label>
-                                                <input type="file" id="pdfUpload" name="certificate_of_incorporation" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="certificate_of_incorporation" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Certificate of Good Standing</label>
-                                                <input type="file" id="pdfUpload" name="certificate_of_good_standing" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="certificate_of_good_standing" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Establishment Card</label>
-                                                <input type="file" id="pdfUpload" name="establishment_card" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="establishment_card" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">VAT / TAX Certificate</label>
-                                                <input type="file" id="pdfUpload" name="vat_tax_certificate" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="vat_tax_certificate" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Memorandum of Association</label>
-                                                <input type="file" id="pdfUpload" name="memorandum_of_association" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="memorandum_of_association" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Identification Document for Authorized Person</label>
-                                                <input type="file" id="pdfUpload" name="identification_document_for_authorized_person" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="identification_document_for_authorized_person" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Bank Letter indicating Bank Account</label>
-                                                <input type="file" id="pdfUpload" name="bank_letter_indicating_bank_account" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="bank_letter_indicating_bank_account" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Past 2 Years Audited Financial Statements</label>
-                                                <input type="file" id="pdfUpload" name="past_2_years_audited_financial_statements" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="past_2_years_audited_financial_statements" class="form-control shadow-sm"/>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-semibold">Other Certifications</label>
-                                                <input type="file" id="pdfUpload" name="other_certifications" class="form-control shadow-sm" accept="application/pdf"/>
+                                                <input type="file" name="other_certifications" class="form-control shadow-sm"/>
                                             </div>
                                         </div>
                                     </div>
@@ -564,13 +571,13 @@
                             </div>
 
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-lg btn-outline-primary shadow-sm px-4 py-2" id="prev-5"><i class="fas fa-arrow-left"></i> Previous</button>
-                                <button type="submit" class="btn btn-lg btn-success shadow-lg px-4 py-2" id="submit-form">Submit <i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-outline-primary" id="prev-5">Previous</button>
+                                <button type="submit" class="btn btn-success">Submit</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <script src="/procurement_management/static/src/js/form_navigation.js">Navigation Script</script>
+                <script src="/procurement_management/static/src/js/form_navigation.js"></script>
             </t>
         </template>
 

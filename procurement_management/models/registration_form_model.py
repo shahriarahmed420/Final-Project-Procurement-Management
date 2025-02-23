@@ -29,20 +29,20 @@ class RegistrationForm(models.Model):
     ], string="Company Type", required=True)
     company_logo = fields.Binary("Company logo")
 
-    primary_contact_name = fields.Char("Name", required=True)
-    primary_contact_email = fields.Char("Email", required=True)
-    primary_contact_phone = fields.Char("Phone", required=True)
-    primary_contact_address = fields.Text("Address")
+    primary_contact_name = fields.Char("Primary Contact Name", required=True)
+    primary_contact_email = fields.Char("Primary Contact Email", required=True)
+    primary_contact_phone = fields.Char("Primary Contact Phone", required=True)
+    primary_contact_address = fields.Text("Primary Contact Address")
 
-    finance_contact_name = fields.Char("Name", required=True)
-    finance_contact_email = fields.Char("Email", required=True)
-    finance_contact_phone = fields.Char("Phone", required=True)
-    finance_contact_address = fields.Text("Address")
+    finance_contact_name = fields.Char("Finance Contact Name", required=True)
+    finance_contact_email = fields.Char("Finance Contact Email", required=True)
+    finance_contact_phone = fields.Char("Finance Contact Phone", required=True)
+    finance_contact_address = fields.Text("Finance Contact Address")
 
-    authorized_contact_name = fields.Char("Name", required=True)
-    authorized_contact_email = fields.Char("Email", required=True)
-    authorized_contact_phone = fields.Char("Phone", required=True)
-    authorized_contact_address = fields.Char("Address")
+    authorized_contact_name = fields.Char("Authorized Contact Name", required=True)
+    authorized_contact_email = fields.Char("Authorized Contact Email", required=True)
+    authorized_contact_phone = fields.Char("Authorized Contact Phone", required=True)
+    authorized_contact_address = fields.Char("Authorized Contact Address")
 
     trade_license_no = fields.Char("Trade License Number", help="Range - 8-20 characters")
     commencement_date = fields.Date("Commencement Date")
@@ -60,10 +60,30 @@ class RegistrationForm(models.Model):
 
     # Section - 3
 
-    client_name = fields.Char("Client Name")
-    client_email = fields.Char("Email")
-    client_phone = fields.Char("Phone")
-    client_address = fields.Text("Address")
+    client_1_name = fields.Char("Client 1 Name")
+    client_1_email = fields.Char("Client 1 Email")
+    client_1_phone = fields.Char("Client 1 Phone")
+    client_1_address = fields.Text("Client 1 Address")
+
+    client_2_name = fields.Char("Client 2 Name")
+    client_2_email = fields.Char("Client 2 Email")
+    client_2_phone = fields.Char("Client 2 Phone")
+    client_2_address = fields.Text("Client 2 Address")
+
+    client_3_name = fields.Char("Client 3 Name")
+    client_3_email = fields.Char("Client 3 Email")
+    client_3_phone = fields.Char("Client 3 Phone")
+    client_3_address = fields.Text("Client 3 Address")
+
+    client_4_name = fields.Char("Client 4 Name")
+    client_4_email = fields.Char("Client 4 Email")
+    client_4_phone = fields.Char("Client 4 Phone")
+    client_4_address = fields.Text("Client 4 Address")
+
+    client_5_name = fields.Char("Client 5 Name")
+    client_5_email = fields.Char("Client 5 Email")
+    client_5_phone = fields.Char("Client 5 Phone")
+    client_5_address = fields.Text("Client 5 Address")
 
     # Section - 4
 
@@ -115,10 +135,32 @@ class RegistrationForm(models.Model):
         tracking=True
     )
 
-    rejection_reason = fields.Text(string="Rejection Reason")
-    blacklist_reason = fields.Text(string="Blacklist Reason")
-    review_comments = fields.Text(string="Reviewer Comments")
-    approval_comments = fields.Text(string="Approver Comments")
+    reviewer_comments = fields.Text(string="Reviewer Comments")
+
+    @api.constrains('status', 'reviewer_comments')
+    def _check_review_comments_required(self):
+        for record in self:
+            if record.status in ['reject', 'blacklist'] and not record.reviewer_comments:
+                raise ValidationError(_("Comments are required when rejecting or blacklisting a supplier."))
+
+
+    @api.constrains(
+        'client_1_name', 'client_1_email', 'client_1_phone', 'client_1_address', 'client_2_name', 'client_2_email', 'client_2_phone',
+        'client_2_address', 'client_3_name', 'client_3_email', 'client_3_phone', 'client_3_address', 'client_4_name', 'client_4_email',
+        'client_4_phone', 'client_4_address', 'client_5_name', 'client_5_email', 'client_5_phone', 'client_5_address'
+    )
+    def _check_client_name_required(self):
+        for record in self:
+            for i in range(1, 6):  # Loop over client 1 to 5
+                email = getattr(record, f'client_{i}_email')
+                phone = getattr(record, f'client_{i}_phone')
+                address = getattr(record, f'client_{i}_address')
+                name = getattr(record, f'client_{i}_name')
+
+                # If any of Email, Phone, or Address is provided, Name must be mandatory
+                if (email or phone or address) and not name:
+                    raise ValidationError(f"Client {i}: Name is required when Email, Phone, or Address is provided.")
+
 
     def action_review_approve(self):
         if not self.reviewer_id:
@@ -138,9 +180,18 @@ class RegistrationForm(models.Model):
             self.create_supplier_user()
 
         self.create_vendor_record()
-        self.send_supplier_approval_email()
         self.write({'status': 'approved'})
         self.message_post(body=_("Supplier application approved, vendor created, and user assigned."))
+
+        email_values = {
+            'email_from': 'shahriar.ahmed@bjitacademy.com',
+            'email_to': self.email,
+            'subject': 'Your Supplier Application Update',
+            'body_html': f'<p>Your have been registered and approved as a supplier.</p>'
+        }
+
+        mail = self.env['mail.mail'].sudo().create(email_values)
+        mail.sudo().send()
 
 
     def action_reject(self):
@@ -152,11 +203,11 @@ class RegistrationForm(models.Model):
 
 
     def action_blacklist(self):
-        if not self.blacklist_reason:
+        if not self.reviewer_comments:
             raise ValidationError(_("Please provide a reason for blacklisting."))
         self.write({'status': 'blacklisted'})
         self.send_rejection_email()
-        self.message_post(body=_("Supplier blacklisted: %s" % self.blacklist_reason))
+        self.message_post(body=_("Supplier blacklisted: %s" % self.reviewer_comments))
 
 
     def create_vendor_record(self):
@@ -177,13 +228,36 @@ class RegistrationForm(models.Model):
                 'supplier_rank': 1,
                 'user_ids': [(4, user.id)] if user else [],
                 'company_id': self.env.company.id,
+
+                'primary_contact_name': self.primary_contact_name,
+                'primary_contact_email': self.primary_contact_email,
+                'primary_contact_phone': self.primary_contact_phone,
+
+                'finance_contact_name': self.finance_contact_name,
+                'finance_contact_email': self.finance_contact_email,
+                'finance_contact_phone': self.finance_contact_phone,
+
+                'authorized_contact_name': self.authorized_contact_name,
+                'authorized_contact_email': self.authorized_contact_email,
+                'authorized_contact_phone': self.authorized_contact_phone,
+
+                'trade_license_no': self.trade_license_no,
+                'vat': self.tax_id_num,
+
+                'certification_name': self.certification_name,
+                'certificate_number': self.certificate_number,
+                'certifying_body': self.certifying_body,
+                'award_date': self.award_date,
+                'certificate_expiry_date': self.certificate_expiry_date,
             })
         else:
             # If partner exists, assign the existing partner to vendor
             vendor = existing_partner
             if vendor.supplier_rank != 1:
                 vendor.sudo().write({
-                    'supplier_rank': 1  # Ensure supplier_rank is set to 1
+                    'supplier_rank': 1,  # Ensure supplier_rank is set to 1
+                    'phone': self.primary_contact_phone,
+                    'vat': self.tax_id_num,
                 })
 
         existing_bank = self.env['res.bank'].sudo().search([
@@ -213,6 +287,24 @@ class RegistrationForm(models.Model):
                 'acc_holder_name': self.account_name,
                 'bank_address': self.bank_address,
             })
+
+        client_data = [
+            {'name': self.client_1_name, 'email': self.client_1_email, 'phone': self.client_1_phone,
+             'street': self.client_1_address},
+            {'name': self.client_2_name, 'email': self.client_2_email, 'phone': self.client_2_phone,
+             'street': self.client_2_address},
+            {'name': self.client_3_name, 'email': self.client_3_email, 'phone': self.client_3_phone,
+             'street': self.client_3_address},
+            {'name': self.client_4_name, 'email': self.client_4_email, 'phone': self.client_4_phone,
+             'street': self.client_4_address},
+            {'name': self.client_5_name, 'email': self.client_5_email, 'phone': self.client_5_phone,
+             'street': self.client_5_address},
+        ]
+
+        client_values = [(0, 0, client) for client in client_data if client["name"]]
+
+        if client_values:
+            vendor.write({'child_ids': client_values})
 
         self.write({
             'status': 'submitted',

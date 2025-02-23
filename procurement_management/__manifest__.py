@@ -39,6 +39,8 @@
         'views/portal_rfp_views.xml',
         'views/portal_vendor_rfp_templates.xml',
         'views/templates.xml',
+        'demo/registration_form_demo.xml',
+        'demo/rfp_demo.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
