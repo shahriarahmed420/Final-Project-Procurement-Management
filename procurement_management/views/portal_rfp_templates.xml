@@ -241,6 +241,14 @@
                     </div>
                 </div>
 
+                <t t-if="warning_messages">
+                    <div class="alert alert-danger">
+                        <p>Negative Values are not allowed</p>
+                    </div>
+                </t>
+                <t t-else="">
+                </t>
+
                 <!-- Quotation Form -->
                 <div class="card custom-card mt-4">
                     <h3 class="custom-title"><i class="fa fa-file-signature"></i> Submit Your Quotation</h3>
@@ -341,6 +349,19 @@
 
     <template id="rfp_all_list_view_template" name="All RFPs List View">
         <t t-call="portal.portal_layout">
+            <style>
+                .btn-primary {
+                    background-color: #007bff;
+                    border-color: #007bff;
+                    transition: all 0.3s ease-in-out;
+                }
+
+                .btn-primary:hover {
+                    background-color: #0056b3;
+                    border-color: #004085;
+                    transform: scale(1.05);
+                }
+            </style>
             <div class="container mt-4">
                 <!-- Breadcrumb Navigation -->
                 <nav aria-label="breadcrumb" class="mb-3">
@@ -433,7 +454,7 @@
                                                     <span class="text-muted"><t t-esc="rfp.required_date"/></span>
                                                 </td>
                                                 <td class="text-center">
-                                                    <a t-att-href="'/my/rfp/%s' % rfp.id" class="btn btn-outline-primary btn-sm">
+                                                    <a t-att-href="'/my/all_rfps/%s' % rfp.id" class="btn btn-outline-primary btn-sm">
                                                         🔍 View
                                                     </a>
                                                 </td>
@@ -476,7 +497,7 @@
                                                 <span class="text-muted"><t t-esc="rfp.required_date"/></span>
                                             </td>
                                             <td class="text-center">
-                                                <a t-att-href="'/my/rfp/%s' % rfp.id" class="btn btn-outline-primary btn-sm">
+                                                <a t-att-href="'/my/all_rfps/%s' % rfp.id" class="btn btn-outline-primary btn-sm">
                                                     🔍 View
                                                 </a>
                                             </td>
@@ -486,14 +507,21 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a t-if="prev_url" t-att-href="prev_url" class="btn btn-primary px-4 py-2 shadow-sm">
+                            <i class="fa fa-arrow-left me-2"></i> Previous
+                        </a>
+                        <a t-if="next_url" t-att-href="next_url" class="btn btn-primary px-4 py-2 shadow-sm">
+                            Next <i class="fa fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </t>
     </template>
 
-    <template id="rfp_form_view_template" name="Portal RFP Form">
+    <template id="rfps_all_form_view_template" name="Portal RFP Form">
         <t t-call="portal.portal_layout">
-            <t t-set="title" t-value="'Request for Proposal'"/>
 
             <style>
                 /* Custom Styles */
@@ -571,7 +599,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-light p-2 rounded">
                         <li class="breadcrumb-item"><a href="/my">🏠 Home</a></li>
-                        <li class="breadcrumb-item"><a href="/my/all_rfps">v</a></li>
+                        <li class="breadcrumb-item"><a href="/my/all_rfps">📑 All RFPs</a></li>
                         <li class="breadcrumb-item active" aria-current="page"><t t-esc="rfp.name"/></li>
                     </ol>
                 </nav>

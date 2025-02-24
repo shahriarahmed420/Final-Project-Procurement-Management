@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from . import controllers, rfp_controllers, portal_vendor_rfp_controller
+from . import supplier_registration_controllers, rfp_controllers, portal_vendor_rfp_controller

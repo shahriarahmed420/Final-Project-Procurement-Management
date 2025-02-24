@@ -6,6 +6,7 @@
           <field name="company_name">Company 1 Ltd.</field>
           <field name="company_address">101 Business Park, City 1</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 1</field>
           <field name="primary_contact_email">primary1@company.com</field>
           <field name="primary_contact_phone">555-9001</field>
@@ -43,6 +44,7 @@
           <field name="company_name">Company 2 Ltd.</field>
           <field name="company_address">102 Business Park, City 2</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 2</field>
           <field name="primary_contact_email">primary2@company.com</field>
           <field name="primary_contact_phone">555-9002</field>
@@ -80,6 +82,7 @@
           <field name="company_name">Company 3 Ltd.</field>
           <field name="company_address">103 Business Park, City 3</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 3</field>
           <field name="primary_contact_email">primary3@company.com</field>
           <field name="primary_contact_phone">555-9003</field>
@@ -117,6 +120,7 @@
           <field name="company_name">Company 4 Ltd.</field>
           <field name="company_address">104 Business Park, City 4</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 4</field>
           <field name="primary_contact_email">primary4@company.com</field>
           <field name="primary_contact_phone">555-9004</field>
@@ -154,6 +158,7 @@
           <field name="company_name">Company 5 Ltd.</field>
           <field name="company_address">105 Business Park, City 5</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 5</field>
           <field name="primary_contact_email">primary5@company.com</field>
           <field name="primary_contact_phone">555-9005</field>
@@ -191,6 +196,7 @@
           <field name="company_name">Company 6 Ltd.</field>
           <field name="company_address">106 Business Park, City 6</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 6</field>
           <field name="primary_contact_email">primary6@company.com</field>
           <field name="primary_contact_phone">555-9006</field>
@@ -228,6 +234,7 @@
           <field name="company_name">Company 7 Ltd.</field>
           <field name="company_address">107 Business Park, City 7</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 7</field>
           <field name="primary_contact_email">primary7@company.com</field>
           <field name="primary_contact_phone">555-9007</field>
@@ -265,6 +272,7 @@
           <field name="company_name">Company 8 Ltd.</field>
           <field name="company_address">108 Business Park, City 8</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 8</field>
           <field name="primary_contact_email">primary8@company.com</field>
           <field name="primary_contact_phone">555-9008</field>
@@ -302,6 +310,7 @@
           <field name="company_name">Company 9 Ltd.</field>
           <field name="company_address">109 Business Park, City 9</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 9</field>
           <field name="primary_contact_email">primary9@company.com</field>
           <field name="primary_contact_phone">555-9009</field>
@@ -339,6 +348,7 @@
           <field name="company_name">Company 10 Ltd.</field>
           <field name="company_address">110 Business Park, City 10</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 10</field>
           <field name="primary_contact_email">primary10@company.com</field>
           <field name="primary_contact_phone">555-9010</field>
@@ -376,6 +386,7 @@
           <field name="company_name">Company 11 Ltd.</field>
           <field name="company_address">111 Business Park, City 11</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 11</field>
           <field name="primary_contact_email">primary11@company.com</field>
           <field name="primary_contact_phone">555-9011</field>
@@ -413,6 +424,7 @@
           <field name="company_name">Company 12 Ltd.</field>
           <field name="company_address">112 Business Park, City 12</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 12</field>
           <field name="primary_contact_email">primary12@company.com</field>
           <field name="primary_contact_phone">555-9012</field>
@@ -450,6 +462,7 @@
           <field name="company_name">Company 13 Ltd.</field>
           <field name="company_address">113 Business Park, City 13</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 13</field>
           <field name="primary_contact_email">primary13@company.com</field>
           <field name="primary_contact_phone">555-9013</field>
@@ -487,6 +500,7 @@
           <field name="company_name">Company 14 Ltd.</field>
           <field name="company_address">114 Business Park, City 14</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 14</field>
           <field name="primary_contact_email">primary14@company.com</field>
           <field name="primary_contact_phone">555-9014</field>
@@ -524,6 +538,7 @@
           <field name="company_name">Company 15 Ltd.</field>
           <field name="company_address">115 Business Park, City 15</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 15</field>
           <field name="primary_contact_email">primary15@company.com</field>
           <field name="primary_contact_phone">555-9015</field>
@@ -561,6 +576,7 @@
           <field name="company_name">Company 16 Ltd.</field>
           <field name="company_address">116 Business Park, City 16</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 16</field>
           <field name="primary_contact_email">primary16@company.com</field>
           <field name="primary_contact_phone">555-9016</field>
@@ -598,6 +614,7 @@
           <field name="company_name">Company 17 Ltd.</field>
           <field name="company_address">117 Business Park, City 17</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 17</field>
           <field name="primary_contact_email">primary17@company.com</field>
           <field name="primary_contact_phone">555-9017</field>
@@ -635,6 +652,7 @@
           <field name="company_name">Company 18 Ltd.</field>
           <field name="company_address">118 Business Park, City 18</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 18</field>
           <field name="primary_contact_email">primary18@company.com</field>
           <field name="primary_contact_phone">555-9018</field>
@@ -672,6 +690,7 @@
           <field name="company_name">Company 19 Ltd.</field>
           <field name="company_address">119 Business Park, City 19</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 19</field>
           <field name="primary_contact_email">primary19@company.com</field>
           <field name="primary_contact_phone">555-9019</field>
@@ -709,6 +728,7 @@
           <field name="company_name">Company 20 Ltd.</field>
           <field name="company_address">120 Business Park, City 20</field>
           <field name="company_type">corporation</field>
+          <field name="company_logo" type="base64" file="/opt/Odoo/odoo17_custom_addons/procurement_management/static/img/logo.jpeg"/>
           <field name="primary_contact_name">Primary Contact 20</field>
           <field name="primary_contact_email">primary20@company.com</field>
           <field name="primary_contact_phone">555-9020</field>

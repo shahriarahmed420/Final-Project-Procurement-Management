@@ -1,3 +1,4 @@
+
 <template xml:space="preserve">
     <t t-name="procurement_management.ProcurementDashboard" owl="1">
         <section class="dashboard-container">

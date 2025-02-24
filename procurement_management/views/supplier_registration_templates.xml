@@ -204,13 +204,13 @@
                                         <input type="text" name="finance_contact_name" class="form-control" placeholder="Enter Name" required=""/>
                                         <div class="invalid-feedback">Name is required.</div>
                                     </div>
-                                    <div for="finance_contact_email" class="mb-3">
-                                        <label class="form-label">Email</label>
+                                    <div class="mb-3">
+                                        <label for="finance_contact_email" class="form-label">Email</label>
                                         <input type="email" name="finance_contact_email" class="form-control" placeholder="Enter Email" required=""/>
                                         <div class="invalid-feedback">Email is required.</div>
                                     </div>
-                                    <div for="finance_contact_phone" class="mb-3">
-                                        <label class="form-label">Phone</label>
+                                    <div class="mb-3">
+                                        <label for="finance_contact_phone" class="form-label">Phone</label>
                                         <input type="text" name="finance_contact_phone" class="form-control" placeholder="Enter Phone Number" required=""/>
                                         <div class="invalid-feedback">Phone is required.</div>
                                     </div>

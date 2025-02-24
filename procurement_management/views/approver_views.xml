@@ -33,105 +33,105 @@
                     <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="status != 'approved'"/>
                     <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="status != 'rejected'"/>
                     <group>
-                        <field name="company_name"/>
-                        <field name="company_address"/>
-                        <field name="company_type"/>
-                        <field name="company_logo"/>
+                        <field name="company_name" readonly="True"/>
+                        <field name="company_address" readonly="True"/>
+                        <field name="company_type" readonly="True"/>
+                        <field name="company_logo" readonly="True"/>
                         <field name="approver_id"/>
                     </group>
                     <notebook>
                         <!-- Section 1: Company Information -->
                         <page string="Contact Information">
                             <group>
-                                <field name="primary_contact_name"/>
-                                <field name="primary_contact_email"/>
-                                <field name="primary_contact_phone"/>
-                                <field name="primary_contact_address"/>
+                                <field name="primary_contact_name" readonly="True"/>
+                                <field name="primary_contact_email" readonly="True"/>
+                                <field name="primary_contact_phone" readonly="True"/>
+                                <field name="primary_contact_address" readonly="True"/>
                             </group>
                             <group>
-                                <field name="finance_contact_name"/>
-                                <field name="finance_contact_email"/>
-                                <field name="finance_contact_phone"/>
-                                <field name="finance_contact_address"/>
+                                <field name="finance_contact_name" readonly="True"/>
+                                <field name="finance_contact_email" readonly="True"/>
+                                <field name="finance_contact_phone" readonly="True"/>
+                                <field name="finance_contact_address" readonly="True"/>
                             </group>
                             <group>
-                                <field name="authorized_contact_name"/>
-                                <field name="authorized_contact_email"/>
-                                <field name="authorized_contact_phone"/>
-                                <field name="authorized_contact_address"/>
+                                <field name="authorized_contact_name" readonly="True"/>
+                                <field name="authorized_contact_email" readonly="True"/>
+                                <field name="authorized_contact_phone" readonly="True"/>
+                                <field name="authorized_contact_address" readonly="True"/>
                             </group>
                         </page>
 
                         <!-- Section 2: Financial Information -->
                         <page string="Financial Information">
                             <group>
-                                <field name="bank_name"/>
-                                <field name="bank_address"/>
-                                <field name="bank_swift_code"/>
-                                <field name="account_name"/>
-                                <field name="account_number"/>
-                                <field name="iban"/>
+                                <field name="bank_name" readonly="True"/>
+                                <field name="bank_address" readonly="True"/>
+                                <field name="bank_swift_code" readonly="True"/>
+                                <field name="account_name" readonly="True"/>
+                                <field name="account_number" readonly="True"/>
+                                <field name="iban" readonly="True"/>
                             </group>
                         </page>
 
                         <!-- Section 3: Previous Client References -->
                         <page string="Client References">
                             <group>
-                                <field name="client_1_name"/>
-                                <field name="client_1_email"/>
-                                <field name="client_1_phone"/>
-                                <field name="client_1_address"/>
+                                <field name="client_1_name" readonly="True"/>
+                                <field name="client_1_email" readonly="True"/>
+                                <field name="client_1_phone" readonly="True"/>
+                                <field name="client_1_address" readonly="True"/>
                             </group>
                             <group>
-                                <field name="client_2_name"/>
-                                <field name="client_2_email"/>
-                                <field name="client_2_phone"/>
-                                <field name="client_2_address"/>
+                                <field name="client_2_name" readonly="True"/>
+                                <field name="client_2_email" readonly="True"/>
+                                <field name="client_2_phone" readonly="True"/>
+                                <field name="client_2_address" readonly="True"/>
                             </group>
                             <group>
-                                <field name="client_3_name"/>
-                                <field name="client_3_email"/>
-                                <field name="client_3_phone"/>
-                                <field name="client_3_address"/>
+                                <field name="client_3_name" readonly="True"/>
+                                <field name="client_3_email" readonly="True"/>
+                                <field name="client_3_phone" readonly="True"/>
+                                <field name="client_3_address" readonly="True"/>
                             </group>
                             <group>
-                                <field name="client_4_name"/>
-                                <field name="client_4_email"/>
-                                <field name="client_4_phone"/>
-                                <field name="client_4_address"/>
+                                <field name="client_4_name" readonly="True"/>
+                                <field name="client_4_email" readonly="True"/>
+                                <field name="client_4_phone" readonly="True"/>
+                                <field name="client_4_address" readonly="True"/>
                             </group>
                             <group>
-                                <field name="client_5_name"/>
-                                <field name="client_5_email"/>
-                                <field name="client_5_phone"/>
-                                <field name="client_5_address"/>
+                                <field name="client_5_name" readonly="True"/>
+                                <field name="client_5_email" readonly="True"/>
+                                <field name="client_5_phone" readonly="True"/>
+                                <field name="client_5_address" readonly="True"/>
                             </group>
                         </page>
 
                         <!-- Section 4: Certifications -->
                         <page string="Certifications">
                             <group>
-                                <field name="certification_name"/>
-                                <field name="certificate_number"/>
-                                <field name="certifying_body"/>
-                                <field name="award_date"/>
-                                <field name="certificate_expiry_date"/>
+                                <field name="certification_name" readonly="True"/>
+                                <field name="certificate_number" readonly="True"/>
+                                <field name="certifying_body" readonly="True"/>
+                                <field name="award_date" readonly="True"/>
+                                <field name="certificate_expiry_date" readonly="True"/>
                             </group>
                         </page>
 
                         <!-- Section 5: Document Submission -->
                         <page string="Document Submission">
                             <group>
-                                <field name="trade_license_business_registration"/>
-                                <field name="certificate_of_incorporation"/>
-                                <field name="certificate_of_good_standing"/>
-                                <field name="establishment_card"/>
-                                <field name="vat_tax_certificate"/>
-                                <field name="memorandum_of_association"/>
-                                <field name="identification_document_for_authorized_person"/>
-                                <field name="bank_letter_indicating_bank_account"/>
-                                <field name="past_2_years_audited_financial_statements"/>
-                                <field name="other_certifications"/>
+                                <field name="trade_license_business_registration" readonly="True"/>
+                                <field name="certificate_of_incorporation" readonly="True"/>
+                                <field name="certificate_of_good_standing" readonly="True"/>
+                                <field name="establishment_card" readonly="True"/>
+                                <field name="vat_tax_certificate" readonly="True"/>
+                                <field name="memorandum_of_association" readonly="True"/>
+                                <field name="identification_document_for_authorized_person" readonly="True"/>
+                                <field name="bank_letter_indicating_bank_account" readonly="True"/>
+                                <field name="past_2_years_audited_financial_statements" readonly="True"/>
+                                <field name="other_certifications" readonly="True"/>
                             </group>
                         </page>
 
